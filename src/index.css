@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    color: #17211B;
+    background-color: #F8FAFC;
+  }
+}
+
+/* Custom smooth scroll bar & touch optimizations */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom focus ring styling for accessibility */
+*:focus-visible {
+  outline: 2px solid #16834B;
+  outline-offset: 2px;
+}
