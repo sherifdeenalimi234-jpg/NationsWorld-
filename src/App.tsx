@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Homepage } from './components/Homepage';
+import { ProductionDashboard } from './components/production/ProductionDashboard';
 import { Hero } from './components/Hero';
 import { TeamsOverview } from './components/TeamsOverview';
 import { HowItWorks } from './components/HowItWorks';
@@ -9,12 +10,11 @@ import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 
 export const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'home' | 'portal'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'portal' | 'production'>('home');
 
-  const handleNavigate = (view: 'home' | 'portal', sectionId?: string) => {
+  const handleNavigate = (view: 'home' | 'portal' | 'production', sectionId?: string) => {
     setActiveView(view);
 
-    // If a specific section was targeted, scroll to it after state update
     if (sectionId) {
       setTimeout(() => {
         const el = document.getElementById(sectionId);
@@ -22,9 +22,7 @@ export const App: React.FC = () => {
           el.scrollIntoView({ behavior: 'smooth' });
         }
       }, 100);
-    } else if (view === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (view === 'portal') {
+    } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -34,16 +32,28 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-nw-dark selection:bg-nw-soft selection:text-nw-deep">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-nw-dark selection:bg-nw-soft selection:text-nw-deep font-sans">
       <Navbar activeView={activeView} onNavigate={handleNavigate} />
 
       <main className="flex-1">
-        {activeView === 'home' ? (
+        {activeView === 'home' && (
           <Homepage
             onOpenPortal={() => handleOpenPortal('application-section')}
-            onNavigateToSection={(id) => handleNavigate('home', id)}
+            onNavigateToSection={(id: string) => {
+              if (id === 'production') {
+                handleNavigate('production');
+              } else {
+                handleNavigate('home', id);
+              }
+            }}
           />
-        ) : (
+        )}
+
+        {activeView === 'production' && (
+          <ProductionDashboard />
+        )}
+
+        {activeView === 'portal' && (
           <div className="animate-fadeIn">
             <div className="bg-emerald-900 text-white text-center py-2.5 px-4 text-xs font-semibold flex items-center justify-center gap-2">
               <span>NationsWorld Official Membership Portal</span>

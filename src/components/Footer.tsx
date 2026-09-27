@@ -3,11 +3,11 @@ import { Globe, MessageSquare, ShieldAlert, ArrowUpRight } from 'lucide-react';
 import { OFFICIAL_WHATSAPP_NUMBER } from '../utils/reference';
 
 interface FooterProps {
-  onNavigate?: (view: 'home' | 'portal', sectionId?: string) => void;
+  onNavigate?: (view: 'home' | 'portal' | 'production', sectionId?: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const handleLinkClick = (view: 'home' | 'portal', sectionId?: string) => {
+  const handleLinkClick = (view: 'home' | 'portal' | 'production', sectionId?: string) => {
     if (onNavigate) {
       onNavigate(view, sectionId);
     } else if (sectionId) {
@@ -90,10 +90,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => handleLinkClick('home', 'production')}
-                  className="hover:text-emerald-300 transition"
+                  onClick={() => handleLinkClick('production')}
+                  className="text-emerald-300 font-bold hover:underline transition"
                 >
-                  • Production
+                  • Production Hub
                 </button>
               </li>
               <li>
@@ -156,7 +156,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               PRIVACY & DATA
             </h4>
             <p className="text-xs text-gray-400 leading-relaxed bg-white/5 p-3.5 rounded-2xl border border-white/10">
-              Information submitted is used solely for NationsWorld membership review and administration.
+              Draft documents and applications are processed directly in your browser with client-side security.
             </p>
 
             <div>
