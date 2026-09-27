@@ -30,8 +30,7 @@ const TYPEWRITER_STATEMENTS = [
   'We Produce.'
 ];
 
-export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
-  // Typewriter state
+export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSection }) => {
   const [statementIndex, setStatementIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -41,10 +40,8 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
     let typingSpeed = isDeleting ? 40 : 80;
 
     if (!isDeleting && displayText === currentFullText) {
-      // Pause at full word
       typingSpeed = 2200;
     } else if (isDeleting && displayText === '') {
-      // Move to next statement
       setIsDeleting(false);
       setStatementIndex((prev) => (prev + 1) % TYPEWRITER_STATEMENTS.length);
       typingSpeed = 300;
@@ -67,6 +64,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
   }, [displayText, isDeleting, statementIndex]);
 
   const scrollToSection = (id: string) => {
+    if (id === 'production' && onNavigateToSection) {
+      onNavigateToSection('production');
+      return;
+    }
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -77,7 +78,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
     <div className="w-full bg-slate-50 text-nw-dark font-sans selection:bg-nw-soft selection:text-nw-deep">
       {/* 2. HERO SECTION */}
       <section id="hero" className="relative bg-gradient-to-b from-nw-dark via-[#0d2a1b] to-nw-dark text-white pt-16 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden border-b border-emerald-900/40">
-        {/* Subtle grid background pattern */}
         <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#16834B_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-nw-green/20 rounded-full filter blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 right-0 w-80 h-80 bg-emerald-500/10 rounded-full filter blur-3xl pointer-events-none" />
@@ -95,7 +95,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
             </span>
           </h1>
 
-          {/* Typewriter Animation */}
           <div className="mt-6 h-16 sm:h-20 flex items-center justify-center">
             <span className="text-2xl sm:text-4xl lg:text-5xl font-mono font-bold text-emerald-400 tracking-tight">
               {displayText}
@@ -111,7 +110,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
             NationsWorld is a multidisciplinary platform bringing together people, ideas and initiatives committed to learning, innovation, leadership, development and meaningful production.
           </p>
 
-          {/* Hero Buttons */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               type="button"
@@ -183,7 +181,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* 1. RESEARCH */}
             <div className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:border-nw-green/40 hover:-translate-y-1 transition-all duration-300 group">
               <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-6 group-hover:bg-nw-green group-hover:text-white transition-colors">
                 <Search className="w-6 h-6" />
@@ -196,7 +193,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </p>
             </div>
 
-            {/* 2. INNOVATION */}
             <div className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:border-nw-green/40 hover:-translate-y-1 transition-all duration-300 group">
               <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-6 group-hover:bg-nw-green group-hover:text-white transition-colors">
                 <Lightbulb className="w-6 h-6" />
@@ -209,7 +205,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </p>
             </div>
 
-            {/* 3. DEVELOPMENT */}
             <div className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:border-nw-green/40 hover:-translate-y-1 transition-all duration-300 group">
               <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-6 group-hover:bg-nw-green group-hover:text-white transition-colors">
                 <TrendingUp className="w-6 h-6" />
@@ -222,7 +217,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </p>
             </div>
 
-            {/* 4. LEADERSHIP */}
             <div className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:border-nw-green/40 hover:-translate-y-1 transition-all duration-300 group">
               <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-6 group-hover:bg-nw-green group-hover:text-white transition-colors">
                 <Award className="w-6 h-6" />
@@ -235,7 +229,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </p>
             </div>
 
-            {/* 5. PRODUCTION */}
             <div className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:border-nw-green/40 hover:-translate-y-1 transition-all duration-300 group md:col-span-2 lg:col-span-1">
               <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-6 group-hover:bg-nw-green group-hover:text-white transition-colors">
                 <Box className="w-6 h-6" />
@@ -297,7 +290,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
-            {/* Step 1 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-nw-green transition relative flex flex-col justify-between group">
               <div>
                 <span className="text-3xl font-black text-nw-green font-mono block mb-3">01</span>
@@ -311,7 +303,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </div>
             </div>
 
-            {/* Step 2 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-nw-green transition relative flex flex-col justify-between group">
               <div>
                 <span className="text-3xl font-black text-nw-green font-mono block mb-3">02</span>
@@ -325,7 +316,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </div>
             </div>
 
-            {/* Step 3 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-nw-green transition relative flex flex-col justify-between group">
               <div>
                 <span className="text-3xl font-black text-nw-green font-mono block mb-3">03</span>
@@ -339,7 +329,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </div>
             </div>
 
-            {/* Step 4 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-nw-green transition relative flex flex-col justify-between group">
               <div>
                 <span className="text-3xl font-black text-nw-green font-mono block mb-3">04</span>
@@ -353,7 +342,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </div>
             </div>
 
-            {/* Step 5 */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-nw-green transition relative flex flex-col justify-between group">
               <div>
                 <span className="text-3xl font-black text-nw-green font-mono block mb-3">05</span>
@@ -388,7 +376,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Featured Programme: TPD */}
             <div className="p-8 sm:p-10 rounded-3xl bg-white border border-slate-200 shadow-md hover:shadow-xl transition-shadow flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 right-0 px-4 py-1.5 bg-nw-green text-white text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl">
                 FEATURED PROGRAMME
@@ -424,7 +411,6 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
               </div>
             </div>
 
-            {/* Modular Placeholder for Future Programmes */}
             <div className="p-8 sm:p-10 rounded-3xl bg-emerald-950 text-white border border-emerald-900/50 shadow-md flex flex-col justify-between relative overflow-hidden">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-[10px] font-bold uppercase tracking-widest mb-6">
@@ -518,33 +504,33 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal }) => {
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-nw-dark to-emerald-950 text-white border border-emerald-900 shadow-xl relative overflow-hidden">
             <div className="max-w-3xl relative z-10">
               <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 block mb-2">
-                TANGIBLE OUTPUTS
+                DIGITAL SECRETARIAT & DOCUMENT OFFICE
               </span>
               <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-6">
                 PRODUCTION AT NATIONSWORLD
               </h2>
 
               <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-6">
-                Ideas without execution remain abstract. Production is our core commitment to turning research, creativity, and knowledge into practical, real-world solutions, policy papers, technology prototypes, and community developments.
+                Ideas without execution remain abstract. Production is our core commitment to turning research, creativity, and knowledge into practical, real-world solutions, official documents, policy papers, and certificates.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                  <h4 className="text-xs font-bold text-emerald-300 uppercase mb-1">Knowledge & Policy Papers</h4>
-                  <p className="text-xs text-gray-300">Actionable research papers and strategic frameworks addressing critical challenges.</p>
+                  <h4 className="text-xs font-bold text-emerald-300 uppercase mb-1">Production Hub Access</h4>
+                  <p className="text-xs text-gray-300">Create, edit, save local drafts, and generate officially branded PDF documents in your browser.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                  <h4 className="text-xs font-bold text-emerald-300 uppercase mb-1">Community Solutions</h4>
-                  <p className="text-xs text-gray-300">High-impact development projects implemented through multidisciplinary teams.</p>
+                  <h4 className="text-xs font-bold text-emerald-300 uppercase mb-1">Database-Free Privacy</h4>
+                  <p className="text-xs text-gray-300">Complete client-side document processing with LocalStorage and portable `.json` draft exports.</p>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={onOpenPortal}
+                onClick={() => scrollToSection('production')}
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-nw-green hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg group"
               >
-                <span>PARTICIPATE IN PRODUCTION</span>
+                <span>OPEN PRODUCTION HUB</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>

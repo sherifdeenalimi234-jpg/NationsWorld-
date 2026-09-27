@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, Globe, ChevronDown, ChevronRight, ArrowRight } from 'lucide-react';
 
 interface NavbarProps {
-  activeView: 'home' | 'portal';
-  onNavigate: (view: 'home' | 'portal', sectionId?: string) => void;
+  activeView: 'home' | 'portal' | 'production';
+  onNavigate: (view: 'home' | 'portal' | 'production', sectionId?: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (view: 'home' | 'portal', sectionId?: string) => {
+  const handleNavClick = (view: 'home' | 'portal' | 'production', sectionId?: string) => {
     setIsOpen(false);
     onNavigate(view, sectionId);
   };
@@ -54,13 +54,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
 
         {/* Right: Hamburger Menu Trigger */}
         <div className="flex items-center gap-3">
-          {activeView === 'portal' && (
+          {activeView !== 'home' && (
             <button
               type="button"
               onClick={() => handleNavClick('home')}
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-emerald-200 transition"
             >
-              ← Back to Main Site
+              ← Main Homepage
             </button>
           )}
 
@@ -148,18 +148,27 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
 
               <button
                 type="button"
-                onClick={() => handleNavClick('home', 'how-it-works')}
+                onClick={() => handleNavClick('home', 'pathway')}
                 className="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-gray-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between"
               >
                 <span>How It Works</span>
               </button>
 
+              {/* PRODUCTION HUB ROUTE */}
               <button
                 type="button"
-                onClick={() => handleNavClick('home', 'production')}
-                className="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-gray-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between"
+                onClick={() => handleNavClick('production')}
+                className={`w-full text-left px-4 py-3 rounded-xl text-base font-bold transition flex items-center justify-between ${
+                  activeView === 'production'
+                    ? 'bg-nw-green text-white'
+                    : 'text-emerald-300 hover:text-white hover:bg-white/10'
+                }`}
               >
-                <span>Production</span>
+                <span className="flex items-center gap-2">
+                  <span>Production Hub</span>
+                  <span className="text-[10px] bg-emerald-500/30 text-emerald-200 px-2 py-0.5 rounded font-mono">OFFICE</span>
+                </span>
+                <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
@@ -228,10 +237,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
             <div className="p-6 border-t border-white/10 bg-black/30 space-y-3">
               <button
                 type="button"
-                onClick={() => handleNavClick('portal', 'application-section')}
+                onClick={() => handleNavClick('production')}
                 className="w-full py-3.5 rounded-xl bg-nw-green hover:bg-nw-hover text-white font-bold text-sm shadow-lg flex items-center justify-center gap-2 transition"
               >
-                <span>OPEN MEMBERSHIP PORTAL</span>
+                <span>OPEN PRODUCTION HUB</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
               <p className="text-[11px] text-center text-gray-400">
