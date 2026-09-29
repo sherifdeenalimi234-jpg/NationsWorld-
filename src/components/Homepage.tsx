@@ -78,10 +78,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
 
   return (
     <div className="w-full bg-obsidian text-ivory font-sans selection:bg-emerald/30 selection:text-gold overflow-x-hidden">
-      {/* 2. HERO SECTION - FULL-BLEED HERO IMAGE BACKGROUND */}
+      {/* HERO SECTION - FULL-BLEED BACKGROUND IMAGE WITH CINEMATIC DARK OVERLAY */}
       <section
         id="hero"
-        className="relative min-h-screen flex items-center justify-center pt-28 pb-20 px-4 sm:px-6 lg:px-8 border-b border-gold/20 overflow-hidden bg-obsidian"
+        className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-obsidian text-ivory"
       >
         {/* Full-Bleed Background Image */}
         <div
@@ -89,15 +89,15 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           style={{ backgroundImage: `url(${heroImage})` }}
         />
 
-        {/* Sophisticated Layered Gradient Overlay (Obsidian / Dark Emerald / Radial glow) */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-obsidian/90 via-obsidian/85 to-obsidian" />
-        <div className="absolute inset-0 z-0 bg-radial from-deep-emerald/50 via-obsidian/80 to-obsidian opacity-90" />
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald/15 via-transparent to-transparent pointer-events-none" />
+        {/* Layered Gradient Overlay */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-obsidian/90 via-obsidian/80 to-obsidian" />
+        <div className="absolute inset-0 z-0 bg-radial from-deep-emerald/60 via-obsidian/85 to-obsidian opacity-90" />
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald/20 via-transparent to-transparent pointer-events-none" />
 
-        {/* Subtle Ambient Grain / Noise */}
+        {/* Subtle Ambient Grain Pattern */}
         <div className="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(#D6B56D_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
-        {/* Hero Main Content Box */}
+        {/* Hero Content Box */}
         <div className="max-w-5xl mx-auto text-center relative z-10 w-full py-6">
           {/* Small Institutional Eyebrow */}
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-deep-emerald/90 border border-gold/40 text-gold text-xs font-bold tracking-[0.2em] uppercase mb-8 shadow-xl backdrop-blur-md">
@@ -127,7 +127,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           </p>
 
           {/* Supporting Paragraph */}
-          <p className="mt-6 text-sm sm:text-base lg:text-lg text-sage max-w-3xl mx-auto leading-relaxed font-normal">
+          <p className="mt-6 text-sm sm:text-base lg:text-lg text-sage/90 max-w-3xl mx-auto leading-relaxed font-normal">
             NationsWorld is a multidisciplinary platform bringing together people, ideas and initiatives committed to learning, innovation, leadership, development and meaningful production.
           </p>
 
@@ -136,7 +136,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
             <button
               type="button"
               onClick={() => scrollToSection('about')}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-deep-emerald/70 hover:bg-deep-emerald text-ivory font-bold text-xs tracking-[0.15em] uppercase transition duration-300 border border-gold/30 hover:border-gold backdrop-blur-md flex items-center justify-center gap-3 shadow-xl group"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-deep-emerald/80 hover:bg-deep-emerald text-ivory font-bold text-xs tracking-[0.15em] uppercase transition duration-300 border border-gold/30 hover:border-gold backdrop-blur-md flex items-center justify-center gap-3 shadow-xl group"
             >
               <span>EXPLORE NATIONSWORLD</span>
               <ArrowRight className="w-4 h-4 text-gold group-hover:translate-x-1 transition-transform" />
@@ -145,22 +145,19 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
             <button
               type="button"
               onClick={onOpenPortal}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald via-emerald-600 to-deep-emerald hover:brightness-110 text-ivory font-extrabold text-xs tracking-[0.15em] uppercase transition duration-300 border border-gold/40 flex items-center justify-center gap-3 shadow-2xl hover:shadow-emerald/20 hover:scale-[1.02] group"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald via-emerald-600 to-deep-emerald hover:brightness-110 text-white font-extrabold text-xs tracking-[0.15em] uppercase transition duration-300 border border-gold/40 flex items-center justify-center gap-3 shadow-2xl hover:scale-[1.02] group"
             >
               <span>JOIN NATIONSWORLD</span>
-              <ArrowRight className="w-4 h-4 text-ivory group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
       </section>
 
-      {/* 3. WHO WE ARE */}
-      <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/20 to-obsidian border-b border-gold/20">
+      {/* WHO WE ARE */}
+      <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 bg-obsidian border-b border-gold/20">
         <div className="max-w-5xl mx-auto">
-          <div className="p-8 sm:p-12 rounded-3xl bg-deep-emerald/40 border border-gold/30 shadow-2xl backdrop-blur-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald/10 rounded-bl-full pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gold/5 rounded-tr-full pointer-events-none" />
-
+          <div className="glass-panel p-8 sm:p-12 rounded-3xl relative overflow-hidden">
             <div className="max-w-3xl relative z-10">
               <span className="text-xs font-bold uppercase tracking-[0.25em] text-gold block mb-3">
                 ABOUT NATIONSWORLD
@@ -180,7 +177,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <button
                 type="button"
                 onClick={() => scrollToSection('philosophy')}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald/20 hover:bg-emerald/30 text-mint font-bold text-xs uppercase tracking-wider transition border border-gold/30 hover:border-gold shadow-md group"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-deep-emerald border border-gold/30 text-ivory hover:bg-emerald font-bold text-xs uppercase tracking-wider transition shadow-md group"
               >
                 <span>LEARN MORE ABOUT US</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-gold" />
@@ -190,8 +187,8 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 4. OUR AREAS OF FOCUS */}
-      <section id="focus" className="py-24 px-4 sm:px-6 lg:px-8 bg-obsidian border-b border-gold/20">
+      {/* OUR AREAS OF FOCUS */}
+      <section id="focus" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian to-deep-emerald/40 border-b border-gold/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-gold block mb-3">
@@ -204,11 +201,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-8 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-6 group-hover:border-gold group-hover:bg-emerald/20 transition-all">
-                <Search className="w-6 h-6" />
+            <div className="glass-panel glass-panel-hover p-8 rounded-2xl">
+              <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
+                <Search className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight group-hover:text-gold transition-colors">
+              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
                 RESEARCH
               </h3>
               <p className="text-sm text-sage leading-relaxed">
@@ -216,11 +213,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-6 group-hover:border-gold group-hover:bg-emerald/20 transition-all">
-                <Lightbulb className="w-6 h-6" />
+            <div className="glass-panel glass-panel-hover p-8 rounded-2xl">
+              <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
+                <Lightbulb className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight group-hover:text-gold transition-colors">
+              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
                 INNOVATION
               </h3>
               <p className="text-sm text-sage leading-relaxed">
@@ -228,11 +225,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-6 group-hover:border-gold group-hover:bg-emerald/20 transition-all">
-                <TrendingUp className="w-6 h-6" />
+            <div className="glass-panel glass-panel-hover p-8 rounded-2xl">
+              <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
+                <TrendingUp className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight group-hover:text-gold transition-colors">
+              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
                 DEVELOPMENT
               </h3>
               <p className="text-sm text-sage leading-relaxed">
@@ -240,11 +237,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-6 group-hover:border-gold group-hover:bg-emerald/20 transition-all">
-                <Award className="w-6 h-6" />
+            <div className="glass-panel glass-panel-hover p-8 rounded-2xl">
+              <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
+                <Award className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight group-hover:text-gold transition-colors">
+              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
                 LEADERSHIP
               </h3>
               <p className="text-sm text-sage leading-relaxed">
@@ -252,11 +249,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 shadow-xl hover:-translate-y-1 transition-all duration-300 group md:col-span-2 lg:col-span-1">
-              <div className="w-12 h-12 rounded-xl bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-6 group-hover:border-gold group-hover:bg-emerald/20 transition-all">
-                <Box className="w-6 h-6" />
+            <div className="glass-panel glass-panel-hover p-8 rounded-2xl md:col-span-2 lg:col-span-1">
+              <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
+                <Box className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight group-hover:text-gold transition-colors">
+              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
                 PRODUCTION
               </h3>
               <p className="text-sm text-sage leading-relaxed">
@@ -267,12 +264,12 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 5. OUR PHILOSOPHY */}
-      <section id="philosophy" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-deep-emerald/40 via-obsidian to-obsidian relative overflow-hidden border-b border-gold/20">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald/10 via-transparent to-transparent pointer-events-none" />
+      {/* OUR PHILOSOPHY */}
+      <section id="philosophy" className="py-24 px-4 sm:px-6 lg:px-8 bg-deep-emerald text-ivory relative overflow-hidden border-b border-gold/20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald/20 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-deep-emerald border border-gold/30 text-gold text-xs font-semibold uppercase tracking-[0.2em] mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian/60 border border-gold/30 text-gold text-xs font-semibold uppercase tracking-[0.2em] mb-6">
             <Sparkles className="w-3.5 h-3.5 text-gold" />
             OUR GUIDING PHILOSOPHY
           </div>
@@ -281,7 +278,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
             ADVANCEMENT BEGINS WITH PEOPLE
           </h2>
 
-          <div className="p-8 sm:p-12 rounded-3xl bg-deep-emerald/30 border border-gold/30 backdrop-blur-md shadow-2xl relative">
+          <div className="p-8 sm:p-12 rounded-3xl bg-obsidian/70 border border-gold/30 backdrop-blur-md shadow-2xl relative">
             <blockquote className="text-xl sm:text-3xl font-bold text-gold-light leading-relaxed tracking-tight space-y-3 font-serif italic">
               <p>“When people learn, they think differently.</p>
               <p>When they think differently, they create.</p>
@@ -297,7 +294,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 6. THE NATIONSWORLD PATHWAY */}
+      {/* THE NATIONSWORLD PATHWAY */}
       <section id="pathway" className="py-24 px-4 sm:px-6 lg:px-8 bg-obsidian border-b border-gold/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -313,65 +310,65 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 relative">
-            <div className="p-6 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 transition duration-300 relative flex flex-col justify-between group">
+            <div className="glass-panel p-6 rounded-2xl relative flex flex-col justify-between hover:border-gold/50 transition">
               <div>
                 <span className="text-3xl font-black text-gold font-mono block mb-3">01</span>
-                <div className="w-9 h-9 rounded-lg bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-4">
-                  <BookOpen className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-4">
+                  <BookOpen className="w-5 h-5 text-gold" />
                 </div>
-                <h3 className="text-lg font-extrabold text-ivory mb-2 group-hover:text-gold transition-colors">LEARN</h3>
+                <h3 className="text-lg font-extrabold text-ivory mb-2">LEARN</h3>
                 <p className="text-xs text-sage leading-relaxed">
                   Acquire knowledge, skills and understanding.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 transition duration-300 relative flex flex-col justify-between group">
+            <div className="glass-panel p-6 rounded-2xl relative flex flex-col justify-between hover:border-gold/50 transition">
               <div>
                 <span className="text-3xl font-black text-gold font-mono block mb-3">02</span>
-                <div className="w-9 h-9 rounded-lg bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-4">
-                  <Brain className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-4">
+                  <Brain className="w-5 h-5 text-gold" />
                 </div>
-                <h3 className="text-lg font-extrabold text-ivory mb-2 group-hover:text-gold transition-colors">THINK</h3>
+                <h3 className="text-lg font-extrabold text-ivory mb-2">THINK</h3>
                 <p className="text-xs text-sage leading-relaxed">
                   Question, analyse and develop ideas.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 transition duration-300 relative flex flex-col justify-between group">
+            <div className="glass-panel p-6 rounded-2xl relative flex flex-col justify-between hover:border-gold/50 transition">
               <div>
                 <span className="text-3xl font-black text-gold font-mono block mb-3">03</span>
-                <div className="w-9 h-9 rounded-lg bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-4">
-                  <Rocket className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-4">
+                  <Rocket className="w-5 h-5 text-gold" />
                 </div>
-                <h3 className="text-lg font-extrabold text-ivory mb-2 group-hover:text-gold transition-colors">CREATE</h3>
+                <h3 className="text-lg font-extrabold text-ivory mb-2">CREATE</h3>
                 <p className="text-xs text-sage leading-relaxed">
                   Turn ideas into projects, products and solutions.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 transition duration-300 relative flex flex-col justify-between group">
+            <div className="glass-panel p-6 rounded-2xl relative flex flex-col justify-between hover:border-gold/50 transition">
               <div>
                 <span className="text-3xl font-black text-gold font-mono block mb-3">04</span>
-                <div className="w-9 h-9 rounded-lg bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-4">
-                  <Shield className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-4">
+                  <Shield className="w-5 h-5 text-gold" />
                 </div>
-                <h3 className="text-lg font-extrabold text-ivory mb-2 group-hover:text-gold transition-colors">LEAD</h3>
+                <h3 className="text-lg font-extrabold text-ivory mb-2">LEAD</h3>
                 <p className="text-xs text-sage leading-relaxed">
                   Apply knowledge through responsible leadership.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 transition duration-300 relative flex flex-col justify-between group sm:col-span-2 lg:col-span-1">
+            <div className="glass-panel p-6 rounded-2xl relative flex flex-col justify-between hover:border-gold/50 transition sm:col-span-2 lg:col-span-1">
               <div>
                 <span className="text-3xl font-black text-gold font-mono block mb-3">05</span>
-                <div className="w-9 h-9 rounded-lg bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center mb-4">
-                  <Users className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-4">
+                  <Users className="w-5 h-5 text-gold" />
                 </div>
-                <h3 className="text-lg font-extrabold text-ivory mb-2 group-hover:text-gold transition-colors">CONTRIBUTE</h3>
+                <h3 className="text-lg font-extrabold text-ivory mb-2">CONTRIBUTE</h3>
                 <p className="text-xs text-sage leading-relaxed">
                   Create meaningful value for people and society.
                 </p>
@@ -381,8 +378,8 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 7. PROGRAMMES & INITIATIVES */}
-      <section id="programmes" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/20 to-obsidian border-b border-gold/20">
+      {/* PROGRAMMES & INITIATIVES */}
+      <section id="programmes" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/30 to-obsidian border-b border-gold/20">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
@@ -399,13 +396,13 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-8 sm:p-10 rounded-3xl bg-deep-emerald/40 border border-gold/30 shadow-2xl flex flex-col justify-between relative overflow-hidden group">
-              <div className="absolute top-0 right-0 px-4 py-1.5 bg-gold text-obsidian text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl shadow-md">
+            <div className="glass-panel p-8 sm:p-10 rounded-3xl flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 right-0 px-4 py-1.5 bg-deep-emerald text-gold text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl border-l border-b border-gold/30 shadow-md">
                 FEATURED PROGRAMME
               </div>
 
               <div>
-                <div className="w-12 h-12 rounded-xl bg-deep-emerald border border-gold/30 text-gold flex items-center justify-center font-black text-lg mb-6">
+                <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center font-black text-lg mb-6">
                   TPD
                 </div>
 
@@ -426,18 +423,18 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
                 <button
                   type="button"
                   onClick={onOpenPortal}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald/20 hover:bg-emerald text-mint hover:text-ivory font-bold text-xs uppercase tracking-wider transition border border-gold/30 flex items-center justify-center gap-2 group shadow-lg"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-deep-emerald hover:bg-emerald text-ivory font-bold text-xs uppercase tracking-wider transition border border-gold/30 flex items-center justify-center gap-2 group shadow-md"
                 >
                   <span>EXPLORE PROGRAMMES</span>
-                  <ArrowRight className="w-4 h-4 text-gold group-hover:text-ivory" />
+                  <ArrowRight className="w-4 h-4 text-gold" />
                 </button>
               </div>
             </div>
 
-            <div className="p-8 sm:p-10 rounded-3xl bg-obsidian border border-gold/30 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+            <div className="p-8 sm:p-10 rounded-3xl bg-deep-emerald/70 text-ivory shadow-xl flex flex-col justify-between relative overflow-hidden border border-gold/30">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-deep-emerald border border-gold/30 text-gold text-[10px] font-bold uppercase tracking-widest mb-6">
-                  <Layers className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-obsidian/60 text-gold text-[10px] font-bold uppercase tracking-widest mb-6 border border-gold/30">
+                  <Layers className="w-3.5 h-3.5 text-gold" />
                   EXPANDING HORIZONS
                 </div>
 
@@ -450,7 +447,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-deep-emerald/40 border border-gold/20">
+              <div className="p-4 rounded-xl bg-obsidian/60 border border-gold/20">
                 <span className="text-xs font-bold text-gold block mb-1">
                   Want to convene or propose an initiative?
                 </span>
@@ -463,7 +460,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 8. TEAMS & INSTITUTES */}
+      {/* TEAMS & INSTITUTES */}
       <section id="teams" className="py-24 px-4 sm:px-6 lg:px-8 bg-obsidian border-b border-gold/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -482,15 +479,15 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
             {NATIONSWORLD_TEAMS.map((team) => (
               <div
                 key={team.id}
-                className="p-6 rounded-2xl bg-deep-emerald/30 border border-gold/20 hover:border-gold/50 transition duration-300 flex flex-col justify-between shadow-xl"
+                className="glass-panel glass-panel-hover p-6 rounded-2xl flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="px-2.5 py-0.5 rounded-md bg-deep-emerald text-gold text-[10px] font-extrabold uppercase tracking-wide border border-gold/30">
+                    <span className="px-2.5 py-0.5 rounded-md bg-deep-emerald/80 text-mint text-[10px] font-extrabold uppercase tracking-wide border border-gold/20">
                       {team.category}
                     </span>
                     {team.acronym && (
-                      <span className="text-xs font-mono font-bold text-gold/70">
+                      <span className="text-xs font-mono font-bold text-gold">
                         {team.acronym}
                       </span>
                     )}
@@ -512,7 +509,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
             <button
               type="button"
               onClick={onOpenPortal}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald to-emerald-600 hover:brightness-110 text-ivory font-extrabold text-xs uppercase tracking-wider transition border border-gold/30 shadow-xl group"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-deep-emerald hover:bg-emerald text-ivory font-extrabold text-xs uppercase tracking-wider transition border border-gold/40 shadow-lg group"
             >
               <span>EXPLORE TEAMS & INSTITUTES</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-gold" />
@@ -521,10 +518,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 8.5 PRODUCTION SECTION */}
-      <section id="production" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/30 to-obsidian border-b border-gold/20">
+      {/* PRODUCTION SECTION */}
+      <section id="production" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian to-deep-emerald/40 border-b border-gold/20">
         <div className="max-w-5xl mx-auto">
-          <div className="p-8 sm:p-12 rounded-3xl bg-deep-emerald/50 text-ivory border border-gold/40 shadow-2xl relative overflow-hidden backdrop-blur-md">
+          <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-gold/30 shadow-xl relative overflow-hidden">
             <div className="max-w-3xl relative z-10">
               <span className="text-xs font-bold uppercase tracking-[0.25em] text-gold block mb-3">
                 DIGITAL SECRETARIAT & DOCUMENT OFFICE
@@ -538,16 +535,16 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
-                <div className="p-4 rounded-xl bg-obsidian/60 border border-gold/20">
+                <div className="p-4 rounded-xl bg-deep-emerald/40 border border-gold/20">
                   <h4 className="text-xs font-bold text-gold uppercase mb-1 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-gold" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-mint" />
                     Production Hub Access
                   </h4>
                   <p className="text-xs text-sage">Create, edit, save local drafts, and generate officially branded PDF documents in your browser.</p>
                 </div>
-                <div className="p-4 rounded-xl bg-obsidian/60 border border-gold/20">
+                <div className="p-4 rounded-xl bg-deep-emerald/40 border border-gold/20">
                   <h4 className="text-xs font-bold text-gold uppercase mb-1 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-gold" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-mint" />
                     Database-Free Privacy
                   </h4>
                   <p className="text-xs text-sage">Complete client-side document processing with LocalStorage and portable `.json` draft exports.</p>
@@ -557,7 +554,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <button
                 type="button"
                 onClick={() => scrollToSection('production')}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald hover:bg-emerald-600 text-ivory font-bold text-xs uppercase tracking-wider transition border border-gold/40 shadow-xl group"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-deep-emerald hover:bg-emerald text-ivory font-bold text-xs uppercase tracking-wider transition border border-gold/30 shadow-lg group"
               >
                 <span>OPEN PRODUCTION HUB</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-gold" />
@@ -567,11 +564,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 9. MEMBERSHIP / JOIN NATIONSWORLD */}
+      {/* MEMBERSHIP / JOIN NATIONSWORLD */}
       <section id="membership" className="py-24 px-4 sm:px-6 lg:px-8 bg-obsidian border-b border-gold/20">
         <div className="max-w-5xl mx-auto">
-          <div className="p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-deep-emerald/60 to-obsidian text-ivory shadow-2xl relative overflow-hidden border border-gold/40">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald/10 rounded-full filter blur-3xl pointer-events-none" />
+          <div className="p-8 sm:p-14 rounded-3xl bg-deep-emerald text-ivory shadow-2xl relative overflow-hidden border border-gold/40">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald/20 rounded-full filter blur-3xl pointer-events-none" />
 
             <div className="max-w-3xl relative z-10 text-center mx-auto">
               <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-gold block mb-3">
@@ -586,14 +583,14 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
                 NationsWorld is built around people who are willing to learn, think, create, lead and contribute.
               </p>
 
-              <p className="text-sm sm:text-base text-mint/90 leading-relaxed mb-10 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base text-sage/90 leading-relaxed mb-10 max-w-2xl mx-auto">
                 Whether you are a student, researcher, innovator, emerging leader, creator or development-oriented individual, NationsWorld provides a community through which you can grow and contribute.
               </p>
 
               <button
                 type="button"
                 onClick={onOpenPortal}
-                className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-emerald via-emerald-600 to-deep-emerald hover:brightness-110 text-ivory font-extrabold text-sm tracking-[0.15em] uppercase transition shadow-2xl hover:scale-105 border border-gold/40 group"
+                className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-emerald hover:bg-emerald-600 text-white font-extrabold text-sm tracking-[0.15em] uppercase transition shadow-2xl hover:scale-105 border border-gold/40 group"
               >
                 <span>APPLY FOR MEMBERSHIP</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-gold" />
@@ -603,17 +600,17 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
         </div>
       </section>
 
-      {/* 10. FINAL STATEMENT */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/30 to-obsidian text-ivory text-center relative overflow-hidden">
+      {/* FINAL STATEMENT */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-obsidian text-ivory text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-gold-light via-ivory to-gold mb-8 font-mono">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight uppercase text-gold mb-8 font-mono">
             “THE FUTURE IS NOT SIMPLY WAITED FOR. <br className="hidden sm:inline" />
             IT IS LEARNED, IMAGINED, BUILT AND LED.”
           </h2>
 
           <div className="w-24 h-0.5 bg-gold mx-auto mb-8" />
 
-          <p className="text-xs sm:text-sm font-extrabold tracking-[0.25em] text-gold uppercase">
+          <p className="text-xs sm:text-sm font-extrabold tracking-[0.25em] text-mint uppercase">
             NATIONSWORLD OF VISIONARY ADVANCEMENT
           </p>
         </div>

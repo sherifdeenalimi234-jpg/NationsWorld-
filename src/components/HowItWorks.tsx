@@ -30,16 +30,16 @@ export const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 border-b border-nw-border">
+    <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/30 to-obsidian border-b border-gold/20">
       <div className="max-w-6xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-xs uppercase font-extrabold tracking-widest text-nw-green">
+          <span className="text-xs uppercase font-extrabold tracking-[0.2em] text-gold block mb-2">
             STATIC-FIRST WORKFLOW
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-nw-dark mt-1">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-ivory tracking-tight">
             How The Application Process Works
           </h2>
-          <p className="text-sm sm:text-base text-nw-muted mt-2">
+          <p className="text-sm sm:text-base text-sage mt-2">
             NationsWorld operates a client-first, secure membership submission model. No account creation required.
           </p>
         </div>
@@ -50,22 +50,22 @@ export const HowItWorks: React.FC = () => {
             return (
               <div
                 key={step.num}
-                className="bg-white p-6 rounded-2xl border border-nw-border shadow-2xs relative flex flex-col justify-between"
+                className="glass-panel glass-panel-hover p-6 rounded-2xl relative flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center font-bold">
-                      <Icon className="w-5 h-5" />
+                    <div className="w-10 h-10 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center font-bold">
+                      <Icon className="w-5 h-5 text-gold" />
                     </div>
-                    <span className="text-xl font-black font-mono text-nw-muted/40">
+                    <span className="text-xl font-black font-mono text-gold/40">
                       {step.num}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-base text-nw-dark mb-1">
+                  <h3 className="font-bold text-base text-ivory mb-1">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-nw-muted leading-relaxed">
+                  <p className="text-xs text-sage leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -75,13 +75,13 @@ export const HowItWorks: React.FC = () => {
         </div>
 
         {/* Security & Static-First Callout */}
-        <div className="mt-10 p-5 bg-white rounded-2xl border border-nw-border flex flex-col sm:flex-row items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 text-nw-green flex items-center justify-center shrink-0">
-            <Shield className="w-6 h-6" />
+        <div className="mt-10 p-5 rounded-2xl bg-deep-emerald/50 border border-gold/30 flex flex-col sm:flex-row items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-emerald text-white flex items-center justify-center shrink-0 shadow-md border border-gold/30">
+            <Shield className="w-6 h-6 text-gold" />
           </div>
-          <div className="text-xs sm:text-sm text-nw-dark">
-            <h4 className="font-bold text-nw-deep text-sm">Data Privacy & Security Guarantee</h4>
-            <p className="text-nw-muted mt-0.5">
+          <div className="text-xs sm:text-sm text-ivory">
+            <h4 className="font-bold text-gold text-sm">Data Privacy & Security Guarantee</h4>
+            <p className="text-sage mt-0.5">
               Your application data remains completely private in your browser until you choose to download and send the PDF to NationsWorld. We do not store your data on external databases.
             </p>
           </div>
