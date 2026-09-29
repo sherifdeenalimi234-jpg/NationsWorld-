@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-nw-dark selection:bg-nw-soft selection:text-nw-deep font-sans">
+    <div className="min-h-screen flex flex-col bg-obsidian text-ivory selection:bg-emerald/30 selection:text-gold font-sans">
       <Navbar activeView={activeView} onNavigate={handleNavigate} />
 
       <main className="flex-1">
@@ -50,17 +50,19 @@ export const App: React.FC = () => {
         )}
 
         {activeView === 'production' && (
-          <ProductionDashboard />
+          <div className="pt-20">
+            <ProductionDashboard />
+          </div>
         )}
 
         {activeView === 'portal' && (
           <div className="animate-fadeIn">
-            <div className="bg-emerald-900 text-white text-center py-2.5 px-4 text-xs font-semibold flex items-center justify-center gap-2">
+            <div className="bg-deep-emerald border-b border-gold/20 text-gold text-center py-2.5 px-4 text-xs font-semibold flex items-center justify-center gap-2 pt-20">
               <span>NationsWorld Official Membership Portal</span>
               <button
                 type="button"
                 onClick={() => handleNavigate('home')}
-                className="underline hover:text-emerald-200 ml-2"
+                className="underline hover:text-ivory ml-2 transition-colors"
               >
                 Return to Public Homepage
               </button>
