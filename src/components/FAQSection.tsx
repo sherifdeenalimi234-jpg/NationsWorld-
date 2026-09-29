@@ -41,16 +41,16 @@ export const FAQSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-nw-border">
+    <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-obsidian border-b border-gold/20">
       <div className="max-w-4xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-xs uppercase font-extrabold tracking-widest text-nw-green">
+          <span className="text-xs uppercase font-extrabold tracking-[0.2em] text-gold block mb-2">
             FREQUENTLY ASKED QUESTIONS
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-nw-dark mt-1">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-ivory tracking-tight">
             Membership FAQ
           </h2>
-          <p className="text-sm text-nw-muted mt-2">
+          <p className="text-sm text-sage mt-2">
             Clear guidance regarding the Stage 1 membership application process.
           </p>
         </div>
@@ -61,26 +61,26 @@ export const FAQSection: React.FC = () => {
             return (
               <div
                 key={faq.question}
-                className="border border-nw-border rounded-xl bg-gray-50/50 overflow-hidden transition"
+                className="glass-panel rounded-xl overflow-hidden transition"
               >
                 <button
                   type="button"
                   onClick={() => toggleAccordion(idx)}
-                  className="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-nw-dark flex items-center justify-between gap-3 hover:bg-nw-soft/50 transition"
+                  className="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-ivory flex items-center justify-between gap-3 hover:bg-deep-emerald/50 transition"
                 >
                   <span className="flex items-center gap-2.5">
-                    <HelpCircle className="w-4 h-4 text-nw-green shrink-0" />
+                    <HelpCircle className="w-4 h-4 text-gold shrink-0" />
                     {faq.question}
                   </span>
                   {isOpen ? (
-                    <ChevronUp className="w-5 h-5 text-nw-green shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-gold shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-nw-muted shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-sage shrink-0" />
                   )}
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 pb-5 sm:px-5 sm:pb-5 text-xs sm:text-sm text-nw-muted leading-relaxed border-t border-nw-border/50 bg-white pt-3 animate-fadeIn">
+                  <div className="px-4 pb-5 sm:px-5 sm:pb-5 text-xs sm:text-sm text-sage leading-relaxed border-t border-gold/15 bg-obsidian/60 pt-3 animate-fadeIn">
                     {faq.answer}
                   </div>
                 )}
