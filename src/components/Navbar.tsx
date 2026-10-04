@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, Globe, ChevronDown, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
 
 interface NavbarProps {
-  activeView: 'home' | 'portal' | 'production';
-  onNavigate: (view: 'home' | 'portal' | 'production', sectionId?: string) => void;
+  activeView: 'home' | 'portal' | 'production' | 'games';
+  onNavigate: (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
     };
   }, [isOpen]);
 
-  const handleNavClick = (view: 'home' | 'portal' | 'production', sectionId?: string) => {
+  const handleNavClick = (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => {
     setIsOpen(false);
     onNavigate(view, sectionId);
   };
@@ -172,6 +172,25 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
               >
                 <span>How It Works</span>
                 <span className="text-xs text-sage group-hover:text-gold font-mono">05</span>
+              </button>
+
+              {/* GAME CENTER ROUTE */}
+              <button
+                type="button"
+                onClick={() => handleNavClick('games')}
+                className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-bold transition flex items-center justify-between border ${
+                  activeView === 'games'
+                    ? 'bg-emerald text-white border-gold shadow-lg'
+                    : 'bg-white/5 border-gold/30 text-ivory hover:text-gold hover:bg-white/10'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <span>Game Center</span>
+                  <span className="text-[10px] bg-gold/20 text-gold border border-gold/40 px-2 py-0.5 rounded font-mono font-bold">
+                    PLAY & LEARN
+                  </span>
+                </span>
+                <ArrowRight className="w-4 h-4 text-gold" />
               </button>
 
               {/* PRODUCTION HUB ROUTE */}

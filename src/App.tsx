@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Homepage } from './components/Homepage';
 import { ProductionDashboard } from './components/production/ProductionDashboard';
+import { GameCenterDashboard } from './components/GameCenterDashboard';
 import { Hero } from './components/Hero';
 import { TeamsOverview } from './components/TeamsOverview';
 import { HowItWorks } from './components/HowItWorks';
@@ -11,14 +12,25 @@ import { Footer } from './components/Footer';
 import { NOVA } from './components/NOVA';
 
 export const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'home' | 'portal' | 'production'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'portal' | 'production' | 'games'>('home');
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [activeGameId, setActiveGameId] = useState<string | null>(null);
 
   const handleNavigate = (
-    view: 'home' | 'portal' | 'production',
+    view: 'home' | 'portal' | 'production' | 'games',
     sectionId?: string,
     filter?: string
   ) => {
+    if (view === 'games' && filter) {
+      if (filter === 'decision-room' || filter === 'research-detective') {
+        setActiveGameId(filter);
+      } else {
+        setActiveGameId(null);
+      }
+    } else {
+      setActiveGameId(null);
+    }
+
     setActiveView(view);
 
     if (filter) {
@@ -59,6 +71,16 @@ export const App: React.FC = () => {
               }
             }}
           />
+        )}
+
+        {activeView === 'games' && (
+          <div>
+            <GameCenterDashboard
+              initialCategory={activeFilter}
+              activeGameId={activeGameId}
+              onSelectGame={(gid) => setActiveGameId(gid)}
+            />
+          </div>
         )}
 
         {activeView === 'production' && (

@@ -3,11 +3,11 @@ import { Globe, MessageSquare, ShieldAlert, ArrowUpRight } from 'lucide-react';
 import { OFFICIAL_WHATSAPP_NUMBER } from '../utils/reference';
 
 interface FooterProps {
-  onNavigate?: (view: 'home' | 'portal' | 'production', sectionId?: string) => void;
+  onNavigate?: (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const handleLinkClick = (view: 'home' | 'portal' | 'production', sectionId?: string) => {
+  const handleLinkClick = (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => {
     if (onNavigate) {
       onNavigate(view, sectionId);
     } else if (sectionId) {
@@ -51,6 +51,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               NAVIGATION
             </h4>
             <ul className="space-y-2 text-xs font-medium text-sage">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleLinkClick('games')}
+                  className="text-gold font-bold hover:underline transition"
+                >
+                  • Game Center
+                </button>
+              </li>
               <li>
                 <button
                   type="button"

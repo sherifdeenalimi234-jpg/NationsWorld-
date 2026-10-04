@@ -1,4 +1,4 @@
-export type ViewType = 'home' | 'portal' | 'production';
+export type ViewType = 'home' | 'portal' | 'production' | 'games';
 
 export interface NOVAContext {
   currentView: ViewType;
@@ -39,12 +39,12 @@ interface IntentDefinition {
 }
 
 const DEFAULT_SUGGESTIONS = [
+  'Game Center',
+  'Decision Room',
   'Programs',
-  'Events',
   'Resources',
   'Membership',
-  'Application',
-  'TPD'
+  'Application'
 ];
 
 /**
@@ -283,6 +283,77 @@ const INTENT_DEFINITIONS: IntentDefinition[] = [
       'support'
     ],
     keywords: ['faq', 'faqs', 'question', 'questions', 'help']
+  },
+  {
+    id: 'game_center',
+    primaryConfirmation: 'Taking you to the NationsWorld Game Center...',
+    destination: { view: 'games' },
+    exactPhrases: [
+      'game center',
+      'game centre',
+      'take me to the game center',
+      'show me games',
+      'play games',
+      'games',
+      'open games',
+      'interactive platform',
+      'challenge center'
+    ],
+    keywords: ['game', 'games', 'play', 'challenge']
+  },
+  {
+    id: 'decision_room',
+    primaryConfirmation: 'Starting The Decision Room flagship experience...',
+    destination: { view: 'games', filter: 'decision-room' },
+    exactPhrases: [
+      'start the decision room',
+      'the decision room',
+      'open decision room',
+      'decision room',
+      'leadership simulation',
+      'leadership game'
+    ],
+    keywords: ['decision', 'room', 'simulation']
+  },
+  {
+    id: 'game_progress',
+    primaryConfirmation: 'Opening your Game Center progress and skill profile...',
+    destination: { view: 'games', filter: 'progress' },
+    exactPhrases: [
+      'show me my game progress',
+      'my progress',
+      'game progress',
+      'my xp',
+      'my badges',
+      'my achievements',
+      'show my score'
+    ],
+    keywords: ['progress', 'xp', 'score', 'badges', 'achievements']
+  },
+  {
+    id: 'daily_challenge',
+    primaryConfirmation: 'Opening today\'s Game Center challenge...',
+    destination: { view: 'games', filter: 'daily' },
+    exactPhrases: [
+      'what is todays challenge',
+      'whats todays challenge',
+      'daily challenge',
+      'today challenge',
+      'todays game'
+    ],
+    keywords: ['daily', 'today']
+  },
+  {
+    id: 'research_game',
+    primaryConfirmation: 'Opening research literacy challenges...',
+    destination: { view: 'games', filter: 'research-detective' },
+    exactPhrases: [
+      'give me a research game',
+      'research game',
+      'research detective',
+      'fact or claim'
+    ],
+    keywords: ['research', 'detective', 'evidence']
   },
   {
     id: 'production',
