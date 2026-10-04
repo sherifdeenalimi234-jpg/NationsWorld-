@@ -2,12 +2,21 @@ import { PROJECT_CYCLE } from '../data/projectsData';
 
 const STORAGE_KEY = 'projectRoomAssignment';
 
+export interface ParticipantDeclaration {
+  accepted: boolean;
+  fullName: string;
+  contact: string;
+  acceptedAt: string;
+}
+
 export interface StoredAssignment {
   cycleId: string;
   projectId: string;
   projectNumber: number;
   assignedAt: string;
   status: 'assigned';
+  declarationAccepted?: boolean;
+  declaration?: ParticipantDeclaration;
 }
 
 export function getStoredAssignment(): StoredAssignment | null {
@@ -55,12 +64,37 @@ export function saveAssignment(projectNumber: number, projectId: string): Stored
       projectNumber,
       assignedAt: new Date().toISOString(),
       status: 'assigned',
+      declarationAccepted: false,
     };
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
     return record;
   } catch (err) {
     console.error('Error saving project room assignment:', err);
+    return null;
+  }
+}
+
+export function saveDeclaration(fullName: string, contact: string): StoredAssignment | null {
+  try {
+    const existing = getStoredAssignment();
+    if (!existing) return null;
+
+    const updated: StoredAssignment = {
+      ...existing,
+      declarationAccepted: true,
+      declaration: {
+        accepted: true,
+        fullName,
+        contact,
+        acceptedAt: new Date().toISOString(),
+      },
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    return updated;
+  } catch (err) {
+    console.error('Error saving declaration:', err);
     return null;
   }
 }

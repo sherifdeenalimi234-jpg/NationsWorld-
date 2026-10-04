@@ -3,6 +3,17 @@ export const PROJECT_CYCLE = '2026-OCTOBER';
 // Development Mode flag - set to true during testing/debugging to show reset controls
 export const DEV_MODE = true;
 
+export interface ApproachStep {
+  phase: string;
+  title: string;
+  description: string;
+}
+
+export interface TimelinePhase {
+  period: string;
+  task: string;
+}
+
 export interface ProjectSlot {
   id: string;
   number: number;
@@ -16,7 +27,25 @@ export interface ProjectSlot {
   researchQuestion: string;
   instructions: string[];
   deliverables: string[];
+  recommendedApproach?: ApproachStep[];
+  timeline?: TimelinePhase[];
 }
+
+export const DEFAULT_RECOMMENDED_APPROACH: ApproachStep[] = [
+  { phase: '01', title: 'UNDERSTAND', description: 'Understand the problem space and define core objectives.' },
+  { phase: '02', title: 'RESEARCH', description: 'Gather credible information, literature, and empirical data.' },
+  { phase: '03', title: 'ANALYZE', description: 'Examine evidence, identify gaps, and evaluate competing perspectives.' },
+  { phase: '04', title: 'DEVELOP', description: 'Build your argument, strategic framework, or policy solution.' },
+  { phase: '05', title: 'PRESENT', description: 'Structure final recommendations and prepare the output.' },
+];
+
+export const DEFAULT_TIMELINE: TimelinePhase[] = [
+  { period: 'DAY 1', task: 'Understand & Plan' },
+  { period: 'DAYS 2–4', task: 'Research & Literature Gathering' },
+  { period: 'DAYS 5–8', task: 'Analysis & Development' },
+  { period: 'DAYS 9–12', task: 'Writing & Refinement' },
+  { period: 'FINAL DAYS', task: 'Review & Submission' },
+];
 
 export const PROJECTS_DATA: ProjectSlot[] = [
   {
