@@ -6,6 +6,17 @@ import type {
   OrganizationalFormData,
   CertificateFormData,
 } from '../types/production';
+import {
+  PDF_COLORS,
+  drawPDFBorder,
+  drawPDFWatermark,
+  drawPDFHeader,
+  drawPDFMetadata,
+  drawPDFTitle,
+  drawPDFSectionHeader,
+  drawPDFSignature,
+  drawPDFFooter,
+} from './pdfSystem';
 
 export function generateProductionPDF(draft: DocumentDraft): jsPDF {
   const isCertificate = draft.category === 'certificates';
@@ -36,51 +47,6 @@ export function downloadProductionPDF(draft: DocumentDraft): void {
   doc.save(fileName);
 }
 
-function drawInstitutionalHeader(doc: jsPDF, pageWidth: number, margin: number): number {
-  doc.setFillColor(22, 131, 75);
-  doc.rect(0, 0, pageWidth, 26, 'F');
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.text('NATIONSWORLD OF VISIONARY ADVANCEMENT', margin, 12);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.text('RESEARCH • INNOVATION • DEVELOPMENT • LEADERSHIP • PRODUCTION', margin, 18);
-
-  doc.setFontSize(7.5);
-  doc.text('Official Digital Secretariat • www.nationsworld.org', margin, 22);
-
-  return 34;
-}
-
-function drawInstitutionalFooter(doc: jsPDF, pageNum: number, totalPages: number, refNum: string): void {
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 15;
-
-  doc.setPage(pageNum);
-  doc.setDrawColor(217, 228, 221);
-  doc.setLineWidth(0.3);
-  doc.line(margin, pageHeight - 14, pageWidth - margin, pageHeight - 14);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  doc.setTextColor(101, 115, 107);
-  doc.text(
-    `NationsWorld Production Hub | Ref: ${refNum} | Drafts Stored Locally`,
-    margin,
-    pageHeight - 8
-  );
-  doc.text(
-    `Page ${pageNum} of ${totalPages}`,
-    pageWidth - margin,
-    pageHeight - 8,
-    { align: 'right' }
-  );
-}
-
 function renderLetterPDF(doc: jsPDF, draft: DocumentDraft): void {
   const data = draft.formData as LetterFormData;
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -88,74 +54,36 @@ function renderLetterPDF(doc: jsPDF, draft: DocumentDraft): void {
   const margin = 15;
   const contentWidth = pageWidth - margin * 2;
 
-  let yPos = drawInstitutionalHeader(doc, pageWidth, margin);
+  drawPDFWatermark(doc);
+  drawPDFBorder(doc);
+  let yPos = drawPDFHeader(doc);
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(22, 131, 75);
-  doc.text('OFFICIAL COMMUNIQUÉ', margin, yPos);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(101, 115, 107);
   const formattedDate = new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
-  doc.text(`Date: ${formattedDate}`, pageWidth - margin, yPos, { align: 'right' });
-  yPos += 5;
 
-  doc.text(`Ref No: ${draft.referenceNumber}`, pageWidth - margin, yPos, { align: 'right' });
-  yPos += 8;
+  // Metadata Block
+  yPos = drawPDFMetadata(doc, {
+    docType: 'OFFICIAL COMMUNIQUÉ',
+    refNo: draft.referenceNumber,
+    date: formattedDate,
+    recipient: data.recipientName || 'Recipient Name',
+    recipientPosition: data.recipientPosition,
+    organization: data.organization,
+    yPos: yPos,
+  });
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9.5);
-  doc.setTextColor(23, 33, 27);
-  doc.text('TO:', margin, yPos);
-  yPos += 5;
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.text(data.recipientName || 'Recipient Name', margin, yPos);
-  yPos += 4.5;
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(60, 60, 60);
-  if (data.recipientPosition) {
-    doc.text(data.recipientPosition, margin, yPos);
-    yPos += 4.5;
-  }
-  if (data.organization) {
-    doc.text(data.organization, margin, yPos);
-    yPos += 4.5;
-  }
-  if (data.address) {
-    const splitAddr = doc.splitTextToSize(data.address, contentWidth / 2);
-    doc.text(splitAddr, margin, yPos);
-    yPos += splitAddr.length * 4.5;
+  // Subject / Title Line
+  if (data.subject) {
+    yPos = drawPDFTitle(doc, `SUBJECT: ${data.subject}`, yPos);
   }
 
-  yPos += 6;
-
-  doc.setFillColor(234, 247, 239);
-  doc.rect(margin, yPos, contentWidth, 8, 'F');
-  doc.setDrawColor(22, 131, 75);
-  doc.setLineWidth(0.8);
-  doc.line(margin, yPos, margin, yPos + 8);
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9.5);
-  doc.setTextColor(11, 93, 54);
-  const subjectText = `SUBJECT: ${data.subject || 'OFFICIAL COMMUNIQUÉ'}`;
-  doc.text(subjectText.toUpperCase(), margin + 3, yPos + 5.5);
-
-  yPos += 14;
-
+  // Content Paragraphs
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9.5);
-  doc.setTextColor(23, 33, 27);
+  doc.setTextColor(...PDF_COLORS.charcoal);
 
   const paragraphs = (data.content || '').split('\n');
   paragraphs.forEach((p) => {
@@ -163,54 +91,62 @@ function renderLetterPDF(doc: jsPDF, draft: DocumentDraft): void {
       yPos += 4;
       return;
     }
-    const splitP = doc.splitTextToSize(p, contentWidth);
-    for (let i = 0; i < splitP.length; i++) {
-      if (yPos > pageHeight - 35) {
+
+    // Support simple Markdown formatting
+    const isHeading = p.trim().startsWith('###');
+    const isBullet = p.trim().startsWith('•') || p.trim().startsWith('-');
+    const cleanText = p.replace(/^###\s*/, '').replace(/^[•-]\s*/, '');
+
+    if (isHeading) {
+      if (yPos > pageHeight - 30) {
         doc.addPage();
+        drawPDFWatermark(doc);
+        drawPDFBorder(doc);
         yPos = margin + 10;
       }
-      doc.text(splitP[i], margin, yPos);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10.5);
+      doc.setTextColor(...PDF_COLORS.forestGreen);
+      doc.text(cleanText, margin, yPos);
+      yPos += 6;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...PDF_COLORS.charcoal);
+      return;
+    }
+
+    const indent = isBullet ? margin + 4 : margin;
+    const bulletPrefix = isBullet ? '• ' : '';
+    const splitP = doc.splitTextToSize(bulletPrefix + cleanText, contentWidth - (isBullet ? 4 : 0));
+
+    for (let i = 0; i < splitP.length; i++) {
+      if (yPos > pageHeight - 30) {
+        doc.addPage();
+        drawPDFWatermark(doc);
+        drawPDFBorder(doc);
+        yPos = margin + 10;
+      }
+      doc.text(splitP[i], indent, yPos);
       yPos += 5;
     }
     yPos += 3;
   });
 
-  yPos += 8;
-
-  if (yPos > pageHeight - 45) {
-    doc.addPage();
-    yPos = margin + 10;
-  }
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.text('Yours faithfully,', margin, yPos);
   yPos += 6;
 
-  if (data.signatureImage) {
-    try {
-      doc.addImage(data.signatureImage, 'PNG', margin, yPos, 35, 14);
-      yPos += 16;
-    } catch (e) {
-      console.warn('Could not render signature image:', e);
-      yPos += 10;
-    }
-  } else {
-    yPos += 10;
-  }
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9.5);
-  doc.text(data.preparedBy || 'Prepared By', margin, yPos);
-  yPos += 4.5;
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(101, 115, 107);
-  doc.text(data.position || 'NationsWorld Representative', margin, yPos);
+  // Signature Block
+  drawPDFSignature(doc, {
+    name: data.preparedBy || 'NationsWorld Representative',
+    position: data.position || 'Secretariat Representative',
+    signatureImage: data.signatureImage,
+    yPos: yPos,
+    pageHeight: pageHeight,
+    margin: margin,
+  });
 
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
-    drawInstitutionalFooter(doc, i, totalPages, draft.referenceNumber);
+    drawPDFFooter(doc, i, totalPages, draft.referenceNumber);
   }
 }
 
@@ -221,63 +157,70 @@ function renderReportPDF(doc: jsPDF, draft: DocumentDraft): void {
   const margin = 15;
   const contentWidth = pageWidth - margin * 2;
 
-  let yPos = drawInstitutionalHeader(doc, pageWidth, margin);
+  drawPDFWatermark(doc);
+  drawPDFBorder(doc);
+  let yPos = drawPDFHeader(doc);
 
-  doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(217, 228, 221);
-  doc.rect(margin, yPos, contentWidth, 22, 'FD');
+  const formattedDate = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
-  doc.setTextColor(11, 93, 54);
-  doc.text((data.reportTitle || 'NATIONSWORLD REPORT').toUpperCase(), margin + 4, yPos + 8);
+  // Metadata Block
+  yPos = drawPDFMetadata(doc, {
+    docType: 'NATIONSWORLD REPORT',
+    refNo: draft.referenceNumber,
+    date: formattedDate,
+    status: 'OFFICIAL PUBLICATION',
+    yPos: yPos,
+  });
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(101, 115, 107);
-  doc.text(`Programme/Project: ${data.programmeOrProject || 'N/A'}`, margin + 4, yPos + 15);
+  // Title
+  yPos = drawPDFTitle(doc, data.reportTitle || 'NATIONSWORLD OFFICIAL REPORT', yPos);
 
-  doc.setFont('helvetica', 'bold');
-  doc.text(`REF: ${draft.referenceNumber}`, pageWidth - margin - 4, yPos + 15, { align: 'right' });
-
-  yPos += 28;
+  if (data.programmeOrProject || data.preparedBy) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...PDF_COLORS.mutedText);
+    if (data.programmeOrProject) {
+      doc.text(`Programme/Project: ${data.programmeOrProject}`, margin + 2, yPos);
+    }
+    if (data.preparedBy) {
+      doc.text(`Prepared By: ${data.preparedBy}`, pageWidth - margin - 2, yPos, { align: 'right' });
+    }
+    yPos += 8;
+  }
 
   const renderSection = (title: string, content: string) => {
     if (!content || !content.trim()) return;
 
     if (yPos > pageHeight - 35) {
       doc.addPage();
+      drawPDFWatermark(doc);
+      drawPDFBorder(doc);
       yPos = margin + 10;
     }
 
-    doc.setFillColor(234, 247, 239);
-    doc.rect(margin, yPos, contentWidth, 7, 'F');
-    doc.setDrawColor(22, 131, 75);
-    doc.setLineWidth(0.8);
-    doc.line(margin, yPos, margin, yPos + 7);
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(11, 93, 54);
-    doc.text(title.toUpperCase(), margin + 3, yPos + 5);
-
-    yPos += 10;
+    yPos = drawPDFSectionHeader(doc, title, yPos);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
-    doc.setTextColor(23, 33, 27);
+    doc.setTextColor(...PDF_COLORS.charcoal);
 
     const splitContent = doc.splitTextToSize(content, contentWidth - 4);
     for (let i = 0; i < splitContent.length; i++) {
       if (yPos > pageHeight - 25) {
         doc.addPage();
+        drawPDFWatermark(doc);
+        drawPDFBorder(doc);
         yPos = margin + 10;
       }
       doc.text(splitContent[i], margin + 2, yPos);
-      yPos += 4.5;
+      yPos += 4.8;
     }
 
-    yPos += 5;
+    yPos += 6;
   };
 
   renderSection('1. Executive Summary', data.executiveSummary);
@@ -293,7 +236,7 @@ function renderReportPDF(doc: jsPDF, draft: DocumentDraft): void {
 
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
-    drawInstitutionalFooter(doc, i, totalPages, draft.referenceNumber);
+    drawPDFFooter(doc, i, totalPages, draft.referenceNumber);
   }
 }
 
@@ -304,79 +247,73 @@ function renderOrganizationalPDF(doc: jsPDF, draft: DocumentDraft): void {
   const margin = 15;
   const contentWidth = pageWidth - margin * 2;
 
-  let yPos = drawInstitutionalHeader(doc, pageWidth, margin);
+  drawPDFWatermark(doc);
+  drawPDFBorder(doc);
+  let yPos = drawPDFHeader(doc);
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
-  doc.setTextColor(11, 93, 54);
-  doc.text((data.documentTitle || 'ORGANIZATIONAL DOCUMENT').toUpperCase(), margin, yPos);
-  yPos += 6;
+  const formattedDate = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(101, 115, 107);
-  doc.text(`Target Audience: ${data.targetAudience || 'General'}`, margin, yPos);
-  doc.text(`Ref No: ${draft.referenceNumber}`, pageWidth - margin, yPos, { align: 'right' });
-  yPos += 8;
+  // Metadata
+  yPos = drawPDFMetadata(doc, {
+    docType: 'ORGANIZATIONAL DOCUMENT',
+    refNo: draft.referenceNumber,
+    date: formattedDate,
+    recipient: data.targetAudience ? `Target Audience: ${data.targetAudience}` : undefined,
+    yPos: yPos,
+  });
+
+  // Title
+  yPos = drawPDFTitle(doc, data.documentTitle || 'ORGANIZATIONAL COMMUNIQUÉ', yPos);
 
   const renderBlock = (label: string, text: string) => {
-    if (!text) return;
+    if (!text || !text.trim()) return;
     if (yPos > pageHeight - 30) {
       doc.addPage();
+      drawPDFWatermark(doc);
+      drawPDFBorder(doc);
       yPos = margin + 10;
     }
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(22, 131, 75);
-    doc.text(label.toUpperCase(), margin, yPos);
-    yPos += 5;
+    yPos = drawPDFSectionHeader(doc, label, yPos);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
-    doc.setTextColor(23, 33, 27);
+    doc.setTextColor(...PDF_COLORS.charcoal);
 
-    const split = doc.splitTextToSize(text, contentWidth);
+    const split = doc.splitTextToSize(text, contentWidth - 4);
     for (let i = 0; i < split.length; i++) {
       if (yPos > pageHeight - 25) {
         doc.addPage();
+        drawPDFWatermark(doc);
+        drawPDFBorder(doc);
         yPos = margin + 10;
       }
-      doc.text(split[i], margin, yPos);
-      yPos += 4.5;
+      doc.text(split[i], margin + 2, yPos);
+      yPos += 4.8;
     }
     yPos += 6;
   };
 
-  renderBlock('Summary', data.summary);
+  renderBlock('Summary / Overview', data.summary);
   renderBlock('Details / Content', data.mainBody);
-  renderBlock('Action Items', data.actionItems);
+  renderBlock('Action Items & Resolutions', data.actionItems);
 
-  if (data.signatureImage) {
-    if (yPos > pageHeight - 35) {
-      doc.addPage();
-      yPos = margin + 10;
-    }
-    try {
-      doc.addImage(data.signatureImage, 'PNG', margin, yPos, 35, 14);
-      yPos += 16;
-    } catch (e) {
-      yPos += 10;
-    }
-  }
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.text(`Prepared By: ${data.preparedBy || 'Secretariat'}`, margin, yPos);
-  yPos += 4.5;
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(101, 115, 107);
-  doc.text(data.position || 'NationsWorld Official', margin, yPos);
+  drawPDFSignature(doc, {
+    name: data.preparedBy || 'Secretariat Representative',
+    position: data.position || 'NationsWorld Official',
+    signatureImage: data.signatureImage,
+    yPos: yPos,
+    pageHeight: pageHeight,
+    margin: margin,
+  });
 
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
-    drawInstitutionalFooter(doc, i, totalPages, draft.referenceNumber);
+    drawPDFFooter(doc, i, totalPages, draft.referenceNumber);
   }
 }
 
@@ -385,75 +322,90 @@ function renderCertificatePDF(doc: jsPDF, draft: DocumentDraft): void {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  doc.setLineWidth(2);
-  doc.setDrawColor(22, 131, 75);
+  // Watermark for landscape certificate
+  drawPDFWatermark(doc, true);
+  drawPDFBorder(doc);
+
+  // Outer Gold Frame
+  doc.setLineWidth(1.2);
+  doc.setDrawColor(...PDF_COLORS.gold);
   doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
+  // Inner Emerald Line
   doc.setLineWidth(0.5);
-  doc.setDrawColor(11, 93, 54);
+  doc.setDrawColor(...PDF_COLORS.forestGreen);
   doc.rect(13, 13, pageWidth - 26, pageHeight - 26);
 
-  doc.setFillColor(22, 131, 75);
-  doc.rect(30, 22, pageWidth - 60, 12, 'F');
+  // Top Header Banner Box
+  doc.setFillColor(...PDF_COLORS.forestGreen);
+  doc.rect(30, 20, pageWidth - 60, 13, 'F');
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
-  doc.setTextColor(255, 255, 255);
-  doc.text('NATIONSWORLD OF VISIONARY ADVANCEMENT', pageWidth / 2, 29.5, { align: 'center' });
+  doc.setTextColor(...PDF_COLORS.gold);
+  doc.text('NATIONSWORLD OF VISIONARY ADVANCEMENT', pageWidth / 2, 28, { align: 'center' });
 
+  // Main Certificate Title
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
-  doc.setTextColor(11, 93, 54);
-  doc.text('CERTIFICATE OF RECOGNITION', pageWidth / 2, 54, { align: 'center' });
+  doc.setTextColor(...PDF_COLORS.forestGreen);
+  doc.text('CERTIFICATE OF RECOGNITION', pageWidth / 2, 52, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(101, 115, 107);
-  doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', pageWidth / 2, 66, { align: 'center' });
+  doc.setFontSize(9.5);
+  doc.setTextColor(...PDF_COLORS.mutedText);
+  doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', pageWidth / 2, 64, { align: 'center' });
 
+  // Recipient Name
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(24);
-  doc.setTextColor(23, 33, 27);
-  doc.text(data.recipientName || 'Recipient Name', pageWidth / 2, 82, { align: 'center' });
+  doc.setTextColor(...PDF_COLORS.darkSlate);
+  doc.text(data.recipientName || 'Recipient Name', pageWidth / 2, 80, { align: 'center' });
 
+  // Gold Divider Line
   doc.setLineWidth(0.8);
-  doc.setDrawColor(22, 131, 75);
-  doc.line(pageWidth / 2 - 60, 86, pageWidth / 2 + 60, 86);
+  doc.setDrawColor(...PDF_COLORS.gold);
+  doc.line(pageWidth / 2 - 60, 84, pageWidth / 2 + 60, 84);
 
+  // Achievement Citation
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(60, 60, 60);
+  doc.setFontSize(10.5);
+  doc.setTextColor(...PDF_COLORS.charcoal);
 
   const splitAchievement = doc.splitTextToSize(
-    data.achievementTitle || 'for outstanding contribution and dedication to excellence.',
+    data.achievementTitle || 'for outstanding contribution and dedication to visionary advancement.',
     190
   );
-  doc.text(splitAchievement, pageWidth / 2, 98, { align: 'center' });
+  doc.text(splitAchievement, pageWidth / 2, 96, { align: 'center' });
 
-  let yPos = 98 + splitAchievement.length * 6 + 4;
+  let yPos = 96 + splitAchievement.length * 6 + 4;
 
+  // Programme Name
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
-  doc.setTextColor(11, 93, 54);
-  doc.text((data.programmeOrEvent || 'NationsWorld Programme').toUpperCase(), pageWidth / 2, yPos, { align: 'center' });
+  doc.setTextColor(...PDF_COLORS.forestGreen);
+  doc.text((data.programmeOrEvent || 'NationsWorld Initiative').toUpperCase(), pageWidth / 2, yPos, { align: 'center' });
 
   const footerY = 162;
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.setTextColor(101, 115, 107);
-  doc.text(`Issue Date: ${data.issueDate || 'Today'}`, 40, footerY);
-  doc.text(`Cert Ref: ${data.certificateNumber || draft.referenceNumber}`, 40, footerY + 5);
+  doc.setTextColor(...PDF_COLORS.mutedText);
+  doc.text(`Issue Date: ${data.issueDate || new Date().toLocaleDateString('en-GB')}`, 35, footerY);
+  doc.text(`Cert Ref: ${data.certificateNumber || draft.referenceNumber}`, 35, footerY + 5);
 
-  doc.setFillColor(234, 247, 239);
-  doc.setDrawColor(22, 131, 75);
+  // Official Seal
+  doc.setFillColor(...PDF_COLORS.softGreen);
+  doc.setDrawColor(...PDF_COLORS.gold);
+  doc.setLineWidth(1.0);
   doc.circle(pageWidth / 2, footerY - 5, 14, 'FD');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7);
-  doc.setTextColor(11, 93, 54);
+  doc.setTextColor(...PDF_COLORS.forestGreen);
   doc.text('OFFICIAL', pageWidth / 2, footerY - 7, { align: 'center' });
   doc.text('SEAL', pageWidth / 2, footerY - 3, { align: 'center' });
 
+  // Signature
   if (data.signatureImage) {
     try {
       doc.addImage(data.signatureImage, 'PNG', pageWidth - 85, footerY - 20, 35, 14);
@@ -463,16 +415,18 @@ function renderCertificatePDF(doc: jsPDF, draft: DocumentDraft): void {
   }
 
   doc.setLineWidth(0.5);
-  doc.setDrawColor(101, 115, 107);
+  doc.setDrawColor(...PDF_COLORS.emerald);
   doc.line(pageWidth - 90, footerY - 2, pageWidth - 40, footerY - 2);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9.5);
-  doc.setTextColor(23, 33, 27);
+  doc.setTextColor(...PDF_COLORS.forestGreen);
   doc.text(data.authorizedSignatoryName || 'Authorized Signatory', pageWidth - 65, footerY + 3, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
-  doc.setTextColor(101, 115, 107);
+  doc.setTextColor(...PDF_COLORS.mutedText);
   doc.text(data.authorizedSignatoryTitle || 'NationsWorld Official', pageWidth - 65, footerY + 7.5, { align: 'center' });
+
+  drawPDFFooter(doc, 1, 1, draft.referenceNumber);
 }

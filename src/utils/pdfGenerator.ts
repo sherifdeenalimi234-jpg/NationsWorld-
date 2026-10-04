@@ -1,12 +1,21 @@
 import jsPDF from 'jspdf';
 import type { ApplicationFormData } from '../types';
 import { NATIONSWORLD_TEAMS } from '../data/teams';
+import {
+  PDF_COLORS,
+  drawPDFBorder,
+  drawPDFWatermark,
+  drawPDFHeader,
+  drawPDFMetadata,
+  drawPDFSectionHeader,
+  drawPDFFooter,
+} from './pdfSystem';
 
 export function generateApplicationPDF(data: ApplicationFormData): void {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
-    format: 'a4'
+    format: 'a4',
   });
 
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -14,11 +23,9 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
   const margin = 15;
   const contentWidth = pageWidth - margin * 2;
 
-  let yPos = margin;
-
   const getTeamName = (id: string) => {
     if (!id) return 'None selected';
-    const team = NATIONSWORLD_TEAMS.find(t => t.id === id);
+    const team = NATIONSWORLD_TEAMS.find((t) => t.id === id);
     return team ? team.name : id;
   };
 
@@ -26,157 +33,77 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
     ? new Date(data.generatedAt).toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
       })
     : new Date().toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
       });
 
-  const drawHeader = () => {
-    doc.setFillColor(22, 131, 75); // #16834B
-    doc.rect(0, 0, pageWidth, 24, 'F');
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.text('NATIONSWORLD OF VISIONARY ADVANCEMENT', margin, 12);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8.5);
-    doc.text('Research • Innovation • Development • Leadership • Impact', margin, 18);
-
-    yPos = 32;
-  };
-
-  const drawFooter = (pageNumber: number, totalPages: number) => {
-    doc.setPage(pageNumber);
-    doc.setDrawColor(217, 228, 221);
-    doc.setLineWidth(0.3);
-    doc.line(margin, pageHeight - 12, pageWidth - margin, pageHeight - 12);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(101, 115, 107);
-    doc.text(
-      `NationsWorld Membership Application | Ref: ${data.appReference || 'N/A'}`,
-      margin,
-      pageHeight - 7
-    );
-    doc.text(
-      `Page ${pageNumber} of ${totalPages}`,
-      pageWidth - margin,
-      pageHeight - 7,
-      { align: 'right' }
-    );
-  };
-
   const checkPageBreak = (neededHeight: number) => {
-    if (yPos + neededHeight > pageHeight - 18) {
+    if (yPos + neededHeight > pageHeight - 20) {
       doc.addPage();
-      yPos = margin + 10;
+      drawPDFWatermark(doc);
+      drawPDFBorder(doc);
+      yPos = margin + 8;
     }
-  };
-
-  const renderSectionHeader = (title: string) => {
-    checkPageBreak(12);
-    doc.setFillColor(234, 247, 239); // Soft green #EAF7EF
-    doc.rect(margin, yPos, contentWidth, 7, 'F');
-
-    doc.setDrawColor(22, 131, 75);
-    doc.setLineWidth(0.8);
-    doc.line(margin, yPos, margin, yPos + 7);
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(11, 93, 54); // Deep green #0B5D36
-    doc.text(title.toUpperCase(), margin + 3, yPos + 5);
-
-    yPos += 10;
   };
 
   const renderFieldRow = (label: string, value: string, fullWidth = false) => {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8.5);
-    doc.setTextColor(101, 115, 107);
+    doc.setTextColor(...PDF_COLORS.forestGreen);
 
     const valStr = value || 'N/A';
 
     if (fullWidth) {
       const splitVal = doc.splitTextToSize(valStr, contentWidth - 4);
-      const rowHeight = splitVal.length * 4.2 + 5;
+      const rowHeight = splitVal.length * 4.2 + 6;
       checkPageBreak(rowHeight + 2);
 
       doc.text(label, margin + 2, yPos);
-      yPos += 4;
+      yPos += 4.5;
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(23, 33, 27);
+      doc.setTextColor(...PDF_COLORS.charcoal);
       doc.text(splitVal, margin + 2, yPos);
-      yPos += splitVal.length * 4.2 + 3;
+      yPos += splitVal.length * 4.2 + 3.5;
     } else {
       checkPageBreak(6);
       doc.text(`${label}:`, margin + 2, yPos);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(23, 33, 27);
-      const splitVal = doc.splitTextToSize(valStr, contentWidth - 50);
-      doc.text(splitVal, margin + 48, yPos);
-      yPos += Math.max(splitVal.length * 4.2, 5);
+      doc.setTextColor(...PDF_COLORS.charcoal);
+      const splitVal = doc.splitTextToSize(valStr, contentWidth - 52);
+      doc.text(splitVal, margin + 50, yPos);
+      yPos += Math.max(splitVal.length * 4.2, 5.5);
     }
   };
 
-  // --- Page 1 Start ---
-  drawHeader();
+  // --- Page 1 Initialization ---
+  drawPDFWatermark(doc);
+  drawPDFBorder(doc);
+  let yPos = drawPDFHeader(doc);
 
-  // Application Header Badge Box
-  doc.setDrawColor(22, 131, 75);
-  doc.setLineWidth(0.5);
-  doc.rect(margin, yPos, contentWidth, 22);
+  // Metadata Box
+  yPos = drawPDFMetadata(doc, {
+    docType: 'Stage 1 Membership Application',
+    refNo: data.appReference || 'NWA-PENDING',
+    date: formattedDate,
+    status: 'PROSPECTIVE MEMBER',
+    yPos: yPos,
+  });
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(22, 131, 75);
-  doc.text('STAGE 1 MEMBERSHIP APPLICATION', margin + 4, yPos + 7);
-
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(101, 115, 107);
-  doc.text(`Application Status: `, margin + 4, yPos + 14);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(11, 93, 54);
-  doc.text('PROSPECTIVE MEMBER', margin + 34, yPos + 14);
-
-  // Reference Code Badge
-  doc.setFillColor(234, 247, 239);
-  doc.rect(pageWidth - margin - 65, yPos + 3, 61, 16, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.setTextColor(101, 115, 107);
-  doc.text('APPLICATION REF:', pageWidth - margin - 62, yPos + 8);
-  doc.setFontSize(10);
-  doc.setTextColor(22, 131, 75);
-  doc.text(data.appReference || 'N/A', pageWidth - margin - 62, yPos + 14);
-
-  yPos += 27;
-
-  // Date Row
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(101, 115, 107);
-  doc.text(`Submission Date: ${formattedDate}`, margin + 2, yPos);
-  yPos += 6;
-
-  // Add photo if provided
+  // Profile Photo embedding if available
   if (data.profilePhoto) {
     try {
-      doc.addImage(data.profilePhoto, 'JPEG', pageWidth - margin - 25, yPos - 4, 25, 25);
+      doc.addImage(data.profilePhoto, 'JPEG', pageWidth - margin - 26, yPos - 3, 24, 24);
     } catch (e) {
       console.warn('Could not embed photo in PDF:', e);
     }
   }
 
   // Section 1: Personal Information
-  renderSectionHeader('1. Personal Information');
+  yPos = drawPDFSectionHeader(doc, '1. Personal Information', yPos);
   const fullName = `${data.firstName} ${data.middleName ? data.middleName + ' ' : ''}${data.lastName}`.trim();
   renderFieldRow('Full Name', fullName);
   if (data.preferredName) {
@@ -186,20 +113,20 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
   renderFieldRow('WhatsApp Number', data.whatsapp);
   renderFieldRow('Location', `${data.city ? data.city + ', ' : ''}${data.state ? data.state + ', ' : ''}${data.country}`);
 
-  yPos += 2;
+  yPos += 3;
 
   // Section 2: Education & Professional Profile
-  renderSectionHeader('2. Education & Professional Profile');
+  yPos = drawPDFSectionHeader(doc, '2. Education & Professional Profile', yPos);
   renderFieldRow('Current Status', data.currentStatus);
   renderFieldRow('Institution / Org', data.institution);
   renderFieldRow('Field of Study / Profession', data.fieldOfStudy);
-  renderFieldRow('Highest Level of Education', data.highestEducation);
+  renderFieldRow('Highest Education Level', data.highestEducation);
   renderFieldRow('Relevant Skills', data.skills.length > 0 ? data.skills.join(', ') : 'None specified');
 
-  yPos += 2;
+  yPos += 3;
 
   // Section 3: NationsWorld Placement
-  renderSectionHeader('3. NationsWorld Placement & Team Interest');
+  yPos = drawPDFSectionHeader(doc, '3. NationsWorld Placement & Team Interest', yPos);
   renderFieldRow('Primary Team', getTeamName(data.primaryTeam));
   renderFieldRow('Secondary Area', getTeamName(data.secondaryTeam));
 
@@ -207,29 +134,29 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
     checkPageBreak(10);
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8);
-    doc.setTextColor(101, 115, 107);
+    doc.setTextColor(...PDF_COLORS.mutedText);
     doc.text(
-      'Note: Members admitted into NASDI are automatically part of the Research & Innovation Team under the current NationsWorld structure.',
+      '* Note: Members admitted into NASDI are automatically part of the Research & Innovation Team.',
       margin + 2,
       yPos
     );
     yPos += 6;
   }
 
-  yPos += 2;
+  yPos += 3;
 
   // Section 4: Purpose & Motivation
-  renderSectionHeader('4. Purpose & Motivation');
+  yPos = drawPDFSectionHeader(doc, '4. Purpose & Motivation', yPos);
   renderFieldRow('Why do you want to become a member?', data.whyMember, true);
   renderFieldRow('Area of work/research interest:', data.areaOfInterest, true);
   renderFieldRow('Skills & experience you can contribute:', data.skillsContribution, true);
   renderFieldRow('What you hope to gain or develop:', data.gainOrDevelop, true);
   renderFieldRow('Community/global problem you wish to solve:', data.communityProblem, true);
 
-  yPos += 2;
+  yPos += 3;
 
-  // Section 5: Previous Experience & Background
-  renderSectionHeader('5. Experience & Background');
+  // Section 5: Experience & Background
+  yPos = drawPDFSectionHeader(doc, '5. Experience & Background', yPos);
   renderFieldRow('Previous Experience Areas', data.previousExperienceAreas.length > 0 ? data.previousExperienceAreas.join(', ') : 'None selected');
   renderFieldRow('Worked on previous project/initiative?', data.workedOnProject === true ? 'Yes' : 'No');
   if (data.workedOnProject && data.projectExperienceDetails) {
@@ -239,22 +166,22 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
     renderFieldRow('Portfolio / Work Link', data.portfolioUrl);
   }
 
-  yPos += 2;
+  yPos += 3;
 
-  // Section 6: Participation Interests
-  renderSectionHeader('6. Participation & Referral');
+  // Section 6: Participation & Referral
+  yPos = drawPDFSectionHeader(doc, '6. Participation & Referral', yPos);
   renderFieldRow('How did you hear about NationsWorld?', data.howHeard);
   renderFieldRow('Participated in prior programme?', data.participatedBefore === true ? `Yes (${data.pastProgrammeName || 'N/A'})` : 'No');
   renderFieldRow('Types of Participation', data.participationTypes.length > 0 ? data.participationTypes.join(', ') : 'None specified');
 
-  yPos += 2;
+  yPos += 3;
 
   // Section 7: Declaration
-  renderSectionHeader('7. Applicant Declaration');
+  yPos = drawPDFSectionHeader(doc, '7. Applicant Declaration', yPos);
   checkPageBreak(25);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
-  doc.setTextColor(23, 33, 27);
+  doc.setTextColor(...PDF_COLORS.charcoal);
   const declText =
     'I confirm that the information provided in this application is accurate and complete to the best of my knowledge. ' +
     'I understand that submission of this application does not automatically constitute membership of NationsWorld. ' +
@@ -265,21 +192,23 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8.5);
+  doc.setTextColor(...PDF_COLORS.forestGreen);
   doc.text(`Applicant Name: ${fullName}`, margin + 2, yPos);
-  doc.text(`Reference: ${data.appReference}`, margin + (contentWidth / 2), yPos);
+  doc.text(`Reference: ${data.appReference || 'N/A'}`, margin + contentWidth / 2, yPos);
   yPos += 5;
   doc.text(`Declaration Date: ${formattedDate}`, margin + 2, yPos);
-  doc.text(`Status: DECLARATION CONFIRMED`, margin + (contentWidth / 2), yPos);
+  doc.text(`Status: DECLARATION CONFIRMED`, margin + contentWidth / 2, yPos);
 
   yPos += 10;
 
-  // Section 8: Administrative Use Only
-  checkPageBreak(35);
-  doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(217, 228, 221);
+  // Section 8: Administrative Use Only Box
+  checkPageBreak(36);
+  doc.setFillColor(...PDF_COLORS.warmWhite);
+  doc.setDrawColor(...PDF_COLORS.gold);
+  doc.setLineWidth(0.4);
   doc.rect(margin, yPos, contentWidth, 32, 'FD');
 
-  doc.setFillColor(22, 131, 75);
+  doc.setFillColor(...PDF_COLORS.forestGreen);
   doc.rect(margin, yPos, contentWidth, 6, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8.5);
@@ -288,28 +217,29 @@ export function generateApplicationPDF(data: ApplicationFormData): void {
 
   yPos += 9;
   doc.setFontSize(8);
-  doc.setTextColor(101, 115, 107);
+  doc.setTextColor(...PDF_COLORS.mutedText);
 
   doc.text(`Application Reference: ${data.appReference || 'N/A'}`, margin + 3, yPos);
-  doc.text('Screening Status: SUBMITTED', margin + (contentWidth / 2) + 2, yPos);
+  doc.text('Screening Status: SUBMITTED', margin + contentWidth / 2 + 2, yPos);
   yPos += 5;
 
   doc.text('Reviewer: _________________________', margin + 3, yPos);
-  doc.text('Screening Date: ___________________', margin + (contentWidth / 2) + 2, yPos);
+  doc.text('Screening Date: ___________________', margin + contentWidth / 2 + 2, yPos);
   yPos += 5;
 
   doc.text('Decision: [  ] Approved  [  ] Pending  [  ] Declined', margin + 3, yPos);
-  doc.text('Assigned Grade: ___________________', margin + (contentWidth / 2) + 2, yPos);
+  doc.text('Assigned Grade: ___________________', margin + contentWidth / 2 + 2, yPos);
   yPos += 5;
 
   doc.text('Assigned Team: _____________________', margin + 3, yPos);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(11, 93, 54);
-  doc.text('Member ID: [ To be assigned after approval ]', margin + (contentWidth / 2) + 2, yPos);
+  doc.setTextColor(...PDF_COLORS.forestGreen);
+  doc.text('Member ID: [ To be assigned after approval ]', margin + contentWidth / 2 + 2, yPos);
 
+  // Apply footers to all pages
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
-    drawFooter(i, totalPages);
+    drawPDFFooter(doc, i, totalPages, data.appReference || 'NWA-DRAFT');
   }
 
   const fileName = `NationsWorld_Membership_Application_${data.appReference || 'Draft'}.pdf`;
