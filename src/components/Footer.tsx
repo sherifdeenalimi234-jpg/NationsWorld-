@@ -1,13 +1,13 @@
 import React from 'react';
-import { Globe, MessageSquare, ShieldAlert, ArrowUpRight } from 'lucide-react';
+import { Globe, MessageSquare, ShieldAlert, ArrowUpRight, Lock } from 'lucide-react';
 import { OFFICIAL_WHATSAPP_NUMBER } from '../utils/reference';
 
 interface FooterProps {
-  onNavigate?: (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => void;
+  onNavigate?: (view: 'home' | 'portal' | 'production' | 'games' | 'project-room', sectionId?: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const handleLinkClick = (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => {
+  const handleLinkClick = (view: 'home' | 'portal' | 'production' | 'games' | 'project-room', sectionId?: string) => {
     if (onNavigate) {
       onNavigate(view, sectionId);
     } else if (sectionId) {
@@ -51,6 +51,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               NAVIGATION
             </h4>
             <ul className="space-y-2 text-xs font-medium text-sage">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleLinkClick('project-room')}
+                  className="text-gold font-bold hover:underline transition inline-flex items-center gap-1.5"
+                >
+                  <Lock className="w-3 h-3 text-gold" />
+                  <span>Project Room (Restricted)</span>
+                </button>
+              </li>
               <li>
                 <button
                   type="button"

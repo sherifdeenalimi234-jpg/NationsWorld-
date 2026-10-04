@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Globe, ChevronDown, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown, ChevronRight, ArrowRight, Sparkles, Lock } from 'lucide-react';
 
 interface NavbarProps {
-  activeView: 'home' | 'portal' | 'production' | 'games';
-  onNavigate: (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => void;
+  activeView: 'home' | 'portal' | 'production' | 'games' | 'project-room';
+  onNavigate: (view: 'home' | 'portal' | 'production' | 'games' | 'project-room', sectionId?: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
     };
   }, [isOpen]);
 
-  const handleNavClick = (view: 'home' | 'portal' | 'production' | 'games', sectionId?: string) => {
+  const handleNavClick = (view: 'home' | 'portal' | 'production' | 'games' | 'project-room', sectionId?: string) => {
     setIsOpen(false);
     onNavigate(view, sectionId);
   };
@@ -65,13 +65,27 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
             </div>
           </button>
 
-          {/* Right: Hamburger Menu Trigger (Always Visible) */}
-          <div className="flex items-center gap-3">
+          {/* Right: Actions & Hamburger Trigger */}
+          <div className="flex items-center gap-2.5">
+            {/* Desktop Quick Link to Project Room */}
+            <button
+              type="button"
+              onClick={() => handleNavClick('project-room')}
+              className={`hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                activeView === 'project-room'
+                  ? 'bg-emerald text-white border-gold shadow-md'
+                  : 'bg-deep-emerald/40 hover:bg-deep-emerald text-gold border-gold/30'
+              }`}
+            >
+              <Lock className="w-3.5 h-3.5 text-gold shrink-0" />
+              <span>Project Room</span>
+            </button>
+
             {activeView !== 'home' && (
               <button
                 type="button"
                 onClick={() => handleNavClick('home')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-deep-emerald/50 hover:bg-deep-emerald text-xs font-semibold text-gold border border-gold/30 transition"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-deep-emerald/50 hover:bg-deep-emerald text-xs font-semibold text-gold border border-gold/30 transition"
               >
                 ← Public Homepage
               </button>
@@ -136,6 +150,26 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
               >
                 <span>Home</span>
                 <span className="text-xs text-sage group-hover:text-gold font-mono">01</span>
+              </button>
+
+              {/* PROJECT ROOM ROUTE IN DRAWER */}
+              <button
+                type="button"
+                onClick={() => handleNavClick('project-room')}
+                className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-bold transition flex items-center justify-between border ${
+                  activeView === 'project-room'
+                    ? 'bg-emerald text-white border-gold shadow-lg'
+                    : 'bg-deep-emerald/50 border-gold/40 text-ivory hover:text-gold hover:bg-deep-emerald'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Lock className="w-4 h-4 text-gold shrink-0" />
+                  <span>Project Room</span>
+                  <span className="text-[10px] bg-gold/20 text-gold border border-gold/40 px-2 py-0.5 rounded font-mono font-bold">
+                    RESTRICTED
+                  </span>
+                </span>
+                <ArrowRight className="w-4 h-4 text-gold" />
               </button>
 
               <button
