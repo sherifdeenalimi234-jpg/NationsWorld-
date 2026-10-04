@@ -1,4 +1,4 @@
-export type ViewType = 'home' | 'portal' | 'production' | 'games';
+export type ViewType = 'home' | 'portal' | 'production' | 'games' | 'project-room';
 
 export interface NOVAContext {
   currentView: ViewType;
@@ -39,12 +39,12 @@ interface IntentDefinition {
 }
 
 const DEFAULT_SUGGESTIONS = [
+  'Project Room',
   'Game Center',
   'Decision Room',
   'Programs',
   'Resources',
-  'Membership',
-  'Application'
+  'Membership'
 ];
 
 /**
@@ -66,6 +66,21 @@ export function normalizeInput(input: string): string {
 }
 
 const INTENT_DEFINITIONS: IntentDefinition[] = [
+  {
+    id: 'project_room',
+    primaryConfirmation: 'Opening the NationsWorld Project Room...',
+    destination: { view: 'project-room' },
+    exactPhrases: [
+      'project room',
+      'open project room',
+      'take me to project room',
+      'go to project room',
+      'restricted workspace',
+      'private workspace',
+      'workspace'
+    ],
+    keywords: ['project', 'room', 'restricted', 'workspace', 'private']
+  },
   {
     id: 'home',
     primaryConfirmation: 'Taking you to the homepage...',
@@ -468,7 +483,7 @@ export async function processNOVACommand(
       intent: 'unknown',
       confidence: 0,
       action: { type: 'none' },
-      response: "Please enter or speak a navigation command (e.g. 'Take me to Programs' or 'Open Application').",
+      response: "Please enter or speak a navigation command (e.g. 'Take me to Project Room' or 'Open Application').",
       suggestions: DEFAULT_SUGGESTIONS
     };
   }
@@ -490,7 +505,7 @@ export async function processNOVACommand(
       intent: 'unknown',
       confidence: maxScore,
       action: { type: 'none' },
-      response: "I'm not sure where you want to go. You can ask me to open Programs, Events, Resources, Membership, the Application, or another available section.",
+      response: "I'm not sure where you want to go. You can ask me to open Project Room, Programs, Events, Resources, Membership, the Application, or another available section.",
       suggestions: DEFAULT_SUGGESTIONS
     };
   }

@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar';
 import { Homepage } from './components/Homepage';
 import { ProductionDashboard } from './components/production/ProductionDashboard';
 import { GameCenterDashboard } from './components/GameCenterDashboard';
+import { ProjectRoomPage } from './components/project-room/ProjectRoomPage';
 import { Hero } from './components/Hero';
 import { TeamsOverview } from './components/TeamsOverview';
 import { HowItWorks } from './components/HowItWorks';
@@ -10,14 +11,15 @@ import { ApplicationForm } from './components/ApplicationForm';
 import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 import { NOVA } from './components/NOVA';
+import type { ViewType } from './services/novaEngine';
 
 export const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'home' | 'portal' | 'production' | 'games'>('home');
+  const [activeView, setActiveView] = useState<ViewType>('home');
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [activeGameId, setActiveGameId] = useState<string | null>(null);
 
   const handleNavigate = (
-    view: 'home' | 'portal' | 'production' | 'games',
+    view: ViewType,
     sectionId?: string,
     filter?: string
   ) => {
@@ -66,11 +68,19 @@ export const App: React.FC = () => {
             onNavigateToSection={(id: string) => {
               if (id === 'production') {
                 handleNavigate('production');
+              } else if (id === 'project-room') {
+                handleNavigate('project-room');
               } else {
                 handleNavigate('home', id);
               }
             }}
           />
+        )}
+
+        {activeView === 'project-room' && (
+          <div>
+            <ProjectRoomPage />
+          </div>
         )}
 
         {activeView === 'games' && (
