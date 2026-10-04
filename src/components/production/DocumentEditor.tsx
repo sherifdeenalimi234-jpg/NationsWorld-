@@ -212,33 +212,33 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
         >
           {draft.category === 'letters' && (
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-              <h3 className="text-sm font-extrabold text-nw-dark uppercase tracking-wider border-b pb-2">
+              <h3 className="text-sm font-extrabold text-[#063B2E] uppercase tracking-wider border-b border-slate-200 pb-2">
                 RECIPIENT & COMMUNIQUÉ DETAILS
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Recipient Name *
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as LetterFormData).recipientName || ''}
                     onChange={(e) => handleFormDataChange('recipientName', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                     placeholder="e.g. Dr. Jane Doe"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Recipient Position
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as LetterFormData).recipientPosition || ''}
                     onChange={(e) => handleFormDataChange('recipientPosition', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                     placeholder="e.g. Executive Director"
                   />
                 </div>
@@ -246,48 +246,48 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Organization
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as LetterFormData).organization || ''}
                     onChange={(e) => handleFormDataChange('organization', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                     placeholder="e.g. Global Policy Institute"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Address / Location
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as LetterFormData).address || ''}
                     onChange={(e) => handleFormDataChange('address', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                     placeholder="Lagos, Nigeria"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Subject Line *
                 </label>
                 <input
                   type="text"
                   value={(draft.formData as LetterFormData).subject || ''}
                   onChange={(e) => handleFormDataChange('subject', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-nw-dark focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-[#063B2E] focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   placeholder="SUBJECT: FORMAL COMMUNIQUÉ..."
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-gray-700">
+                  <label className="block text-xs font-bold text-[#1E293B]">
                     Letter Content (Rich Text / Paragraphs)
                   </label>
 
@@ -295,7 +295,7 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
                     <button
                       type="button"
                       onClick={() => applyTextFormatting('content', 'bold')}
-                      className="p-1 hover:bg-slate-200 rounded text-gray-700"
+                      className="p-1 hover:bg-slate-200 rounded text-[#1E293B]"
                       title="Bold text"
                     >
                       <Bold className="w-3.5 h-3.5" />
@@ -303,7 +303,7 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
                     <button
                       type="button"
                       onClick={() => applyTextFormatting('content', 'italic')}
-                      className="p-1 hover:bg-slate-200 rounded text-gray-700"
+                      className="p-1 hover:bg-slate-200 rounded text-[#1E293B]"
                       title="Italic text"
                     >
                       <Italic className="w-3.5 h-3.5" />
@@ -311,7 +311,7 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
                     <button
                       type="button"
                       onClick={() => applyTextFormatting('content', 'heading')}
-                      className="p-1 hover:bg-slate-200 rounded text-gray-700"
+                      className="p-1 hover:bg-slate-200 rounded text-[#1E293B]"
                       title="Add Heading"
                     >
                       <Heading className="w-3.5 h-3.5" />
@@ -319,7 +319,7 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
                     <button
                       type="button"
                       onClick={() => applyTextFormatting('content', 'bullet')}
-                      className="p-1 hover:bg-slate-200 rounded text-gray-700"
+                      className="p-1 hover:bg-slate-200 rounded text-[#1E293B]"
                       title="Add Bullet"
                     >
                       <List className="w-3.5 h-3.5" />
@@ -331,41 +331,41 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
                   rows={8}
                   value={(draft.formData as LetterFormData).content || ''}
                   onChange={(e) => handleFormDataChange('content', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none font-sans"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none font-sans"
                   placeholder="Type letter content..."
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Prepared By (Name)
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as LetterFormData).preparedBy || ''}
                     onChange={(e) => handleFormDataChange('preparedBy', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                     placeholder="Amb. Emmanuel Okafor"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Position / Title
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as LetterFormData).position || ''}
                     onChange={(e) => handleFormDataChange('position', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                     placeholder="Head of Secretariat"
                   />
                 </div>
               </div>
 
               <div className="pt-2 border-t">
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Signature Image (Optional PNG/JPG)
                 </label>
                 <div className="flex items-center gap-4">
@@ -391,105 +391,105 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
 
           {draft.category === 'reports' && (
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-              <h3 className="text-sm font-extrabold text-nw-dark uppercase tracking-wider border-b pb-2">
+              <h3 className="text-sm font-extrabold text-[#063B2E] uppercase tracking-wider border-b border-slate-200 pb-2">
                 REPORT STRUCTURE & SECTIONS
               </h3>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Report Title *
                 </label>
                 <input
                   type="text"
                   value={(draft.formData as ReportFormData).reportTitle || ''}
                   onChange={(e) => handleFormDataChange('reportTitle', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-nw-dark focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-[#063B2E] focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   placeholder="e.g. SUSTAINABLE HUMAN CAPITAL REPORT"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Programme / Project Name
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as ReportFormData).programmeOrProject || ''}
                     onChange={(e) => handleFormDataChange('programmeOrProject', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Prepared By
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as ReportFormData).preparedBy || ''}
                     onChange={(e) => handleFormDataChange('preparedBy', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Executive Summary
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as ReportFormData).executiveSummary || ''}
                   onChange={(e) => handleFormDataChange('executiveSummary', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Introduction
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as ReportFormData).introduction || ''}
                   onChange={(e) => handleFormDataChange('introduction', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Key Activities & Execution
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as ReportFormData).activities || ''}
                   onChange={(e) => handleFormDataChange('activities', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Outcomes & Metrics
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as ReportFormData).outcomes || ''}
                   onChange={(e) => handleFormDataChange('outcomes', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Recommendations & Conclusion
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as ReportFormData).recommendations || ''}
                   onChange={(e) => handleFormDataChange('recommendations', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
             </div>
@@ -497,80 +497,80 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
 
           {draft.category === 'organizational' && (
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-              <h3 className="text-sm font-extrabold text-nw-dark uppercase tracking-wider border-b pb-2">
+              <h3 className="text-sm font-extrabold text-[#063B2E] uppercase tracking-wider border-b border-slate-200 pb-2">
                 ORGANIZATIONAL DOCUMENT CONTENT
               </h3>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Document Title *
                 </label>
                 <input
                   type="text"
                   value={(draft.formData as OrganizationalFormData).documentTitle || ''}
                   onChange={(e) => handleFormDataChange('documentTitle', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-nw-dark focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-[#063B2E] focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Target Audience
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as OrganizationalFormData).targetAudience || ''}
                     onChange={(e) => handleFormDataChange('targetAudience', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Prepared By
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as OrganizationalFormData).preparedBy || ''}
                     onChange={(e) => handleFormDataChange('preparedBy', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Summary / Overview
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as OrganizationalFormData).summary || ''}
                   onChange={(e) => handleFormDataChange('summary', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Main Body / Details
                 </label>
                 <textarea
                   rows={6}
                   value={(draft.formData as OrganizationalFormData).mainBody || ''}
                   onChange={(e) => handleFormDataChange('mainBody', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Action Items / Resolutions
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as OrganizationalFormData).actionItems || ''}
                   onChange={(e) => handleFormDataChange('actionItems', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
             </div>
@@ -578,80 +578,80 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
 
           {draft.category === 'certificates' && (
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-              <h3 className="text-sm font-extrabold text-nw-dark uppercase tracking-wider border-b pb-2">
+              <h3 className="text-sm font-extrabold text-[#063B2E] uppercase tracking-wider border-b border-slate-200 pb-2">
                 CERTIFICATE DETAILS
               </h3>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Recipient Name *
                 </label>
                 <input
                   type="text"
                   value={(draft.formData as CertificateFormData).recipientName || ''}
                   onChange={(e) => handleFormDataChange('recipientName', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base font-extrabold text-nw-dark focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base font-extrabold text-[#063B2E] focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   placeholder="e.g. David O. Adeleke"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Programme / Event Name *
                 </label>
                 <input
                   type="text"
                   value={(draft.formData as CertificateFormData).programmeOrEvent || ''}
                   onChange={(e) => handleFormDataChange('programmeOrEvent', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-nw-green focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-[#12A875] focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Achievement / Citation Statement
                 </label>
                 <textarea
                   rows={3}
                   value={(draft.formData as CertificateFormData).achievementTitle || ''}
                   onChange={(e) => handleFormDataChange('achievementTitle', e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-nw-green focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   placeholder="for active participation and valuable contributions..."
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Authorized Signatory Name
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as CertificateFormData).authorizedSignatoryName || ''}
                     onChange={(e) => handleFormDataChange('authorizedSignatoryName', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[#1E293B] mb-1">
                     Signatory Title
                   </label>
                   <input
                     type="text"
                     value={(draft.formData as CertificateFormData).authorizedSignatoryTitle || ''}
                     onChange={(e) => handleFormDataChange('authorizedSignatoryTitle', e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-nw-green focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875] focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="pt-2 border-t">
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+              <div className="pt-2 border-t border-slate-200">
+                <label className="block text-xs font-bold text-[#1E293B] mb-1">
                   Signatory Signature Image (Optional PNG/JPG)
                 </label>
                 <div className="flex items-center gap-4">
-                  <label className="cursor-pointer px-4 py-2 bg-slate-100 hover:bg-slate-200 text-nw-dark font-bold text-xs rounded-xl border border-slate-300 inline-flex items-center gap-2">
-                    <Upload className="w-4 h-4 text-nw-green" />
+                  <label className="cursor-pointer px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#063B2E] font-bold text-xs rounded-xl border border-slate-300 inline-flex items-center gap-2">
+                    <Upload className="w-4 h-4 text-[#12A875]" />
                     <span>Upload Signature</span>
                     <input
                       type="file"
@@ -661,7 +661,7 @@ export const DocumentEditor: React.FC<DocumentEditorProps> = ({
                     />
                   </label>
                   {(draft.formData as CertificateFormData).signatureImage && (
-                    <span className="text-xs font-bold text-nw-green flex items-center gap-1">
+                    <span className="text-xs font-bold text-[#12A875] flex items-center gap-1">
                       <CheckCircle className="w-3.5 h-3.5" /> Signature Uploaded
                     </span>
                   )}

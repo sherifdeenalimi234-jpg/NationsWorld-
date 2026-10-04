@@ -181,16 +181,16 @@ export const ApplicationForm: React.FC = () => {
 
   return (
     <div id="application-section" className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-2xl border border-nw-border p-6 shadow-sm mb-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-nw-border pb-5">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-md mb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
-            <span className="text-xs uppercase font-extrabold tracking-widest text-nw-green">
+            <span className="text-xs uppercase font-extrabold tracking-widest text-[#12A875]">
               STAGE 1 MEMBERSHIP
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-nw-dark mt-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#063B2E] mt-1">
               NationsWorld Membership Application
             </h1>
-            <p className="text-xs sm:text-sm text-nw-muted mt-1">
+            <p className="text-xs sm:text-sm text-[#374151] font-medium mt-1">
               Fill out all sections below to generate your official PDF membership application.
             </p>
           </div>
@@ -199,16 +199,16 @@ export const ApplicationForm: React.FC = () => {
             <button
               type="button"
               onClick={handleSaveProgressLocally}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-nw-border text-xs font-semibold text-nw-dark hover:bg-gray-100 transition shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#063B2E] hover:bg-emerald-50 hover:border-emerald-500 transition shadow-xs"
               title="Save draft in current browser"
             >
-              <Save className="w-3.5 h-3.5 text-nw-green" />
+              <Save className="w-3.5 h-3.5 text-[#12A875]" />
               Save Progress
             </button>
             <button
               type="button"
               onClick={() => setIsClearModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 text-xs font-semibold text-nw-error hover:bg-red-50 transition"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 bg-white text-xs font-bold text-red-700 hover:bg-red-50 transition"
               title="Clear form and start over"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -218,9 +218,9 @@ export const ApplicationForm: React.FC = () => {
         </div>
 
         {saveNotification && (
-          <div className="mt-3 p-2.5 bg-emerald-100 text-nw-deep text-xs font-semibold rounded-lg flex items-center justify-between animate-fadeIn">
+          <div className="mt-3 p-2.5 bg-emerald-100 text-[#063B2E] text-xs font-bold rounded-lg flex items-center justify-between animate-fadeIn border border-emerald-300">
             <span>{saveNotification}</span>
-            <button onClick={() => setSaveNotification(null)} className="text-nw-deep font-bold text-xs">✕</button>
+            <button onClick={() => setSaveNotification(null)} className="text-[#063B2E] font-bold text-xs hover:text-black">✕</button>
           </div>
         )}
 
@@ -237,17 +237,17 @@ export const ApplicationForm: React.FC = () => {
                   onClick={() => handleStepClick(step.id)}
                   className={`p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1.5 ${
                     isCurrent
-                      ? 'bg-nw-green text-white border-nw-green shadow-sm ring-2 ring-nw-green/20 font-bold'
+                      ? 'bg-[#063B2E] text-white border-[#063B2E] shadow-sm ring-2 ring-[#12A875]/30 font-extrabold'
                       : isCompleted
-                      ? 'bg-nw-soft text-nw-deep border-nw-green/40 hover:bg-emerald-100'
-                      : 'bg-gray-50 text-nw-muted border-nw-border hover:bg-gray-100'
+                      ? 'bg-[#8DE0BE]/30 text-[#063B2E] border-[#12A875]/40 hover:bg-[#8DE0BE]/50 font-bold'
+                      : 'bg-slate-50 text-[#64748B] border-slate-200 hover:bg-slate-100 font-semibold'
                   }`}
                 >
                   <div className="flex items-center gap-1 text-xs">
                     {isCompleted ? (
-                      <Check className="w-3.5 h-3.5 text-nw-green font-bold" />
+                      <Check className="w-3.5 h-3.5 text-[#063B2E] font-black" />
                     ) : (
-                      <span className="font-mono text-[11px]">0{step.id}</span>
+                      <span className="font-mono text-[11px] font-bold">0{step.id}</span>
                     )}
                   </div>
                   <span className="text-xs truncate w-full">{step.shortTitle}</span>
@@ -257,15 +257,15 @@ export const ApplicationForm: React.FC = () => {
           </div>
 
           <div className="sm:hidden space-y-2">
-            <div className="flex items-center justify-between text-xs font-semibold text-nw-dark">
-              <span className="text-nw-green font-extrabold">
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="text-[#063B2E] font-extrabold">
                 Step 0{currentStep} of 06: {STEPS[currentStep - 1].shortTitle}
               </span>
-              <span className="text-nw-muted">{Math.round((currentStep / 6) * 100)}%</span>
+              <span className="text-[#063B2E] font-black">{Math.round((currentStep / 6) * 100)}%</span>
             </div>
-            <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden border border-slate-300">
               <div
-                className="h-full bg-nw-green transition-all duration-300"
+                className="h-full bg-[#12A875] transition-all duration-300 rounded-full"
                 style={{ width: `${(currentStep / 6) * 100}%` }}
               />
             </div>
@@ -273,7 +273,7 @@ export const ApplicationForm: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-nw-border p-6 sm:p-8 shadow-sm relative">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-md relative">
         {currentStep === 1 && (
           <PersonalStep
             formData={formData}
@@ -328,15 +328,15 @@ export const ApplicationForm: React.FC = () => {
         )}
 
         {currentStep < 6 && (
-          <div className="mt-8 pt-6 border-t border-nw-border flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
             <button
               type="button"
               onClick={handleBack}
               disabled={currentStep === 1}
-              className={`w-full sm:w-auto px-6 py-3 rounded-xl border text-sm font-semibold transition flex items-center justify-center gap-2 ${
+              className={`w-full sm:w-auto px-6 py-3 rounded-xl border text-sm font-bold transition flex items-center justify-center gap-2 ${
                 currentStep === 1
-                  ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  : 'border-nw-border text-nw-dark hover:bg-gray-100'
+                  ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
+                  : 'border-slate-300 bg-white text-[#374151] hover:bg-slate-100 hover:text-[#063B2E]'
               }`}
             >
               <ArrowLeft className="w-4 h-4" /> Back
@@ -345,7 +345,7 @@ export const ApplicationForm: React.FC = () => {
             <button
               type="button"
               onClick={handleNext}
-              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-nw-green text-white font-bold text-sm sm:text-base hover:bg-nw-hover transition shadow-md flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[#063B2E] text-white font-bold text-sm sm:text-base hover:bg-[#0B3D2E] transition shadow-md flex items-center justify-center gap-2 active:scale-[0.99]"
             >
               Next <ArrowRight className="w-4 h-4" />
             </button>
@@ -355,28 +355,28 @@ export const ApplicationForm: React.FC = () => {
 
       {isClearModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-nw-border space-y-4">
-            <div className="flex items-center gap-3 text-nw-error">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center gap-3 text-red-600">
               <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                <AlertCircle className="w-6 h-6" />
+                <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
-              <h3 className="text-lg font-bold text-nw-dark">Clear Application?</h3>
+              <h3 className="text-lg font-bold text-[#063B2E]">Clear Application?</h3>
             </div>
-            <p className="text-sm text-nw-muted leading-relaxed">
+            <p className="text-sm text-[#374151] leading-relaxed font-medium">
               Are you sure you want to clear all entered data and reset your application progress? This action cannot be undone.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setIsClearModalOpen(false)}
-                className="px-4 py-2 rounded-lg border border-nw-border text-nw-dark font-medium text-xs hover:bg-gray-100 transition"
+                className="px-4 py-2 rounded-lg border border-slate-300 text-[#374151] font-semibold text-xs hover:bg-slate-100 transition"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleClearApplication}
-                className="px-4 py-2 rounded-lg bg-nw-error text-white font-bold text-xs hover:bg-red-700 transition shadow-xs"
+                className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold text-xs hover:bg-red-700 transition shadow-xs"
               >
                 Yes, Clear Application
               </button>
