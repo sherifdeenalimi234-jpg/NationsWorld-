@@ -1,11 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ProjectRoomHero } from './ProjectRoomHero';
 import { ProjectAccessCard } from './ProjectAccessCard';
 import { ProjectRoomDashboard } from './ProjectRoomDashboard';
+import { ProjectNumberGrid } from './ProjectNumberGrid';
+import { ProjectConfirmation } from './ProjectConfirmation';
+import { AssignmentReveal } from './AssignmentReveal';
+import { ProjectBriefModal } from './ProjectBriefModal';
 import { ProjectJourney } from './ProjectJourney';
+
+import { getProjectByNumber, getProjectById } from '../../data/projectsData';
+import type { ProjectSlot } from '../../data/projectsData';
+import { getStoredAssignment, saveAssignment, clearAssignment } from '../../utils/projectRoomStorage';
 
 export const ProjectRoomPage: React.FC = () => {
   const [isAccessGranted, setIsAccessGranted] = useState(false);
+  const [assignedProject, setAssignedProject] = useState<ProjectSlot | null>(null);
+  const [pendingNumber, setPendingNumber] = useState<number | null>(null);
+  const [justRevealedProject, setJustRevealedProject] = useState<ProjectSlot | null>(null);
+  const [isBriefOpen, setIsBriefOpen] = useState(false);
+
+  const selectionGridRef = useRef<HTMLDivElement>(null);
+
+  // Initialize stored assignment from localStorage safely
+  useEffect(() => {
+    const stored = getStoredAssignment();
+    if (stored) {
+      const proj = getProjectById(stored.projectId) || getProjectByNumber(stored.projectNumber);
+      if (proj) {
+        setAssignedProject(proj);
+      } else {
+        // Handle unknown ID
+        clearAssignment();
+      }
+    }
+  }, []);
+
+  // Handle number click in grid
+  const handleSelectNumber = (num: number) => {
+    setPendingNumber(num);
+  };
+
+  // Handle confirmation
+  const handleConfirmAssignment = (num: number) => {
+    setPendingNumber(null);
+    const proj = getProjectByNumber(num);
+    if (!proj) return;
+
+    saveAssignment(proj.number, proj.id);
+    setAssignedProject(proj);
+    setJustRevealedProject(proj);
+
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  };
+
+  // Handle Dev Reset
+  const handleDevReset = () => {
+    clearAssignment();
+    setAssignedProject(null);
+    setJustRevealedProject(null);
+    setPendingNumber(null);
+    setIsBriefOpen(false);
+  };
+
+  const handleScrollToSelection = () => {
+    selectionGridRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="relative min-h-screen bg-obsidian text-ivory pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden font-sans">
@@ -40,25 +99,62 @@ export const ProjectRoomPage: React.FC = () => {
       <div className="max-w-6xl mx-auto relative z-10">
         {!isAccessGranted ? (
           <div className="animate-fadeIn">
-            {/* Landing Hero */}
+            {/* Restricted Access Screen */}
             <ProjectRoomHero />
-
-            {/* Access Card */}
             <ProjectAccessCard onAccessSuccess={() => setIsAccessGranted(true)} />
-
-            {/* Journey Preview on restricted landing page */}
             <ProjectJourney />
           </div>
         ) : (
-          <div className="animate-fadeIn space-y-10">
-            {/* Dashboard after access granted */}
-            <ProjectRoomDashboard onLockWorkspace={() => setIsAccessGranted(false)} />
+          <div className="animate-fadeIn space-y-12">
+            {/* Main Dashboard */}
+            <ProjectRoomDashboard
+              assignedProject={assignedProject}
+              onOpenBrief={() => setIsBriefOpen(true)}
+              onScrollToSelection={handleScrollToSelection}
+              onLockWorkspace={() => setIsAccessGranted(false)}
+              onDevReset={handleDevReset}
+            />
 
-            {/* System Progression Journey */}
+            {/* Just Revealed Animation view if just confirmed */}
+            {justRevealedProject && (
+              <AssignmentReveal
+                project={justRevealedProject}
+                onOpenBrief={() => {
+                  setJustRevealedProject(null);
+                  setIsBriefOpen(true);
+                }}
+              />
+            )}
+
+            {/* Selection Grid (Shown if no project assigned yet) */}
+            {!assignedProject && (
+              <div ref={selectionGridRef} className="pt-4 border-t border-gold/20">
+                <ProjectNumberGrid onSelectNumber={handleSelectNumber} />
+              </div>
+            )}
+
+            {/* Journey Pipeline */}
             <ProjectJourney />
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {pendingNumber !== null && (
+        <ProjectConfirmation
+          projectNumber={pendingNumber}
+          onCancel={() => setPendingNumber(null)}
+          onConfirm={handleConfirmAssignment}
+        />
+      )}
+
+      {/* Full Project Brief Modal */}
+      {isBriefOpen && assignedProject && (
+        <ProjectBriefModal
+          project={assignedProject}
+          onClose={() => setIsBriefOpen(false)}
+        />
+      )}
     </div>
   );
 };
