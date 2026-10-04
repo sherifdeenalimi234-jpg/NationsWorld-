@@ -5,19 +5,31 @@ import { ProjectRoomDashboard } from './ProjectRoomDashboard';
 import { ProjectNumberGrid } from './ProjectNumberGrid';
 import { ProjectConfirmation } from './ProjectConfirmation';
 import { AssignmentReveal } from './AssignmentReveal';
+import { ProjectDeclaration } from './ProjectDeclaration';
 import { ProjectBriefModal } from './ProjectBriefModal';
+import { WorkspacePlaceholderModal } from './WorkspacePlaceholderModal';
 import { ProjectJourney } from './ProjectJourney';
 
 import { getProjectByNumber, getProjectById } from '../../data/projectsData';
 import type { ProjectSlot } from '../../data/projectsData';
-import { getStoredAssignment, saveAssignment, clearAssignment } from '../../utils/projectRoomStorage';
+import type { StoredAssignment } from '../../utils/projectRoomStorage';
+import {
+  getStoredAssignment,
+  saveAssignment,
+  clearAssignment
+} from '../../utils/projectRoomStorage';
 
 export const ProjectRoomPage: React.FC = () => {
   const [isAccessGranted, setIsAccessGranted] = useState(false);
+  const [assignment, setAssignment] = useState<StoredAssignment | null>(null);
   const [assignedProject, setAssignedProject] = useState<ProjectSlot | null>(null);
   const [pendingNumber, setPendingNumber] = useState<number | null>(null);
   const [justRevealedProject, setJustRevealedProject] = useState<ProjectSlot | null>(null);
+
+  // View states
+  const [isDeclarationActive, setIsDeclarationActive] = useState(false);
   const [isBriefOpen, setIsBriefOpen] = useState(false);
+  const [isWorkspacePlaceholderOpen, setIsWorkspacePlaceholderOpen] = useState(false);
 
   const selectionGridRef = useRef<HTMLDivElement>(null);
 
@@ -25,41 +37,54 @@ export const ProjectRoomPage: React.FC = () => {
   useEffect(() => {
     const stored = getStoredAssignment();
     if (stored) {
+      setAssignment(stored);
       const proj = getProjectById(stored.projectId) || getProjectByNumber(stored.projectNumber);
       if (proj) {
         setAssignedProject(proj);
       } else {
-        // Handle unknown ID
         clearAssignment();
+        setAssignment(null);
       }
     }
   }, []);
 
-  // Handle number click in grid
+  // Handle selection of project number from grid
   const handleSelectNumber = (num: number) => {
     setPendingNumber(num);
   };
 
-  // Handle confirmation
+  // Handle confirmation of assignment
   const handleConfirmAssignment = (num: number) => {
     setPendingNumber(null);
     const proj = getProjectByNumber(num);
     if (!proj) return;
 
-    saveAssignment(proj.number, proj.id);
+    const newAssignment = saveAssignment(proj.number, proj.id);
+    setAssignment(newAssignment);
     setAssignedProject(proj);
     setJustRevealedProject(proj);
 
     window.scrollTo({ top: 300, behavior: 'smooth' });
   };
 
+  // Handle completion of Declaration form
+  const handleDeclarationComplete = (updatedAssignment: StoredAssignment) => {
+    setAssignment(updatedAssignment);
+    setIsDeclarationActive(false);
+    // Automatically open Project Brief after completing declaration
+    setIsBriefOpen(true);
+  };
+
   // Handle Dev Reset
   const handleDevReset = () => {
     clearAssignment();
+    setAssignment(null);
     setAssignedProject(null);
     setJustRevealedProject(null);
     setPendingNumber(null);
+    setIsDeclarationActive(false);
     setIsBriefOpen(false);
+    setIsWorkspacePlaceholderOpen(false);
   };
 
   const handleScrollToSelection = () => {
@@ -67,12 +92,12 @@ export const ProjectRoomPage: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-obsidian text-ivory pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden font-sans">
+    <div className="relative min-h-screen bg-[#021f18] text-[#f7faf8] pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden font-sans">
       {/* Background Graphic Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         {/* Subtle radial gradients */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-radial-gradient from-deep-emerald/25 via-obsidian/40 to-transparent blur-3xl rounded-full" />
-        <div className="absolute top-2/3 right-10 w-[500px] h-[500px] bg-radial-gradient from-emerald/10 via-obsidian/20 to-transparent blur-3xl rounded-full" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-radial-gradient from-[#063b2e]/30 via-[#021f18]/40 to-transparent blur-3xl rounded-full" />
+        <div className="absolute top-2/3 right-10 w-[500px] h-[500px] bg-radial-gradient from-[#0b8f6a]/10 via-[#021f18]/20 to-transparent blur-3xl rounded-full" />
 
         {/* Subtle background grid pattern */}
         <div
@@ -85,7 +110,7 @@ export const ProjectRoomPage: React.FC = () => {
 
         {/* Faint geometric decorative lines */}
         <svg
-          className="absolute top-0 left-0 w-full h-full opacity-[0.04] stroke-gold"
+          className="absolute top-0 left-0 w-full h-full opacity-[0.04] stroke-[#d6b45a]"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -98,18 +123,28 @@ export const ProjectRoomPage: React.FC = () => {
 
       <div className="max-w-6xl mx-auto relative z-10">
         {!isAccessGranted ? (
-          <div className="animate-fadeIn">
+          <div className="animate-fade-in">
             {/* Restricted Access Screen */}
             <ProjectRoomHero />
             <ProjectAccessCard onAccessSuccess={() => setIsAccessGranted(true)} />
             <ProjectJourney />
           </div>
+        ) : isDeclarationActive && assignedProject ? (
+          /* Participant Declaration View */
+          <div className="animate-fade-in">
+            <ProjectDeclaration
+              project={assignedProject}
+              onComplete={handleDeclarationComplete}
+            />
+          </div>
         ) : (
-          <div className="animate-fadeIn space-y-12">
-            {/* Main Dashboard */}
+          /* Main Workspace Dashboard */
+          <div className="animate-fade-in space-y-12">
             <ProjectRoomDashboard
               assignedProject={assignedProject}
+              declarationAccepted={!!assignment?.declarationAccepted}
               onOpenBrief={() => setIsBriefOpen(true)}
+              onCompleteDeclaration={() => setIsDeclarationActive(true)}
               onScrollToSelection={handleScrollToSelection}
               onLockWorkspace={() => setIsAccessGranted(false)}
               onDevReset={handleDevReset}
@@ -121,14 +156,18 @@ export const ProjectRoomPage: React.FC = () => {
                 project={justRevealedProject}
                 onOpenBrief={() => {
                   setJustRevealedProject(null);
-                  setIsBriefOpen(true);
+                  if (assignment?.declarationAccepted) {
+                    setIsBriefOpen(true);
+                  } else {
+                    setIsDeclarationActive(true);
+                  }
                 }}
               />
             )}
 
             {/* Selection Grid (Shown if no project assigned yet) */}
             {!assignedProject && (
-              <div ref={selectionGridRef} className="pt-4 border-t border-gold/20">
+              <div ref={selectionGridRef} className="pt-4 border-t border-[#0b8f6a]/20">
                 <ProjectNumberGrid onSelectNumber={handleSelectNumber} />
               </div>
             )}
@@ -153,6 +192,18 @@ export const ProjectRoomPage: React.FC = () => {
         <ProjectBriefModal
           project={assignedProject}
           onClose={() => setIsBriefOpen(false)}
+          onBeginProject={() => {
+            setIsBriefOpen(false);
+            setIsWorkspacePlaceholderOpen(true);
+          }}
+        />
+      )}
+
+      {/* Workspace Ready Placeholder Modal */}
+      {isWorkspacePlaceholderOpen && (
+        <WorkspacePlaceholderModal
+          projectNumber={assignedProject?.number}
+          onClose={() => setIsWorkspacePlaceholderOpen(false)}
         />
       )}
     </div>
