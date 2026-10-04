@@ -72,33 +72,38 @@ export function drawPDFWatermark(doc: jsPDF, isLandscape = false): void {
   const centerX = pageWidth / 2;
   const centerY = pageHeight / 2;
 
-  // Save graphics state for opacity if supported
+  // Extremely subtle security watermark opacity (approx 3.5%)
   try {
     if ((doc as any).GState) {
-      const gs = new (doc as any).GState({ opacity: 0.06 });
+      const gs = new (doc as any).GState({ opacity: 0.035 });
       doc.setGState(gs);
     }
-  } catch (e) {
-    // fallback if GState is unavailable
+  } catch {
+    // fallback
   }
 
-  // Faint green circle emblem
-  doc.setDrawColor(...PDF_COLORS.emerald);
-  doc.setFillColor(...PDF_COLORS.softGreen);
-  doc.setLineWidth(1.5);
+  // Very light, desaturated green/sage for subtle security-like watermark
+  const desaturatedStroke: [number, number, number] = [180, 205, 195];
+  const desaturatedFill: [number, number, number] = [245, 249, 246];
+  const desaturatedText: [number, number, number] = [130, 155, 145];
+
+  // Faint, extremely thin circle security emblem
+  doc.setDrawColor(...desaturatedStroke);
+  doc.setFillColor(...desaturatedFill);
+  doc.setLineWidth(0.2);
   doc.circle(centerX, centerY, isLandscape ? 38 : 48, 'FD');
   doc.circle(centerX, centerY, isLandscape ? 30 : 38, 'S');
 
-  // Diagonal brand watermark text
+  // Unobtrusive diagonal brand watermark text
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(isLandscape ? 20 : 24);
-  doc.setTextColor(...PDF_COLORS.forestGreen);
+  doc.setFontSize(isLandscape ? 18 : 22);
+  doc.setTextColor(...desaturatedText);
   doc.text('NATIONSWORLD OF VISIONARY ADVANCEMENT', centerX, centerY - 2, {
     align: 'center',
     angle: isLandscape ? 15 : 30,
   });
 
-  doc.setFontSize(isLandscape ? 11 : 13);
+  doc.setFontSize(isLandscape ? 10 : 11);
   doc.text('OFFICIAL INSTITUTIONAL DOCUMENT', centerX, centerY + 8, {
     align: 'center',
     angle: isLandscape ? 15 : 30,
@@ -110,7 +115,7 @@ export function drawPDFWatermark(doc: jsPDF, isLandscape = false): void {
       const gsReset = new (doc as any).GState({ opacity: 1.0 });
       doc.setGState(gsReset);
     }
-  } catch (e) {
+  } catch {
     // fallback
   }
 
