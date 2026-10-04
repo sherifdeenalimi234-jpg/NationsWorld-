@@ -127,7 +127,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           </p>
 
           {/* Supporting Paragraph */}
-          <p className="mt-6 text-sm sm:text-base lg:text-lg text-sage/90 max-w-3xl mx-auto leading-relaxed font-normal">
+          <p className="mt-6 text-sm sm:text-base lg:text-lg text-[#F4F1E8] max-w-3xl mx-auto leading-relaxed font-medium">
             NationsWorld is a multidisciplinary platform bringing together people, ideas and initiatives committed to learning, innovation, leadership, development and meaningful production.
           </p>
 
@@ -166,11 +166,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
                 WHO WE ARE
               </h2>
 
-              <p className="text-base sm:text-lg text-sage leading-relaxed font-normal mb-6">
+              <p className="text-base sm:text-lg text-[#F4F1E8] leading-relaxed font-normal mb-6">
                 NationsWorld of Visionary Advancement is a multidisciplinary community dedicated to developing people, advancing ideas and creating pathways for meaningful contribution.
               </p>
 
-              <p className="text-base sm:text-lg text-sage leading-relaxed font-normal mb-8">
+              <p className="text-base sm:text-lg text-[#F4F1E8] leading-relaxed font-normal mb-8">
                 We bring together researchers, innovators, emerging leaders, creators and development-oriented individuals to learn, collaborate, build and contribute to a better future.
               </p>
 
@@ -205,10 +205,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
                 <Search className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
+              <h3 className="text-xl font-extrabold text-ivory mb-3 tracking-tight">
                 RESEARCH
               </h3>
-              <p className="text-sm text-sage leading-relaxed">
+              <p className="text-sm text-[#E2E8F0] font-normal leading-relaxed">
                 Exploring questions, generating knowledge and understanding the issues that shape our world.
               </p>
             </div>
@@ -217,10 +217,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
                 <Lightbulb className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
+              <h3 className="text-xl font-extrabold text-ivory mb-3 tracking-tight">
                 INNOVATION
               </h3>
-              <p className="text-sm text-sage leading-relaxed">
+              <p className="text-sm text-[#E2E8F0] font-normal leading-relaxed">
                 Transforming ideas into new approaches, possibilities and solutions.
               </p>
             </div>
@@ -229,10 +229,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
                 <TrendingUp className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
+              <h3 className="text-xl font-extrabold text-ivory mb-3 tracking-tight">
                 DEVELOPMENT
               </h3>
-              <p className="text-sm text-sage leading-relaxed">
+              <p className="text-sm text-[#E2E8F0] font-normal leading-relaxed">
                 Developing people, communities, institutions and systems for sustainable advancement.
               </p>
             </div>
@@ -241,10 +241,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
                 <Award className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
+              <h3 className="text-xl font-extrabold text-ivory mb-3 tracking-tight">
                 LEADERSHIP
               </h3>
-              <p className="text-sm text-sage leading-relaxed">
+              <p className="text-sm text-[#E2E8F0] font-normal leading-relaxed">
                 Preparing people to think critically, lead responsibly and contribute meaningfully.
               </p>
             </div>
@@ -253,10 +253,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
               <div className="w-12 h-12 rounded-xl bg-emerald/20 border border-gold/30 text-mint flex items-center justify-center mb-6 font-bold">
                 <Box className="w-6 h-6 text-gold" />
               </div>
-              <h3 className="text-xl font-bold text-ivory mb-3 tracking-tight">
+              <h3 className="text-xl font-extrabold text-ivory mb-3 tracking-tight">
                 PRODUCTION
               </h3>
-              <p className="text-sm text-sage leading-relaxed">
+              <p className="text-sm text-[#E2E8F0] font-normal leading-relaxed">
                 Turning knowledge, creativity and ideas into tangible products, projects, solutions and initiatives.
               </p>
             </div>

@@ -95,7 +95,7 @@ export const ProductionDashboard: React.FC = () => {
   const draftCount = getAllDrafts().length;
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-nw-dark pb-16">
+    <div className="min-h-screen bg-slate-50 font-sans text-[#1E293B] pb-16">
       {/* VIEW 1: EDITOR */}
       {hubState === 'editor' && activeDraft && (
         <DocumentEditor
@@ -131,17 +131,17 @@ export const ProductionDashboard: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <span className="text-xs font-black uppercase tracking-widest text-nw-green block mb-1">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-[#12A875] block mb-1">
                 DOCUMENT TEMPLATES
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-nw-dark tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#063B2E] tracking-tight">
                 SELECT A TEMPLATE
               </h2>
             </div>
             <button
               type="button"
               onClick={() => setHubState('dashboard')}
-              className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 font-bold text-xs uppercase"
+              className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 font-extrabold text-xs text-[#063B2E] uppercase"
             >
               ← Back to Hub
             </button>
@@ -151,10 +151,10 @@ export const ProductionDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
                 selectedCategory === 'all'
-                  ? 'bg-nw-green text-white shadow-xs'
-                  : 'bg-white border text-gray-700 hover:bg-slate-100'
+                  ? 'bg-[#063B2E] text-white shadow-xs'
+                  : 'bg-white border border-slate-300 text-[#374151] hover:bg-slate-100'
               }`}
             >
               ALL TEMPLATES ({PRODUCTION_TEMPLATES.length})
@@ -162,10 +162,10 @@ export const ProductionDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setSelectedCategory('letters')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
                 selectedCategory === 'letters'
-                  ? 'bg-nw-green text-white shadow-xs'
-                  : 'bg-white border text-gray-700 hover:bg-slate-100'
+                  ? 'bg-[#063B2E] text-white shadow-xs'
+                  : 'bg-white border border-slate-300 text-[#374151] hover:bg-slate-100'
               }`}
             >
               OFFICIAL LETTERS
@@ -173,10 +173,10 @@ export const ProductionDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setSelectedCategory('reports')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
                 selectedCategory === 'reports'
-                  ? 'bg-nw-green text-white shadow-xs'
-                  : 'bg-white border text-gray-700 hover:bg-slate-100'
+                  ? 'bg-[#063B2E] text-white shadow-xs'
+                  : 'bg-white border border-slate-300 text-[#374151] hover:bg-slate-100'
               }`}
             >
               REPORTS
@@ -184,10 +184,10 @@ export const ProductionDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setSelectedCategory('organizational')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
                 selectedCategory === 'organizational'
-                  ? 'bg-nw-green text-white shadow-xs'
-                  : 'bg-white border text-gray-700 hover:bg-slate-100'
+                  ? 'bg-[#063B2E] text-white shadow-xs'
+                  : 'bg-white border border-slate-300 text-[#374151] hover:bg-slate-100'
               }`}
             >
               ORGANIZATIONAL
@@ -195,10 +195,10 @@ export const ProductionDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setSelectedCategory('certificates')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
                 selectedCategory === 'certificates'
-                  ? 'bg-nw-green text-white shadow-xs'
-                  : 'bg-white border text-gray-700 hover:bg-slate-100'
+                  ? 'bg-[#063B2E] text-white shadow-xs'
+                  : 'bg-white border border-slate-300 text-[#374151] hover:bg-slate-100'
               }`}
             >
               CERTIFICATES
@@ -212,23 +212,23 @@ export const ProductionDashboard: React.FC = () => {
             ).map((template) => (
               <div
                 key={template.id}
-                className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-md transition-all flex flex-col justify-between group"
+                className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-[#12A875] hover:shadow-md transition-all flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="px-2.5 py-0.5 rounded-md bg-nw-soft text-nw-green text-[10px] font-extrabold uppercase tracking-wide">
+                    <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-[#063B2E] text-[10px] font-extrabold uppercase tracking-wide">
                       {template.category}
                     </span>
-                    <span className="text-[10px] font-mono text-gray-400">
+                    <span className="text-[10px] font-mono font-bold text-[#64748B]">
                       {template.codePrefix}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-extrabold text-nw-dark mb-2 leading-snug group-hover:text-nw-green transition-colors">
+                  <h3 className="text-base font-extrabold text-[#063B2E] mb-2 leading-snug group-hover:text-[#12A875] transition-colors">
                     {template.title}
                   </h3>
 
-                  <p className="text-xs text-gray-600 leading-relaxed mb-6">
+                  <p className="text-xs text-[#374151] font-medium leading-relaxed mb-6">
                     {template.description}
                   </p>
                 </div>
@@ -236,10 +236,10 @@ export const ProductionDashboard: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleStartTemplate(template)}
-                  className="w-full py-2.5 rounded-xl bg-nw-dark hover:bg-nw-green text-white font-bold text-xs uppercase tracking-wider transition shadow-xs flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-xl bg-[#063B2E] hover:bg-[#0B3D2E] text-white font-bold text-xs uppercase tracking-wider transition shadow-xs flex items-center justify-center gap-2"
                 >
                   <span>CREATE {template.title.toUpperCase()}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#8DE0BE]" />
                 </button>
               </div>
             ))}
