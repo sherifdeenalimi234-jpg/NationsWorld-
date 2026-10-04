@@ -8,12 +8,22 @@ import { HowItWorks } from './components/HowItWorks';
 import { ApplicationForm } from './components/ApplicationForm';
 import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
+import { NOVA } from './components/NOVA';
 
 export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<'home' | 'portal' | 'production'>('home');
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
-  const handleNavigate = (view: 'home' | 'portal' | 'production', sectionId?: string) => {
+  const handleNavigate = (
+    view: 'home' | 'portal' | 'production',
+    sectionId?: string,
+    filter?: string
+  ) => {
     setActiveView(view);
+
+    if (filter) {
+      setActiveFilter(filter);
+    }
 
     if (sectionId) {
       setTimeout(() => {
@@ -39,6 +49,8 @@ export const App: React.FC = () => {
         {activeView === 'home' && (
           <Homepage
             onOpenPortal={() => handleOpenPortal('application-section')}
+            activeFilter={activeFilter}
+            onFilterChange={(filter) => setActiveFilter(filter)}
             onNavigateToSection={(id: string) => {
               if (id === 'production') {
                 handleNavigate('production');
@@ -82,6 +94,13 @@ export const App: React.FC = () => {
       </main>
 
       <Footer onNavigate={handleNavigate} />
+
+      {/* Floating NOVA Natural Language Intelligent Navigation Assistant */}
+      <NOVA
+        activeView={activeView}
+        activeFilter={activeFilter}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 };

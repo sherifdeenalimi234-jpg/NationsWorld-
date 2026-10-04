@@ -22,6 +22,8 @@ import heroImage from '../assets/hero.png';
 interface HomepageProps {
   onOpenPortal: () => void;
   onNavigateToSection?: (sectionId: string) => void;
+  activeFilter?: string;
+  onFilterChange?: (filter: string) => void;
 }
 
 const TYPEWRITER_STATEMENTS = [
@@ -32,7 +34,12 @@ const TYPEWRITER_STATEMENTS = [
   'We Produce.'
 ];
 
-export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSection }) => {
+export const Homepage: React.FC<HomepageProps> = ({
+  onOpenPortal,
+  onNavigateToSection,
+  activeFilter = 'all',
+  onFilterChange
+}) => {
   const [statementIndex, setStatementIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -381,7 +388,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
       {/* PROGRAMMES & INITIATIVES */}
       <section id="programmes" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-obsidian via-deep-emerald/30 to-obsidian border-b border-gold/20">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
             <div>
               <span className="text-xs font-bold uppercase tracking-[0.25em] text-gold block mb-3">
                 PRACTICAL INITIATIVES
@@ -393,6 +400,27 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
             <p className="text-sm text-sage max-w-md mt-2 md:mt-0">
               Interactive platforms designed to bridge knowledge, policy, and execution.
             </p>
+          </div>
+
+          {/* Programme Category Filters */}
+          <div className="flex flex-wrap items-center gap-2 mb-10 p-3 bg-obsidian/60 border border-gold/20 rounded-2xl backdrop-blur-md">
+            <span className="text-xs font-bold text-gold uppercase tracking-wider px-2 font-mono">
+              Active Category:
+            </span>
+            {['all', 'Leadership', 'Research', 'Development', 'Innovation', 'TPD'].map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => onFilterChange && onFilterChange(cat)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition border ${
+                  activeFilter.toLowerCase() === cat.toLowerCase()
+                    ? 'bg-emerald text-white border-gold shadow-md'
+                    : 'bg-deep-emerald/40 text-sage hover:text-ivory border-gold/20 hover:border-gold/40'
+                }`}
+              >
+                {cat === 'all' ? 'All Categories' : cat}
+              </button>
+            ))}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -476,7 +504,16 @@ export const Homepage: React.FC<HomepageProps> = ({ onOpenPortal, onNavigateToSe
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {NATIONSWORLD_TEAMS.map((team) => (
+            {NATIONSWORLD_TEAMS.filter((team) => {
+              if (!activeFilter || activeFilter.toLowerCase() === 'all' || activeFilter.toLowerCase() === 'tpd') {
+                return true;
+              }
+              return (
+                team.category.toLowerCase().includes(activeFilter.toLowerCase()) ||
+                team.name.toLowerCase().includes(activeFilter.toLowerCase()) ||
+                team.description.toLowerCase().includes(activeFilter.toLowerCase())
+              );
+            }).map((team) => (
               <div
                 key={team.id}
                 className="glass-panel glass-panel-hover p-6 rounded-2xl flex flex-col justify-between"
