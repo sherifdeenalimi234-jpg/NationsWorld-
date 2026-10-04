@@ -55,19 +55,19 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-nw-border pb-4">
-        <h2 className="text-xl font-bold text-nw-dark flex items-center gap-2">
-          <FileText className="w-5 h-5 text-nw-green" />
+      <div className="border-b border-slate-200 pb-4">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-[#063B2E] flex items-center gap-2">
+          <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-[#12A875]" />
           Step 04: Interest & Experience
         </h2>
-        <p className="text-sm text-nw-muted mt-1">
+        <p className="text-sm text-[#374151] font-medium mt-1">
           Share your motivations, expertise, and vision for driving advancement with NationsWorld.
         </p>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-nw-dark mb-1">
-          14. Why do you want to become a NationsWorld member? <span className="text-nw-error">*</span>
+        <label className="block text-sm font-bold text-[#1E293B] mb-1">
+          14. Why do you want to become a NationsWorld member? <span className="text-red-600">*</span>
         </label>
         <textarea
           name="whyMember"
@@ -75,16 +75,16 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           value={formData.whyMember}
           onChange={handleChange}
           placeholder="Describe your primary motivation for joining NationsWorld..."
-          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 ${
-            errors.whyMember ? 'border-nw-error bg-red-50/20' : 'border-nw-border focus:border-nw-green'
+          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 ${
+            errors.whyMember ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-[#12A875]'
           }`}
         />
-        {errors.whyMember && <p className="text-xs text-nw-error mt-1">{errors.whyMember}</p>}
+        {errors.whyMember && <p className="text-xs text-red-600 font-bold mt-1">{errors.whyMember}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-nw-dark mb-1">
-          15. What area of work, research or development are you most interested in? <span className="text-nw-error">*</span>
+        <label className="block text-sm font-bold text-[#1E293B] mb-1">
+          15. What area of work, research or development are you most interested in? <span className="text-red-600">*</span>
         </label>
         <textarea
           name="areaOfInterest"
@@ -92,16 +92,16 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           value={formData.areaOfInterest}
           onChange={handleChange}
           placeholder="Specify the topics or domains you want to explore..."
-          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 ${
-            errors.areaOfInterest ? 'border-nw-error bg-red-50/20' : 'border-nw-border focus:border-nw-green'
+          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 ${
+            errors.areaOfInterest ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-[#12A875]'
           }`}
         />
-        {errors.areaOfInterest && <p className="text-xs text-nw-error mt-1">{errors.areaOfInterest}</p>}
+        {errors.areaOfInterest && <p className="text-xs text-red-600 font-bold mt-1">{errors.areaOfInterest}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-nw-dark mb-1">
-          16. What skills or experience can you contribute to NationsWorld? <span className="text-nw-error">*</span>
+        <label className="block text-sm font-bold text-[#1E293B] mb-1">
+          16. What skills or experience can you contribute to NationsWorld? <span className="text-red-600">*</span>
         </label>
         <textarea
           name="skillsContribution"
@@ -109,16 +109,16 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           value={formData.skillsContribution}
           onChange={handleChange}
           placeholder="Highlight your key skills, knowledge, or capabilities..."
-          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 ${
-            errors.skillsContribution ? 'border-nw-error bg-red-50/20' : 'border-nw-border focus:border-nw-green'
+          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 ${
+            errors.skillsContribution ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-[#12A875]'
           }`}
         />
-        {errors.skillsContribution && <p className="text-xs text-nw-error mt-1">{errors.skillsContribution}</p>}
+        {errors.skillsContribution && <p className="text-xs text-red-600 font-bold mt-1">{errors.skillsContribution}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-nw-dark mb-1">
-          17. What do you hope to gain or develop through NationsWorld? <span className="text-nw-error">*</span>
+        <label className="block text-sm font-bold text-[#1E293B] mb-1">
+          17. What do you hope to gain or develop through NationsWorld? <span className="text-red-600">*</span>
         </label>
         <textarea
           name="gainOrDevelop"
@@ -126,16 +126,16 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           value={formData.gainOrDevelop}
           onChange={handleChange}
           placeholder="Describe how NationsWorld can support your personal and professional growth..."
-          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 ${
-            errors.gainOrDevelop ? 'border-nw-error bg-red-50/20' : 'border-nw-border focus:border-nw-green'
+          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 ${
+            errors.gainOrDevelop ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-[#12A875]'
           }`}
         />
-        {errors.gainOrDevelop && <p className="text-xs text-nw-error mt-1">{errors.gainOrDevelop}</p>}
+        {errors.gainOrDevelop && <p className="text-xs text-red-600 font-bold mt-1">{errors.gainOrDevelop}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-nw-dark mb-1">
-          18. Describe one problem in your community, country or the world that you would like to contribute towards solving. <span className="text-nw-error">*</span>
+        <label className="block text-sm font-bold text-[#1E293B] mb-1">
+          18. Describe one problem in your community, country or the world that you would like to contribute towards solving. <span className="text-red-600">*</span>
         </label>
         <textarea
           name="communityProblem"
@@ -143,16 +143,16 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           value={formData.communityProblem}
           onChange={handleChange}
           placeholder="Explain a specific challenge and your vision for addressing it..."
-          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 ${
-            errors.communityProblem ? 'border-nw-error bg-red-50/20' : 'border-nw-border focus:border-nw-green'
+          className={`w-full px-3.5 py-2.5 rounded-lg border text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 ${
+            errors.communityProblem ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-[#12A875]'
           }`}
         />
-        {errors.communityProblem && <p className="text-xs text-nw-error mt-1">{errors.communityProblem}</p>}
+        {errors.communityProblem && <p className="text-xs text-red-600 font-bold mt-1">{errors.communityProblem}</p>}
       </div>
 
       <div className="pt-2">
-        <label className="block text-sm font-semibold text-nw-dark mb-2 flex items-center gap-1.5">
-          <CheckSquare className="w-4 h-4 text-nw-green" />
+        <label className="block text-sm font-bold text-[#1E293B] mb-2 flex items-center gap-1.5">
+          <CheckSquare className="w-4 h-4 text-[#12A875]" />
           19. Previous areas of experience (Select all that apply):
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
@@ -161,17 +161,17 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
             return (
               <label
                 key={area}
-                className={`flex items-center gap-2 p-2.5 rounded-lg border text-xs font-medium cursor-pointer transition ${
+                className={`flex items-center gap-2 p-2.5 rounded-lg border text-xs cursor-pointer transition ${
                   checked
-                    ? 'bg-nw-soft border-nw-green text-nw-deep font-bold'
-                    : 'bg-white border-nw-border text-nw-dark hover:bg-gray-50'
+                    ? 'bg-[#8DE0BE]/30 border-[#12A875] text-[#063B2E] font-extrabold shadow-xs'
+                    : 'bg-white border-slate-300 text-[#1E293B] font-semibold hover:bg-slate-50'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => handleCheckboxChange(area)}
-                  className="rounded text-nw-green focus:ring-nw-green w-4 h-4"
+                  className="rounded text-[#12A875] focus:ring-[#12A875] w-4 h-4"
                 />
                 <span className="truncate">{area}</span>
               </label>
@@ -181,17 +181,17 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
       </div>
 
       <div className="pt-2">
-        <label className="block text-sm font-semibold text-nw-dark mb-2">
+        <label className="block text-sm font-bold text-[#1E293B] mb-2">
           20. Have you worked on a project, research, organisation, campaign or initiative before?
         </label>
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => setWorkedOnProject(true)}
-            className={`px-5 py-2 rounded-lg text-sm font-medium border transition ${
+            className={`px-5 py-2 rounded-lg text-sm font-bold border transition ${
               formData.workedOnProject === true
-                ? 'bg-nw-green text-white border-nw-green font-bold'
-                : 'bg-white text-nw-dark border-nw-border hover:bg-gray-50'
+                ? 'bg-[#063B2E] text-white border-[#063B2E]'
+                : 'bg-white text-[#1E293B] border-slate-300 hover:bg-slate-50'
             }`}
           >
             Yes
@@ -199,10 +199,10 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           <button
             type="button"
             onClick={() => setWorkedOnProject(false)}
-            className={`px-5 py-2 rounded-lg text-sm font-medium border transition ${
+            className={`px-5 py-2 rounded-lg text-sm font-bold border transition ${
               formData.workedOnProject === false
-                ? 'bg-nw-green text-white border-nw-green font-bold'
-                : 'bg-white text-nw-dark border-nw-border hover:bg-gray-50'
+                ? 'bg-[#063B2E] text-white border-[#063B2E]'
+                : 'bg-white text-[#1E293B] border-slate-300 hover:bg-slate-50'
             }`}
           >
             No
@@ -211,8 +211,8 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
 
         {formData.workedOnProject === true && (
           <div className="mt-3">
-            <label className="block text-xs font-semibold text-nw-dark mb-1 flex items-center gap-1">
-              <MessageSquare className="w-3.5 h-3.5 text-nw-green" />
+            <label className="block text-xs font-bold text-[#1E293B] mb-1 flex items-center gap-1">
+              <MessageSquare className="w-3.5 h-3.5 text-[#12A875]" />
               Briefly describe your experience:
             </label>
             <textarea
@@ -221,16 +221,16 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
               value={formData.projectExperienceDetails}
               onChange={handleChange}
               placeholder="Give a brief summary of the project, role, or initiative..."
-              className="w-full px-3.5 py-2.5 rounded-lg border border-nw-border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 focus:border-nw-green"
+              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875]"
             />
           </div>
         )}
       </div>
 
       <div className="pt-2">
-        <label className="block text-sm font-semibold text-nw-dark mb-1 flex items-center gap-1.5">
-          <Link className="w-4 h-4 text-nw-green" />
-          21. Portfolio / Evidence of Work <span className="text-nw-muted font-normal">(Optional)</span>
+        <label className="block text-sm font-bold text-[#1E293B] mb-1 flex items-center gap-1.5">
+          <Link className="w-4 h-4 text-[#12A875]" />
+          21. Portfolio / Evidence of Work <span className="text-[#64748B] font-semibold">(Optional)</span>
         </label>
         <input
           type="url"
@@ -238,9 +238,9 @@ export const ExperienceStep: React.FC<ExperienceStepProps> = ({
           value={formData.portfolioUrl}
           onChange={handleChange}
           placeholder="https://... (LinkedIn, GitHub, Google Scholar, Website, Drive link)"
-          className="w-full px-3.5 py-2.5 rounded-lg border border-nw-border text-sm transition focus:outline-none focus:ring-2 focus:ring-nw-green/20 focus:border-nw-green"
+          className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-900 bg-white transition focus:outline-none focus:ring-2 focus:ring-[#12A875]/30 focus:border-[#12A875]"
         />
-        <p className="text-xs text-nw-muted mt-1">
+        <p className="text-xs text-[#64748B] font-medium mt-1">
           Provide a link to your publication, portfolio, CV, or online professional profile if available.
         </p>
       </div>
