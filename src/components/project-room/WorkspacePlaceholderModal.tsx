@@ -1,13 +1,15 @@
 import React from 'react';
-import { Sparkles, ArrowLeft, CheckCircle2, Lock } from 'lucide-react';
+import { Sparkles, ArrowLeft, CheckCircle2, Wrench, ArrowRight } from 'lucide-react';
 
 interface WorkspacePlaceholderModalProps {
   onClose: () => void;
+  onOpenToolkit?: () => void;
   projectNumber?: number;
 }
 
 export const WorkspacePlaceholderModal: React.FC<WorkspacePlaceholderModalProps> = ({
   onClose,
+  onOpenToolkit,
   projectNumber,
 }) => {
   const formattedNum = projectNumber
@@ -43,31 +45,46 @@ export const WorkspacePlaceholderModal: React.FC<WorkspacePlaceholderModalProps>
             Your Workspace Is Ready
           </h2>
           <p className="text-sm text-[#64748b] leading-relaxed max-w-sm mx-auto">
-            Your research and writing environment will be available here in the next phase.
+            Your research and writing environment is active. Use the Project Toolkit to research, organize, and develop your project.
           </p>
         </div>
 
-        {/* Status card preview */}
-        <div className="p-4 rounded-xl bg-[#04271e]/80 border border-[#0b8f6a]/20 text-xs text-[#64748b] space-y-2 text-left">
-          <div className="flex items-center justify-between text-[#f7faf8] font-medium">
-            <span className="flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-[#d6b45a]" />
-              Phase 4 Workspace Pipeline
+        {/* Project Toolkit Highlight Card */}
+        <div className="p-4 rounded-xl bg-[#04271e]/90 border border-[#0b8f6a]/30 text-xs space-y-3 text-left">
+          <div className="flex items-center justify-between text-[#f7faf8] font-serif font-bold text-sm">
+            <span className="flex items-center gap-2">
+              <Wrench className="w-4 h-4 text-[#d6b45a]" />
+              Project Toolkit
             </span>
-            <span className="text-[10px] bg-[#d6b45a]/20 text-[#d6b45a] px-2 py-0.5 rounded font-mono font-bold uppercase">
-              COMING NEXT
+            <span className="text-[10px] bg-[#0b8f6a]/20 text-[#0b8f6a] border border-[#0b8f6a]/30 px-2 py-0.5 rounded font-mono font-bold uppercase">
+              ACTIVE
             </span>
           </div>
-          <p className="text-[11px] text-[#64748b]">
-            Future modules will feature research planners, literature review matrices, built-in citation engines, and Production Hub integrations.
+          <p className="text-xs text-[#64748b] leading-relaxed">
+            Tools to help you research, organize, analyze and develop your project.
           </p>
+
+          {onOpenToolkit && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenToolkit();
+              }}
+              className="w-full py-2.5 px-4 bg-[#0b8f6a] hover:bg-[#0d9d75] text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer mt-1"
+            >
+              <span>Open Project Toolkit</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#d6b45a]" />
+            </button>
+          )}
         </div>
 
         {/* Action button */}
         <div>
           <button
+            type="button"
             onClick={onClose}
-            className="w-full py-3.5 px-6 bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-medium text-sm rounded-xl shadow-lg hover:shadow-[#0b8f6a]/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3 px-6 bg-[#021f18] hover:bg-[#04271e] text-[#64748b] hover:text-[#f7faf8] border border-[#0b8f6a]/30 font-medium text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 text-[#d6b45a]" />
             <span>Return to Project Room</span>
