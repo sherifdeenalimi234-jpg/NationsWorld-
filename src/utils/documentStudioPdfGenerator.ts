@@ -5,7 +5,6 @@ import {
   drawPDFFooter,
   drawPDFWatermark,
   drawPDFTitle,
-  drawPDFSignature,
   drawPDFBorder,
 } from './pdfSystem';
 
@@ -33,109 +32,63 @@ export function generateStudioPDF(data: StructuredDocumentData): jsPDF {
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 15;
   const contentWidth = pageWidth - margin * 2;
+  const cfg = data.brandingConfig || {
+    mode: 'brand-only',
+    preserveOriginalLayout: true,
+    applyWatermark: true,
+    addHeader: true,
+    addFooter: true,
+    addPageNumbers: true,
+  };
 
   // 1. Decorative border
   drawPDFBorder(doc);
 
-  // 2. Subtle Watermark
-  drawPDFWatermark(doc);
-
-  // 3. Official Header
-  let currentY = drawPDFHeader(doc);
-
-  // 4. Title
-  currentY = drawPDFTitle(doc, data.title || 'NationsWorld Document', currentY);
-
-  // 5. Letter specific or standard structured content
-  if (['official-letter', 'appointment-letter', 'invitation-letter'].includes(data.docTypeId)) {
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(6, 59, 46); // #063B2E
-    doc.text(`TO: ${data.recipient || data.recipientName || 'Valued Recipient'}`, margin, currentY);
-    currentY += 6;
-
-    if (data.subject) {
-      doc.text(`SUBJECT: ${data.subject.toUpperCase()}`, margin, currentY);
-      currentY += 8;
-    }
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(55, 65, 81);
-
-    const bodyLines = doc.splitTextToSize(data.bodyText || '', contentWidth);
-    bodyLines.forEach((line: string) => {
-      if (currentY > pageHeight - 35) {
-        doc.addPage();
-        drawPDFBorder(doc);
-        drawPDFWatermark(doc);
-        currentY = drawPDFHeader(doc);
-      }
-      doc.text(line, margin, currentY);
-      currentY += 5;
-    });
-
-    currentY += 10;
-    if (data.closing) {
-      doc.text(data.closing, margin, currentY);
-      currentY += 6;
-    }
-
-    drawPDFSignature(doc, {
-      name: data.signatureBlock || 'Secretariat Directorate',
-      position: 'NationsWorld Representative',
-      organization: 'NationsWorld of Visionary Advancement',
-      yPos: currentY,
-      pageHeight,
-      margin,
-    });
-  } else {
-    // Report or structured document
-    data.sections.forEach((sec) => {
-      if (currentY > pageHeight - 40) {
-        doc.addPage();
-        drawPDFBorder(doc);
-        drawPDFWatermark(doc);
-        currentY = drawPDFHeader(doc);
-      }
-
-      // Section Heading
-      const secHeading = sec.heading || sec.title || 'Section';
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.setTextColor(6, 59, 46);
-      doc.text(secHeading.toUpperCase(), margin, currentY);
-      currentY += 6;
-
-      // Section Content
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9.5);
-      doc.setTextColor(55, 65, 81);
-
-      const lines = doc.splitTextToSize(sec.content || '', contentWidth);
-      lines.forEach((line: string) => {
-        if (currentY > pageHeight - 30) {
-          doc.addPage();
-          drawPDFBorder(doc);
-          drawPDFWatermark(doc);
-          currentY = drawPDFHeader(doc);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9.5);
-          doc.setTextColor(55, 65, 81);
-        }
-        doc.text(line, margin, currentY);
-        currentY += 4.5;
-      });
-
-      currentY += 8;
-    });
+  // 2. Watermark if enabled
+  if (cfg.applyWatermark) {
+    drawPDFWatermark(doc);
   }
 
-  // Footer for all pages
+  // 3. Official Header if enabled
+  let currentY = 15;
+  if (cfg.addHeader) {
+    currentY = drawPDFHeader(doc);
+  }
+
+  // 4. Document Title
+  currentY = drawPDFTitle(doc, data.title || 'NationsWorld Document', currentY);
+
+  // 5. Render Author Content
+  const rawTextToRender = data.originalRawContent || data.bodyText ||
+    (data.sections && data.sections.map((s) => `${s.heading}\n${s.content}`).join('\n\n')) ||
+    'Author document content.';
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(55, 65, 81); // #374151
+
+  const bodyLines = doc.splitTextToSize(rawTextToRender, contentWidth);
+  bodyLines.forEach((line: string) => {
+    if (currentY > pageHeight - 30) {
+      doc.addPage();
+      drawPDFBorder(doc);
+      if (cfg.applyWatermark) drawPDFWatermark(doc);
+      currentY = cfg.addHeader ? drawPDFHeader(doc) : 20;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(55, 65, 81);
+    }
+    doc.text(line, margin, currentY);
+    currentY += 5;
+  });
+
+  // Footer across pages
   const totalPages = doc.getNumberOfPages();
   for (let page = 1; page <= totalPages; page++) {
     doc.setPage(page);
-    drawPDFFooter(doc, page, totalPages, data.referenceNumber);
+    if (cfg.addFooter) {
+      drawPDFFooter(doc, page, totalPages, data.referenceNumber);
+    }
   }
 
   return doc;

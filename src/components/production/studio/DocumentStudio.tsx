@@ -6,8 +6,8 @@ import type {
   StructuredDocumentData,
   StudioVersionRecord,
   ValidationIssue,
+  BrandingConfig,
 } from '../../../types/documentStudio';
-import { ALL_TRANSFORMATION_OPTIONS } from './TransformationSelector';
 import { DocumentUpload } from './DocumentUpload';
 import { DocumentTypeSelector } from './DocumentTypeSelector';
 import { TransformationSelector } from './TransformationSelector';
@@ -49,9 +49,6 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
   const [currentStep, setCurrentStep] = useState<StudioStep>('upload');
   const [uploadedFile, setUploadedFile] = useState<UploadedFileInfo | null>(null);
   const [selectedTypeId, setSelectedTypeId] = useState<DocumentTypeId | null>(null);
-  const [selectedTransformationIds, setSelectedTransformationIds] = useState<string[]>(
-    ALL_TRANSFORMATION_OPTIONS.filter((o) => o.defaultChecked).map((o) => o.id)
-  );
   const [structuredData, setStructuredData] = useState<StructuredDocumentData | null>(null);
   const [historyRecords, setHistoryRecords] = useState<StudioVersionRecord[]>([]);
 
@@ -71,9 +68,8 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
   const handleFileProcessed = (fileInfo: UploadedFileInfo) => {
     setUploadedFile(fileInfo);
     if (fileInfo.status === 'ready') {
-      // Default to official-letter or research-report based on content heuristics
-      const defaultType: DocumentTypeId = fileInfo.rawContent.toLowerCase().includes('research')
-        ? 'research-report'
+      const defaultType: DocumentTypeId = fileInfo.rawContent.toLowerCase().includes('proposal')
+        ? 'research-proposal'
         : 'official-letter';
 
       setSelectedTypeId(defaultType);
@@ -81,7 +77,10 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
         fileInfo.rawContent,
         defaultType,
         activeCycleId,
-        activeProjectId
+        activeProjectId,
+        {
+          detectedExistingBranding: fileInfo.hasExistingNationsWorldBranding,
+        }
       );
       setStructuredData(structured);
       saveStudioDraft(structured, activeCycleId, activeProjectId);
@@ -94,10 +93,14 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
     setSelectedTypeId(null);
   };
 
-  // Handle document type selection
+  // Handle document type selection without rewriting author content
   const handleSelectType = (typeId: DocumentTypeId) => {
     setSelectedTypeId(typeId);
-    if (uploadedFile && uploadedFile.rawContent) {
+    if (structuredData) {
+      const updated = { ...structuredData, docTypeId: typeId };
+      setStructuredData(updated);
+      saveStudioDraft(updated, activeCycleId, activeProjectId);
+    } else if (uploadedFile && uploadedFile.rawContent) {
       const structured = buildStructuredDocument(
         uploadedFile.rawContent,
         typeId,
@@ -106,22 +109,16 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
       );
       setStructuredData(structured);
       saveStudioDraft(structured, activeCycleId, activeProjectId);
-    } else if (structuredData) {
-      const updated = { ...structuredData, docTypeId: typeId };
-      setStructuredData(updated);
-      saveStudioDraft(updated, activeCycleId, activeProjectId);
     }
   };
 
-  // Toggle transformation option
-  const handleToggleTransformation = (optId: string) => {
-    setSelectedTransformationIds((prev) =>
-      prev.includes(optId) ? prev.filter((id) => id !== optId) : [...prev, optId]
-    );
-  };
-
-  const handleSelectAllTransformations = () => {
-    setSelectedTransformationIds(ALL_TRANSFORMATION_OPTIONS.map((o) => o.id));
+  // Branding config handler
+  const handleUpdateBrandingConfig = (newConfig: BrandingConfig) => {
+    if (structuredData) {
+      const updated = { ...structuredData, brandingConfig: newConfig };
+      setStructuredData(updated);
+      saveStudioDraft(updated, activeCycleId, activeProjectId);
+    }
   };
 
   // Validate document
@@ -143,6 +140,7 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
       referenceNumber: structuredData.referenceNumber,
       pdfFileName: generateStudioFileName(structuredData),
       documentData: structuredData,
+      originalFileName: uploadedFile?.name,
     };
 
     const updatedHistory = addStudioHistoryRecord(
@@ -164,7 +162,7 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
   const canGoNext = () => {
     if (currentStep === 'upload') return !!uploadedFile && uploadedFile.status === 'ready';
     if (currentStep === 'doctype') return !!selectedTypeId;
-    if (currentStep === 'configure') return selectedTransformationIds.length > 0;
+    if (currentStep === 'configure') return !!structuredData?.brandingConfig;
     if (currentStep === 'review') return validation.isValid;
     return true;
   };
@@ -183,6 +181,17 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
     else if (currentStep === 'generate') setCurrentStep('review');
   };
 
+  const defaultConfig: BrandingConfig = {
+    mode: 'brand-only',
+    preserveOriginalLayout: true,
+    applyWatermark: true,
+    addHeader: true,
+    addFooter: true,
+    addPageNumbers: true,
+    detectedExistingBranding: !!uploadedFile?.hasExistingNationsWorldBranding,
+    existingBrandingChoice: 'keep-existing',
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans">
       {/* Studio Header Banner */}
@@ -191,9 +200,9 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-[#8DE0BE] text-[10px] font-extrabold uppercase tracking-widest border border-emerald-500/30">
-                NOVA ENGINE POWERED
+                BRAND IT. DON'T TOUCH IT.
               </span>
-              <span className="text-xs font-bold text-gray-300">| Digital Secretariat</span>
+              <span className="text-xs font-bold text-gray-300">| Source of Truth Preservation</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-2">
               NOVA DOCUMENT STUDIO
@@ -301,9 +310,8 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
       {currentStep === 'configure' && (
         <TransformationSelector
           selectedTypeId={selectedTypeId}
-          selectedOptionIds={selectedTransformationIds}
-          onToggleOption={handleToggleTransformation}
-          onSelectAll={handleSelectAllTransformations}
+          config={structuredData?.brandingConfig || defaultConfig}
+          onChangeConfig={handleUpdateBrandingConfig}
         />
       )}
 
@@ -331,8 +339,8 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
                 </span>
                 <p className="text-xs font-medium leading-relaxed">
                   {validation.isValid
-                    ? 'All required sections and metadata are complete. You may proceed to generate the official NationsWorld PDF.'
-                    : 'Actionable review required. Please complete or verify missing fields flagged below before generation.'}
+                    ? 'Original author content is preserved intact. Ready for NationsWorld PDF branding synthesis.'
+                    : 'Actionable review required before generation.'}
                 </p>
 
                 {!validation.isValid && validation.issues.length > 0 && (
@@ -378,7 +386,7 @@ export const DocumentStudio: React.FC<DocumentStudioProps> = ({
                 {structuredData.title}
               </h2>
               <p className="text-xs text-[#64748B] mt-1 font-medium">
-                Ref: {structuredData.referenceNumber} • Format: {structuredData.docTypeId.toUpperCase()}
+                Ref: {structuredData.referenceNumber} • Format: {structuredData.docTypeId.toUpperCase()} • Mode: {(structuredData.brandingConfig?.mode || 'brand-only').toUpperCase()}
               </p>
             </div>
 
