@@ -2,11 +2,15 @@ import { PROJECT_CYCLE } from '../data/projectsData';
 
 const STORAGE_KEY = 'projectRoomAssignment';
 
+export const DEFAULT_DECLARATION_TEXT =
+  "I acknowledge that the project assigned to me is my responsibility. I agree to approach the project with honesty, originality, intellectual discipline and respect for credible sources. I understand that I am responsible for researching, developing and presenting my work to the required standard and within the applicable project timeline.";
+
 export interface ParticipantDeclaration {
   accepted: boolean;
   fullName: string;
   contact: string;
   acceptedAt: string;
+  declarationText: string;
 }
 
 export interface StoredAssignment {
@@ -44,6 +48,13 @@ export function getStoredAssignment(): StoredAssignment | null {
       return null;
     }
 
+    // Ensure declaration text fallback if declaration exists
+    if (data.declaration) {
+      if (!data.declaration.declarationText) {
+        data.declaration.declarationText = DEFAULT_DECLARATION_TEXT;
+      }
+    }
+
     return data;
   } catch (err) {
     console.error('Error reading project room assignment from storage:', err);
@@ -75,10 +86,16 @@ export function saveAssignment(projectNumber: number, projectId: string): Stored
   }
 }
 
-export function saveDeclaration(fullName: string, contact: string): StoredAssignment | null {
+export function saveDeclaration(
+  fullName: string,
+  contact: string,
+  customText?: string
+): StoredAssignment | null {
   try {
     const existing = getStoredAssignment();
     if (!existing) return null;
+
+    const declarationText = customText?.trim() || DEFAULT_DECLARATION_TEXT;
 
     const updated: StoredAssignment = {
       ...existing,
@@ -87,7 +104,8 @@ export function saveDeclaration(fullName: string, contact: string): StoredAssign
         accepted: true,
         fullName,
         contact,
-        acceptedAt: new Date().toISOString(),
+        acceptedAt: existing.declaration?.acceptedAt || new Date().toISOString(),
+        declarationText,
       },
     };
 

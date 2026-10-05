@@ -12,6 +12,9 @@ import { ProductionSettingsPanel } from './ProductionSettingsPanel';
 import { DocumentPreviewArea } from './DocumentPreviewArea';
 import { ReadinessCheckModal } from './ReadinessCheckModal';
 import { FinalConfirmationModal } from './FinalConfirmationModal';
+import { FinalSubmissionPackageModal } from './FinalSubmissionPackageModal';
+import { downloadDeclarationPDF } from '../../../utils/declarationPdfGenerator';
+import { getStoredAssignment, DEFAULT_DECLARATION_TEXT } from '../../../utils/projectRoomStorage';
 import {
   ArrowLeft,
   Download,
@@ -22,6 +25,8 @@ import {
   Edit3,
   Clock,
   ShieldAlert,
+  ShieldCheck,
+  PackageCheck,
 } from 'lucide-react';
 
 interface ProjectProductionStudioProps {
@@ -57,8 +62,12 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
 
   const [showReadinessModal, setShowReadinessModal] = useState(false);
   const [showFinalModal, setShowFinalModal] = useState(false);
+  const [showSubmissionPackageModal, setShowSubmissionPackageModal] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string>('Saved');
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  const assignment = getStoredAssignment();
+  const decl = assignment?.declaration;
 
   // Sync state on load
   useEffect(() => {
@@ -102,6 +111,20 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
     setTimeout(() => setDownloadSuccess(false), 4000);
   };
 
+  const handleDownloadDeclarationPDF = () => {
+    if (!decl) return;
+    const numInt = parseInt(projectNumber, 10) || assignment?.projectNumber || 1;
+    downloadDeclarationPDF({
+      fullName: decl.fullName,
+      contact: decl.contact,
+      projectTitle: projectTitle,
+      projectNumber: numInt,
+      cycleId: cycleId || '2026-OCTOBER',
+      acceptedAt: decl.acceptedAt,
+      declarationText: decl.declarationText || DEFAULT_DECLARATION_TEXT,
+    });
+  };
+
   const handleConfirmFinal = () => {
     const updated: ProjectProductionSettings = {
       ...settings,
@@ -125,6 +148,9 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
 
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 4000);
+
+    // Open submission package modal automatically after finalizing
+    setShowSubmissionPackageModal(true);
   };
 
   return (
@@ -146,6 +172,16 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
         />
       )}
 
+      {/* FINAL SUBMISSION PACKAGE MODAL */}
+      <FinalSubmissionPackageModal
+        isOpen={showSubmissionPackageModal}
+        onClose={() => setShowSubmissionPackageModal(false)}
+        projectTitle={projectTitle}
+        projectNumber={projectNumber}
+        cycleId={cycleId}
+        onDownloadProjectPDF={handleDownloadPDF}
+      />
+
       {/* TOP HEADER & BREADCRUMBS */}
       <div className="bg-[#063B2E] text-white border-b border-emerald-900 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
@@ -153,7 +189,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
             <button
               type="button"
               onClick={onBackToProjectRoom}
-              className="hover:underline text-white"
+              className="hover:underline text-white cursor-pointer"
             >
               Project Room
             </button>
@@ -161,7 +197,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
             <button
               type="button"
               onClick={onBackToWorkspace}
-              className="hover:underline text-white"
+              className="hover:underline text-white cursor-pointer"
             >
               Project {projectNumber}
             </button>
@@ -180,7 +216,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
             <button
               type="button"
               onClick={onBackToWorkspace}
-              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs tracking-wider uppercase transition flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs tracking-wider uppercase transition flex items-center gap-1.5 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Workspace</span>
@@ -216,7 +252,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
               <button
                 type="button"
                 onClick={() => setShowReadinessModal(true)}
-                className="px-4 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700 text-emerald-200 font-extrabold text-xs uppercase tracking-wider transition flex items-center gap-2"
+                className="px-4 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700 text-emerald-200 font-extrabold text-xs uppercase tracking-wider transition flex items-center gap-2 cursor-pointer"
               >
                 <Layers className="w-4 h-4 text-[#D6B45A]" />
                 <span>Readiness Status ({readiness.overallProgress}%)</span>
@@ -224,8 +260,17 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
 
               <button
                 type="button"
+                onClick={() => setShowSubmissionPackageModal(true)}
+                className="px-4 py-2.5 rounded-xl bg-[#063B2E] hover:bg-[#0B3D2E] border border-emerald-600 text-white font-extrabold text-xs uppercase tracking-wider transition flex items-center gap-2 cursor-pointer shadow-md"
+              >
+                <PackageCheck className="w-4 h-4 text-[#D6B45A]" />
+                <span>Final Submission Package</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={handleDownloadPDF}
-                className="px-5 py-2.5 rounded-xl bg-[#D6B45A] hover:bg-[#c4a24a] text-[#063B2E] font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-2"
+                className="px-5 py-2.5 rounded-xl bg-[#D6B45A] hover:bg-[#c4a24a] text-[#063B2E] font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Download PDF</span>
@@ -235,7 +280,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
                 <button
                   type="button"
                   onClick={() => setShowFinalModal(true)}
-                  className="px-5 py-2.5 rounded-xl bg-[#0B8F6A] hover:bg-[#097858] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-[#0B8F6A] hover:bg-[#097858] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>Generate Final Document</span>
@@ -257,6 +302,83 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
             </span>
           </div>
         )}
+
+        {/* FINAL PROJECT PACKAGE SUMMARY SECTION */}
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm mb-8 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#0B8F6A] block">
+                PHASE 7 ADDITION
+              </span>
+              <h2 className="text-lg font-black text-[#063B2E] tracking-tight">
+                FINAL PROJECT PACKAGE
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowSubmissionPackageModal(true)}
+              className="px-4 py-2 rounded-xl bg-[#063B2E] hover:bg-[#0B3D2E] text-white font-bold text-xs uppercase tracking-wider transition shadow-sm flex items-center gap-2 cursor-pointer"
+            >
+              <PackageCheck className="w-4 h-4 text-[#D6B45A]" />
+              <span>Open Package & Prepare Submission</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 1. Participant Declaration Card */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#063B2E] flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#12A875]" />
+                  1. Participant Declaration
+                </span>
+                <span className="text-[10px] font-mono font-bold uppercase text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                  ✓ Confirmed
+                </span>
+              </div>
+              <p className="text-xs text-[#64748B]">
+                Download a copy of the official declaration you accepted before starting your project.
+              </p>
+              {decl ? (
+                <button
+                  type="button"
+                  onClick={handleDownloadDeclarationPDF}
+                  className="w-full py-2 px-3 rounded-xl bg-white hover:bg-emerald-50 border border-[#0B8F6A] text-[#063B2E] font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5 text-[#0B8F6A]" />
+                  <span>Download Declaration PDF</span>
+                </button>
+              ) : (
+                <p className="text-[11px] text-amber-700 italic">Declaration pending acceptance</p>
+              )}
+            </div>
+
+            {/* 2. Final Project Document Card */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#063B2E] flex items-center gap-1.5">
+                  <FileCheck className="w-4 h-4 text-[#0B8F6A]" />
+                  2. Final Project Document
+                </span>
+                <span className="text-[10px] font-mono font-bold uppercase text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                  ✓ Ready
+                </span>
+              </div>
+              <p className="text-xs text-[#64748B]">
+                Your institutional-grade research document formatted for official publication.
+              </p>
+              <button
+                type="button"
+                onClick={handleDownloadPDF}
+                className="w-full py-2 px-3 rounded-xl bg-[#063B2E] hover:bg-[#0B3D2E] text-white font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-[#8DE0BE]" />
+                <span>Download Project PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* MAIN STUDIO GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -296,7 +418,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
               <button
                 type="button"
                 onClick={onBackToWorkspace}
-                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#063B2E] font-bold text-xs uppercase tracking-wider transition flex items-center gap-2"
+                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#063B2E] font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 cursor-pointer"
               >
                 <Edit3 className="w-4 h-4 text-[#0B8F6A]" />
                 <span>Edit Project Workspace</span>
@@ -306,7 +428,7 @@ export const ProjectProductionStudio: React.FC<ProjectProductionStudioProps> = (
                 <button
                   type="button"
                   onClick={handleDownloadPDF}
-                  className="px-5 py-2.5 rounded-xl bg-[#063B2E] hover:bg-[#0B3D2E] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-[#063B2E] hover:bg-[#0B3D2E] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <Download className="w-4 h-4 text-[#8DE0BE]" />
                   <span>Download PDF Document</span>
