@@ -12,6 +12,7 @@ import { ProjectJourney } from './ProjectJourney';
 
 import { ToolkitHeader } from './toolkit/ToolkitHeader';
 import { ToolkitDashboard } from './toolkit/ToolkitDashboard';
+import { ProjectProductionStudio } from './production/ProjectProductionStudio';
 
 import { ResearchPlannerTool } from './toolkit/tools/ResearchPlannerTool';
 import { ResearchQuestionBuilderTool } from './toolkit/tools/ResearchQuestionBuilderTool';
@@ -43,8 +44,8 @@ export const ProjectRoomPage: React.FC = () => {
   const [pendingNumber, setPendingNumber] = useState<number | null>(null);
   const [justRevealedProject, setJustRevealedProject] = useState<ProjectSlot | null>(null);
 
-  // Phase 5 Navigation & Toolkit state
-  const [roomViewMode, setRoomViewMode] = useState<'dashboard' | 'toolkit'>('dashboard');
+  // Phase 5 & 6 Navigation state
+  const [roomViewMode, setRoomViewMode] = useState<'dashboard' | 'toolkit' | 'production'>('dashboard');
   const [activeToolId, setActiveToolId] = useState<ToolId | null>(null);
   const [toolkitData, setToolkitData] = useState<ProjectToolkitData | null>(null);
   const [isAutosavingToolkit, setIsAutosavingToolkit] = useState(false);
@@ -140,6 +141,12 @@ export const ProjectRoomPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenProductionStudio = () => {
+    setRoomViewMode('production');
+    setActiveToolId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const getToolTitle = (id: ToolId | null): string | undefined => {
     if (!id) return undefined;
     switch (id) {
@@ -169,6 +176,21 @@ export const ProjectRoomPage: React.FC = () => {
   };
 
   const activeToolName = getToolTitle(activeToolId);
+
+  // Default project sections mapped for Production Studio
+  const defaultSections = toolkitData?.outline?.map((sec) => ({
+    id: sec.id,
+    title: sec.title,
+    content: sec.notes || '',
+    isRequired: sec.number <= 6,
+  })) || [
+    { id: 'sec-1', title: '1. Introduction', content: assignedProject?.description || '', isRequired: true },
+    { id: 'sec-2', title: '2. Background', content: assignedProject?.objective || '', isRequired: true },
+    { id: 'sec-3', title: '3. Research Questions', content: assignedProject?.researchQuestion || '', isRequired: true },
+    { id: 'sec-4', title: '4. Methodology & Approach', content: assignedProject?.instructions.join('\n') || '', isRequired: true },
+    { id: 'sec-5', title: '5. Findings & Deliverables', content: assignedProject?.deliverables.join('\n') || '', isRequired: true },
+    { id: 'sec-6', title: '6. Conclusion & Recommendations', content: '', isRequired: true },
+  ];
 
   return (
     <div className="relative min-h-screen bg-[#021f18] text-[#f7faf8] pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden font-sans">
@@ -211,6 +233,19 @@ export const ProjectRoomPage: React.FC = () => {
             <ProjectDeclaration
               project={assignedProject}
               onComplete={handleDeclarationComplete}
+            />
+          </div>
+        ) : roomViewMode === 'production' && assignedProject ? (
+          /* Phase 6 Production Studio View */
+          <div className="animate-fade-in">
+            <ProjectProductionStudio
+              cycleId={assignment?.cycleId || PROJECT_CYCLE}
+              projectId={assignedProject.id}
+              projectTitle={assignedProject.title}
+              projectNumber={assignedProject.number < 10 ? `0${assignedProject.number}` : `${assignedProject.number}`}
+              sections={defaultSections}
+              onBackToWorkspace={() => setRoomViewMode('dashboard')}
+              onBackToProjectRoom={() => setRoomViewMode('dashboard')}
             />
           </div>
         ) : roomViewMode === 'toolkit' && assignedProject && toolkitData ? (
@@ -281,6 +316,7 @@ export const ProjectRoomPage: React.FC = () => {
               declarationAccepted={!!assignment?.declarationAccepted}
               onOpenBrief={() => setIsBriefOpen(true)}
               onOpenToolkit={handleOpenToolkit}
+              onOpenProductionStudio={handleOpenProductionStudio}
               onCompleteDeclaration={() => setIsDeclarationActive(true)}
               onScrollToSelection={handleScrollToSelection}
               onLockWorkspace={() => setIsAccessGranted(false)}
@@ -342,6 +378,7 @@ export const ProjectRoomPage: React.FC = () => {
           projectNumber={assignedProject?.number}
           onClose={() => setIsWorkspacePlaceholderOpen(false)}
           onOpenToolkit={handleOpenToolkit}
+          onOpenProductionStudio={handleOpenProductionStudio}
         />
       )}
     </div>

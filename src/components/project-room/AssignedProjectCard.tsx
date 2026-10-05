@@ -1,12 +1,13 @@
 import React from 'react';
 import type { ProjectSlot } from '../../data/projectsData';
-import { CheckCircle2, Clock, Award, FileText, ArrowUpRight, ShieldAlert, ShieldCheck, Wrench } from 'lucide-react';
+import { CheckCircle2, Clock, Award, FileText, ArrowUpRight, ShieldAlert, ShieldCheck, Wrench, FileCheck } from 'lucide-react';
 
 interface AssignedProjectCardProps {
   project: ProjectSlot;
   declarationAccepted?: boolean;
   onOpenBrief: () => void;
   onOpenToolkit?: () => void;
+  onOpenProductionStudio?: () => void;
   onCompleteDeclaration?: () => void;
 }
 
@@ -15,6 +16,7 @@ export const AssignedProjectCard: React.FC<AssignedProjectCardProps> = ({
   declarationAccepted = false,
   onOpenBrief,
   onOpenToolkit,
+  onOpenProductionStudio,
   onCompleteDeclaration,
 }) => {
   const formattedNum = project.number < 10 ? `0${project.number}` : `${project.number}`;
@@ -106,17 +108,28 @@ export const AssignedProjectCard: React.FC<AssignedProjectCardProps> = ({
               <button
                 type="button"
                 onClick={onOpenToolkit}
-                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#021f18] hover:bg-[#04271e] text-[#f7faf8] hover:text-[#d6b45a] border border-[#0b8f6a]/40 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#021f18] hover:bg-[#04271e] text-[#f7faf8] hover:text-[#d6b45a] border border-[#0b8f6a]/40 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
               >
                 <Wrench className="w-4 h-4 text-[#d6b45a]" />
                 <span>Project Toolkit</span>
               </button>
             )}
 
+            {onOpenProductionStudio && (
+              <button
+                type="button"
+                onClick={onOpenProductionStudio}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#063b2e] hover:bg-[#084234] text-[#f7faf8] border border-[#0b8f6a] font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 cursor-pointer shrink-0 shadow-md"
+              >
+                <FileCheck className="w-4 h-4 text-[#8DE0BE]" />
+                <span>Production Studio</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onOpenBrief}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
             >
               <FileText className="w-4 h-4 text-[#d6b45a]" />
               <span>Project Brief</span>
