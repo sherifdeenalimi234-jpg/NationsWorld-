@@ -2,6 +2,9 @@ export type StudioStep = 'upload' | 'doctype' | 'configure' | 'review' | 'genera
 
 export const UNEXTRACTED_PLACEHOLDER = 'Information not detected — please review.';
 
+export type BrandingMode = 'brand-only' | 'brand-clean' | 'full-reformat';
+export type ExistingBrandingChoice = 'keep-existing' | 'refresh-branding' | 'apply-new';
+
 export type DocumentTypeId =
   | 'official-letter'
   | 'appointment-letter'
@@ -47,6 +50,17 @@ export interface DocumentSection {
   required?: boolean;
 }
 
+export interface BrandingConfig {
+  mode: BrandingMode;
+  preserveOriginalLayout: boolean;
+  applyWatermark: boolean;
+  addHeader: boolean;
+  addFooter: boolean;
+  addPageNumbers: boolean;
+  detectedExistingBranding: boolean;
+  existingBrandingChoice: ExistingBrandingChoice;
+}
+
 export interface StructuredDocumentData {
   id: string;
   docTypeId: DocumentTypeId;
@@ -64,7 +78,9 @@ export interface StructuredDocumentData {
   signatureBlock?: string;
   authorParticipant?: string;
   executiveSummary?: string;
+  originalRawContent: string;
   sections: DocumentSection[];
+  brandingConfig: BrandingConfig;
   cycleId?: string;
   projectId?: string;
   projectNumber?: string;
@@ -79,6 +95,7 @@ export interface UploadedFileInfo {
   status: 'uploading' | 'reading' | 'processing' | 'ready' | 'unsupported' | 'error';
   errorMessage?: string;
   rawContent: string;
+  hasExistingNationsWorldBranding?: boolean;
 }
 
 export interface ValidationIssue {
@@ -88,10 +105,18 @@ export interface ValidationIssue {
   field?: string;
 }
 
+export interface PreservationCheck {
+  id: string;
+  label: string;
+  passed: boolean;
+  details?: string;
+}
+
 export interface StudioValidationResult {
   status: 'DOCUMENT READY' | 'REVIEW REQUIRED';
   isValid: boolean;
   issues: ValidationIssue[];
+  preservationChecks: PreservationCheck[];
 }
 
 export interface StudioVersionRecord {
@@ -103,4 +128,5 @@ export interface StudioVersionRecord {
   referenceNumber: string;
   pdfFileName: string;
   documentData: StructuredDocumentData;
+  originalFileName?: string;
 }

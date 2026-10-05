@@ -3,11 +3,25 @@ import type {
   StructuredDocumentData,
   DocumentSection,
   UploadedFileInfo,
+  BrandingConfig,
 } from '../types/documentStudio';
 
 export const UNEXTRACTED_PLACEHOLDER = 'Information not detected — please review.';
 
 export const processUploadedFile = extractTextFromFile;
+
+/**
+ * Checks if raw text contains existing NationsWorld institutional branding elements.
+ */
+export function detectExistingNationsWorldBranding(text: string): boolean {
+  if (!text) return false;
+  const upper = text.toUpperCase();
+  return (
+    upper.includes('NATIONSWORLD') ||
+    upper.includes('VISIONARY ADVANCEMENT') ||
+    upper.includes('NWA-202')
+  );
+}
 
 /**
  * Client-side file text extractor supporting PDF (stream text), DOCX (XML text), TXT, MD, JSON.
@@ -25,41 +39,20 @@ export async function extractTextFromFile(file: File): Promise<UploadedFileInfo>
     pagesCount: 1,
     status: 'reading',
     rawContent: '',
+    hasExistingNationsWorldBranding: false,
   };
 
   try {
+    let extractedText = '';
+
     if (extension === 'pdf') {
       const arrayBuffer = await file.arrayBuffer();
-      const text = extractPDFTextFromBuffer(arrayBuffer);
-      const estPages = Math.max(1, Math.ceil(text.length / 2500));
-      return {
-        ...initialInfo,
-        status: 'ready',
-        pagesEstimate: estPages,
-        pagesCount: estPages,
-        rawContent: text.trim() || UNEXTRACTED_PLACEHOLDER,
-      };
+      extractedText = extractPDFTextFromBuffer(arrayBuffer);
     } else if (extension === 'docx') {
       const arrayBuffer = await file.arrayBuffer();
-      const text = extractDocxTextFromBuffer(arrayBuffer);
-      const estPages = Math.max(1, Math.ceil(text.length / 2200));
-      return {
-        ...initialInfo,
-        status: 'ready',
-        pagesEstimate: estPages,
-        pagesCount: estPages,
-        rawContent: text.trim() || UNEXTRACTED_PLACEHOLDER,
-      };
+      extractedText = extractDocxTextFromBuffer(arrayBuffer);
     } else if (['txt', 'md', 'json', 'csv'].includes(extension)) {
-      const text = await file.text();
-      const estPages = Math.max(1, Math.ceil(text.length / 2000));
-      return {
-        ...initialInfo,
-        status: 'ready',
-        pagesEstimate: estPages,
-        pagesCount: estPages,
-        rawContent: text.trim() || UNEXTRACTED_PLACEHOLDER,
-      };
+      extractedText = await file.text();
     } else {
       return {
         ...initialInfo,
@@ -67,6 +60,19 @@ export async function extractTextFromFile(file: File): Promise<UploadedFileInfo>
         errorMessage: `The file format .${extension} is not supported. Please upload a PDF, DOCX, TXT, or MD document.`,
       };
     }
+
+    const trimmed = extractedText.trim();
+    const estPages = Math.max(1, Math.ceil(trimmed.length / 2200));
+    const hasBranding = detectExistingNationsWorldBranding(trimmed);
+
+    return {
+      ...initialInfo,
+      status: 'ready',
+      pagesEstimate: estPages,
+      pagesCount: estPages,
+      rawContent: trimmed || UNEXTRACTED_PLACEHOLDER,
+      hasExistingNationsWorldBranding: hasBranding,
+    };
   } catch (err: any) {
     return {
       ...initialInfo,
@@ -120,14 +126,15 @@ function extractDocxTextFromBuffer(buffer: ArrayBuffer): string {
 }
 
 /**
- * Reusable Document Structure Engine
- * Constructs template-aligned section objects based on docType without fabricating facts.
+ * Preservation-First Document Structuring Engine
+ * Retains exact author wording as source of truth. Does NOT rewrite or summarize author content.
  */
 export function buildStructuredDocument(
   rawText: string,
   docType: DocumentTypeId,
   cycleId?: string,
-  projectId?: string
+  projectId?: string,
+  existingConfig?: Partial<BrandingConfig>
 ): StructuredDocumentData {
   const lines = rawText.split('\n').map((l) => l.trim()).filter(Boolean);
 
@@ -137,84 +144,51 @@ export function buildStructuredDocument(
   const defaultRef = refMatch ? refMatch[0] : `NWA-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
   const defaultDate = dateMatch ? dateMatch[0] : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-  let title = lines[0] || 'NationsWorld Document';
-  if (title.length > 80) {
-    title = title.substring(0, 80) + '...';
+  let title = lines[0] || 'NationsWorld Branded Document';
+  if (title.length > 90) {
+    title = title.substring(0, 90) + '...';
   }
 
-  const sections: DocumentSection[] = [];
+  const hasBranding = detectExistingNationsWorldBranding(rawText);
 
-  if (docType === 'official-letter' || docType === 'appointment-letter' || docType === 'invitation-letter') {
-    return {
-      id: 'doc_' + Date.now(),
-      docTypeId: docType,
-      title: title || 'Official Letter',
-      date: defaultDate,
-      referenceNumber: defaultRef,
-      recipient: extractRecipient(lines) || UNEXTRACTED_PLACEHOLDER,
-      recipientName: extractRecipient(lines) || UNEXTRACTED_PLACEHOLDER,
-      address: UNEXTRACTED_PLACEHOLDER,
-      salutation: 'Dear Distinguished Recipient,',
-      subject: lines[1] || 'OFFICIAL COMMUNICATION',
-      bodyText: rawText || UNEXTRACTED_PLACEHOLDER,
-      closing: 'Respectfully submitted,',
-      signatureBlock: 'Director of Secretariat\nNationsWorld of Visionary Advancement',
-      sections: [
-        {
-          id: 'sec_body',
-          heading: 'Main Body',
-          content: rawText || UNEXTRACTED_PLACEHOLDER,
-          type: 'text',
-          required: true,
-        },
-      ],
-      cycleId,
-      projectId,
-    };
-  }
+  const defaultConfig: BrandingConfig = {
+    mode: 'brand-only',
+    preserveOriginalLayout: true,
+    applyWatermark: true,
+    addHeader: !hasBranding,
+    addFooter: !hasBranding,
+    addPageNumbers: true,
+    detectedExistingBranding: hasBranding,
+    existingBrandingChoice: hasBranding ? 'keep-existing' : 'apply-new',
+    ...existingConfig,
+  };
 
-  if (docType === 'research-report' || docType === 'project-report' || docType === 'report') {
-    sections.push(
-      { id: 'sec_exec', heading: 'Executive Summary', content: extractSectionContent(lines, 'summary', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_intro', heading: 'Introduction & Background', content: extractSectionContent(lines, 'introduction', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_problem', heading: 'Problem Statement & Objectives', content: extractSectionContent(lines, 'problem', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_lit', heading: 'Literature Review', content: extractSectionContent(lines, 'literature', UNEXTRACTED_PLACEHOLDER), type: 'text' },
-      { id: 'sec_method', heading: 'Methodology', content: extractSectionContent(lines, 'methodology', UNEXTRACTED_PLACEHOLDER), type: 'text' },
-      { id: 'sec_findings', heading: 'Findings & Analysis', content: extractSectionContent(lines, 'findings', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_conclusion', heading: 'Conclusion & Recommendations', content: extractSectionContent(lines, 'conclusion', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_refs', heading: 'References & Citations', content: extractSectionContent(lines, 'references', UNEXTRACTED_PLACEHOLDER), type: 'text' }
-    );
-  } else if (docType === 'policy-brief') {
-    sections.push(
-      { id: 'sec_exec', heading: 'Executive Summary', content: extractSectionContent(lines, 'summary', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_prob', heading: 'Policy Context & Problem', content: extractSectionContent(lines, 'problem', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_options', heading: 'Policy Options & Evidence', content: extractSectionContent(lines, 'evidence', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_recs', heading: 'Actionable Recommendations', content: extractSectionContent(lines, 'recommendations', UNEXTRACTED_PLACEHOLDER), type: 'text', required: true },
-      { id: 'sec_conclusion', heading: 'Conclusion', content: extractSectionContent(lines, 'conclusion', UNEXTRACTED_PLACEHOLDER), type: 'text' }
-    );
-  } else if (docType === 'press-release') {
-    sections.push(
-      { id: 'sec_headline', heading: 'Headline & Announcement', content: rawText.slice(0, 300) || UNEXTRACTED_PLACEHOLDER, type: 'text', required: true },
-      { id: 'sec_body', heading: 'Main Announcement & Supporting Data', content: rawText.slice(300) || UNEXTRACTED_PLACEHOLDER, type: 'text', required: true },
-      { id: 'sec_boilerplate', heading: 'About NationsWorld', content: 'NationsWorld of Visionary Advancement is a global institutional body advancing leadership, research, development, innovation, and production.', type: 'text', required: true },
-      { id: 'sec_contact', heading: 'Media Contact Information', content: 'Media Relations Office | NationsWorld Secretariat\nEmail: press@nationsworld.org | WhatsApp: +2347073180242', type: 'text', required: true }
-    );
-  } else {
-    sections.push(
-      { id: 'sec_main', heading: 'Main Content', content: rawText || UNEXTRACTED_PLACEHOLDER, type: 'text', required: true }
-    );
-  }
+  // Build section preserving author text as single or structured blocks
+  const sections: DocumentSection[] = [
+    {
+      id: 'sec_author_content',
+      heading: 'Author Document Content',
+      content: rawText,
+      type: 'text',
+      required: true,
+    },
+  ];
 
   return {
     id: 'doc_' + Date.now(),
     docTypeId: docType,
-    title: title || 'NationsWorld Document',
+    title,
     date: defaultDate,
     referenceNumber: defaultRef,
-    authorParticipant: 'NationsWorld Research Fellow',
-    author: 'NationsWorld Research Fellow',
-    executiveSummary: extractSectionContent(lines, 'summary', UNEXTRACTED_PLACEHOLDER),
+    recipient: extractRecipient(lines) || '',
+    recipientName: extractRecipient(lines) || '',
+    author: 'Document Author',
+    salutation: 'Dear Distinguished Reader,',
+    subject: title,
+    bodyText: rawText,
+    originalRawContent: rawText,
     sections,
+    brandingConfig: defaultConfig,
     cycleId,
     projectId,
   };
@@ -227,12 +201,4 @@ function extractRecipient(lines: string[]): string | undefined {
     }
   }
   return undefined;
-}
-
-function extractSectionContent(lines: string[], keyword: string, fallback: string): string {
-  const matching = lines.filter((l) => l.toLowerCase().includes(keyword));
-  if (matching.length > 0) {
-    return matching.join('\n');
-  }
-  return fallback;
 }
