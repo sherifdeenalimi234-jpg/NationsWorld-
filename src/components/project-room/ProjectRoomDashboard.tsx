@@ -2,13 +2,14 @@ import React from 'react';
 import type { ProjectSlot } from '../../data/projectsData';
 import { DEV_MODE } from '../../data/projectsData';
 import { AssignedProjectCard } from './AssignedProjectCard';
-import { Lock, FileText, PenTool, Wrench, Send, CheckCircle2, RotateCcw, AlertCircle, ArrowRight } from 'lucide-react';
+import { Lock, FileText, PenTool, Wrench, FileCheck, CheckCircle2, RotateCcw, AlertCircle, ArrowRight } from 'lucide-react';
 
 interface ProjectRoomDashboardProps {
   assignedProject: ProjectSlot | null;
   declarationAccepted?: boolean;
   onOpenBrief: () => void;
   onOpenToolkit?: () => void;
+  onOpenProductionStudio?: () => void;
   onCompleteDeclaration?: () => void;
   onScrollToSelection?: () => void;
   onLockWorkspace?: () => void;
@@ -20,6 +21,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
   declarationAccepted = false,
   onOpenBrief,
   onOpenToolkit,
+  onOpenProductionStudio,
   onCompleteDeclaration,
   onScrollToSelection,
   onLockWorkspace,
@@ -121,6 +123,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
             declarationAccepted={declarationAccepted}
             onOpenBrief={onOpenBrief}
             onOpenToolkit={onOpenToolkit}
+            onOpenProductionStudio={onOpenProductionStudio}
             onCompleteDeclaration={onCompleteDeclaration}
           />
         </div>
@@ -232,31 +235,44 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
           </div>
         </div>
 
-        {/* SUBMISSION */}
-        <div className="bg-[#063b2e]/50 border border-[#0b8f6a]/30 rounded-2xl p-6 shadow-md flex flex-col justify-between hover:border-[#0b8f6a]/50 transition-colors group">
+        {/* PRODUCTION STUDIO */}
+        <div className="bg-[#063b2e]/90 border border-[#0b8f6a]/50 rounded-2xl p-6 shadow-lg flex flex-col justify-between hover:border-[#0b8f6a] transition-all group relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#0b8f6a]/10 rounded-full blur-2xl pointer-events-none" />
+
           <div>
             <div className="flex items-center justify-between gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#04271e] border border-[#0b8f6a]/30 flex items-center justify-center text-[#d6b45a]">
-                <Send className="w-5 h-5 text-[#d6b45a]" />
+              <div className="w-9 h-9 rounded-xl bg-[#04271e] border border-[#0b8f6a]/40 flex items-center justify-center text-[#d6b45a]">
+                <FileCheck className="w-5 h-5 text-[#d6b45a]" />
               </div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#64748b] bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8DE0BE] bg-[#0b8f6a]/20 border border-[#0b8f6a]/40 px-2.5 py-1 rounded-full">
                 Phase 6
               </span>
             </div>
 
             <h3 className="text-base font-serif font-bold text-[#f7faf8] group-hover:text-[#d6b45a] transition-colors">
-              SUBMISSION & REVIEW
+              PRODUCTION STUDIO
             </h3>
             <p className="text-xs text-[#64748b] leading-relaxed mt-2">
-              Final submission pipeline and peer evaluation tools.
+              Transform your research workspace into a polished NationsWorld document.
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-[#0b8f6a]/15">
-            <div className="text-[11px] font-mono text-[#64748b] flex items-center justify-between">
-              <span>Pipeline:</span>
-              <span className="text-[#d6b45a] font-medium">Production Hub Integration</span>
-            </div>
+          <div className="mt-6 pt-4 border-t border-[#0b8f6a]/20">
+            {assignedProject && declarationAccepted && onOpenProductionStudio ? (
+              <button
+                type="button"
+                onClick={onOpenProductionStudio}
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white text-xs font-bold transition flex items-center justify-between cursor-pointer shadow-md"
+              >
+                <span>Open Production Studio</span>
+                <ArrowRight className="w-4 h-4 text-[#8DE0BE]" />
+              </button>
+            ) : (
+              <div className="text-[11px] font-mono text-[#64748b] flex items-center justify-between">
+                <span>Access:</span>
+                <span className="text-[#d6b45a] font-medium">Declaration Required</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
