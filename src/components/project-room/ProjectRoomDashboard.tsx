@@ -2,12 +2,13 @@ import React from 'react';
 import type { ProjectSlot } from '../../data/projectsData';
 import { DEV_MODE } from '../../data/projectsData';
 import { AssignedProjectCard } from './AssignedProjectCard';
-import { Lock, FileText, PenTool, Wrench, Send, CheckCircle2, RotateCcw, AlertCircle } from 'lucide-react';
+import { Lock, FileText, PenTool, Wrench, Send, CheckCircle2, RotateCcw, AlertCircle, ArrowRight } from 'lucide-react';
 
 interface ProjectRoomDashboardProps {
   assignedProject: ProjectSlot | null;
   declarationAccepted?: boolean;
   onOpenBrief: () => void;
+  onOpenToolkit?: () => void;
   onCompleteDeclaration?: () => void;
   onScrollToSelection?: () => void;
   onLockWorkspace?: () => void;
@@ -18,6 +19,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
   assignedProject,
   declarationAccepted = false,
   onOpenBrief,
+  onOpenToolkit,
   onCompleteDeclaration,
   onScrollToSelection,
   onLockWorkspace,
@@ -50,7 +52,18 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          {assignedProject && declarationAccepted && onOpenToolkit && (
+            <button
+              type="button"
+              onClick={onOpenToolkit}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0b8f6a] hover:bg-[#0d9d75] text-white text-xs font-bold transition shadow-sm cursor-pointer"
+            >
+              <Wrench className="w-3.5 h-3.5 text-[#d6b45a]" />
+              <span>Project Toolkit</span>
+            </button>
+          )}
+
           {DEV_MODE && onDevReset && (
             <button
               type="button"
@@ -77,13 +90,27 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
       </div>
 
       {/* Header Title */}
-      <div className="text-center sm:text-left border-b border-[#0b8f6a]/20 pb-6">
-        <h2 className="text-2xl sm:text-3xl font-serif text-[#f7faf8] tracking-tight">
-          Project Room
-        </h2>
-        <p className="text-xs sm:text-sm text-[#64748b] font-medium mt-1">
-          Your workspace for assigned NationsWorld projects.
-        </p>
+      <div className="text-center sm:text-left border-b border-[#0b8f6a]/20 pb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-serif text-[#f7faf8] tracking-tight">
+            Project Room
+          </h2>
+          <p className="text-xs sm:text-sm text-[#64748b] font-medium mt-1">
+            Your workspace for assigned NationsWorld projects.
+          </p>
+        </div>
+
+        {assignedProject && declarationAccepted && onOpenToolkit && (
+          <button
+            type="button"
+            onClick={onOpenToolkit}
+            className="px-4 py-2 rounded-xl bg-[#063b2e] hover:bg-[#084234] text-[#f7faf8] hover:text-[#d6b45a] border border-[#0b8f6a]/40 text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-md"
+          >
+            <Wrench className="w-4 h-4 text-[#d6b45a]" />
+            <span>Open Project Toolkit</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#d6b45a]" />
+          </button>
+        )}
       </div>
 
       {/* CURRENT PROJECT SECTION */}
@@ -93,6 +120,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
             project={assignedProject}
             declarationAccepted={declarationAccepted}
             onOpenBrief={onOpenBrief}
+            onOpenToolkit={onOpenToolkit}
             onCompleteDeclaration={onCompleteDeclaration}
           />
         </div>
@@ -133,7 +161,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
         </div>
       )}
 
-      {/* FUTURE PIPELINE CARDS */}
+      {/* PIPELINE CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
         {/* WORKSPACE */}
         <div className="bg-[#063b2e]/50 border border-[#0b8f6a]/30 rounded-2xl p-6 shadow-md flex flex-col justify-between hover:border-[#0b8f6a]/50 transition-colors group">
@@ -142,7 +170,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
               <div className="w-9 h-9 rounded-xl bg-[#04271e] border border-[#0b8f6a]/30 flex items-center justify-center text-[#d6b45a]">
                 <PenTool className="w-5 h-5 text-[#d6b45a]" />
               </div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#64748b] bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#0b8f6a] bg-[#0b8f6a]/20 border border-[#0b8f6a]/30 px-2.5 py-1 rounded-full">
                 Phase 4
               </span>
             </div>
@@ -151,43 +179,56 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
               PROJECT WORKSPACE
             </h3>
             <p className="text-xs text-[#64748b] leading-relaxed mt-2">
-              Your research and writing workspace will appear here.
+              Your research and writing workspace environment for drafting sections.
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-[#0b8f6a]/15">
             <div className="text-[11px] font-mono text-[#64748b] flex items-center justify-between">
               <span>Status:</span>
-              <span className="text-[#d6b45a] font-medium">Coming in Next Phase</span>
+              <span className="text-[#0b8f6a] font-medium">Active</span>
             </div>
           </div>
         </div>
 
-        {/* PROJECT TOOLS */}
-        <div className="bg-[#063b2e]/50 border border-[#0b8f6a]/30 rounded-2xl p-6 shadow-md flex flex-col justify-between hover:border-[#0b8f6a]/50 transition-colors group">
+        {/* PROJECT TOOLKIT */}
+        <div className="bg-[#063b2e]/90 border border-[#0b8f6a]/50 rounded-2xl p-6 shadow-lg flex flex-col justify-between hover:border-[#0b8f6a] transition-all group relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#0b8f6a]/10 rounded-full blur-2xl pointer-events-none" />
+
           <div>
             <div className="flex items-center justify-between gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#04271e] border border-[#0b8f6a]/30 flex items-center justify-center text-[#d6b45a]">
+              <div className="w-9 h-9 rounded-xl bg-[#04271e] border border-[#0b8f6a]/40 flex items-center justify-center text-[#d6b45a]">
                 <Wrench className="w-5 h-5 text-[#d6b45a]" />
               </div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#64748b] bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-                Phase 4+
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#d6b45a] bg-[#d6b45a]/20 border border-[#d6b45a]/40 px-2.5 py-1 rounded-full">
+                Phase 5
               </span>
             </div>
 
             <h3 className="text-base font-serif font-bold text-[#f7faf8] group-hover:text-[#d6b45a] transition-colors">
-              PROJECT TOOLS
+              PROJECT TOOLKIT
             </h3>
             <p className="text-xs text-[#64748b] leading-relaxed mt-2">
-              Research and productivity tools will appear here.
+              Tools to help you research, organize, analyze and develop your project.
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-[#0b8f6a]/15">
-            <div className="text-[11px] font-mono text-[#64748b] flex items-center justify-between">
-              <span>Tools:</span>
-              <span className="text-[#d6b45a] font-medium">Planned for Phase 4+</span>
-            </div>
+          <div className="mt-6 pt-4 border-t border-[#0b8f6a]/20">
+            {assignedProject && declarationAccepted && onOpenToolkit ? (
+              <button
+                type="button"
+                onClick={onOpenToolkit}
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white text-xs font-bold transition flex items-center justify-between cursor-pointer shadow-md"
+              >
+                <span>Open Project Toolkit</span>
+                <ArrowRight className="w-4 h-4 text-[#d6b45a]" />
+              </button>
+            ) : (
+              <div className="text-[11px] font-mono text-[#64748b] flex items-center justify-between">
+                <span>Access:</span>
+                <span className="text-[#d6b45a] font-medium">Declaration Required</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -199,15 +240,15 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
                 <Send className="w-5 h-5 text-[#d6b45a]" />
               </div>
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#64748b] bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-                Phase 5
+                Phase 6
               </span>
             </div>
 
             <h3 className="text-base font-serif font-bold text-[#f7faf8] group-hover:text-[#d6b45a] transition-colors">
-              SUBMISSION
+              SUBMISSION & REVIEW
             </h3>
             <p className="text-xs text-[#64748b] leading-relaxed mt-2">
-              Your completed project and submission tools will appear here.
+              Final submission pipeline and peer evaluation tools.
             </p>
           </div>
 

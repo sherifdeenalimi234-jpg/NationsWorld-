@@ -1,6 +1,7 @@
+import { describe, it, expect } from 'vitest';
 import { processNOVACommand } from './novaEngine';
 
-async function runTests() {
+describe('NOVA Intent Engine', () => {
   const testCases = [
     { input: "Take me to the homepage.", expectedIntent: "home" },
     { input: "Go to the homepage.", expectedIntent: "home" },
@@ -32,25 +33,10 @@ async function runTests() {
     { input: "Blah blah xyz 123456", expectedIntent: "unknown" }
   ];
 
-  console.log("=== RUNNING NOVA INTENT ENGINE TESTS ===");
-  let passed = 0;
-  let failed = 0;
-
-  for (const tc of testCases) {
-    const result = await processNOVACommand(tc.input);
-    if (result.intent === tc.expectedIntent) {
-      console.log(`✓ PASS: "${tc.input}" -> ${result.intent} (confidence: ${result.confidence.toFixed(2)})`);
-      passed++;
-    } else {
-      console.error(`✗ FAIL: "${tc.input}" -> Expected: ${tc.expectedIntent}, Got: ${result.intent} (confidence: ${result.confidence.toFixed(2)})`);
-      failed++;
-    }
-  }
-
-  console.log(`\nRESULTS: ${passed} passed, ${failed} failed.`);
-  if (failed > 0) {
-    throw new Error(`NOVA Engine tests failed with ${failed} failures.`);
-  }
-}
-
-runTests();
+  testCases.forEach((tc) => {
+    it(`correctly classifies "${tc.input}" as ${tc.expectedIntent}`, async () => {
+      const result = await processNOVACommand(tc.input);
+      expect(result.intent).toBe(tc.expectedIntent);
+    });
+  });
+});

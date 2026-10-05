@@ -1,11 +1,12 @@
 import React from 'react';
 import type { ProjectSlot } from '../../data/projectsData';
-import { CheckCircle2, Clock, Award, FileText, ArrowUpRight, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Clock, Award, FileText, ArrowUpRight, ShieldAlert, ShieldCheck, Wrench } from 'lucide-react';
 
 interface AssignedProjectCardProps {
   project: ProjectSlot;
   declarationAccepted?: boolean;
   onOpenBrief: () => void;
+  onOpenToolkit?: () => void;
   onCompleteDeclaration?: () => void;
 }
 
@@ -13,6 +14,7 @@ export const AssignedProjectCard: React.FC<AssignedProjectCardProps> = ({
   project,
   declarationAccepted = false,
   onOpenBrief,
+  onOpenToolkit,
   onCompleteDeclaration,
 }) => {
   const formattedNum = project.number < 10 ? `0${project.number}` : `${project.number}`;
@@ -92,22 +94,35 @@ export const AssignedProjectCard: React.FC<AssignedProjectCardProps> = ({
       <div className="pt-2 border-t border-[#0b8f6a]/20 flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="text-[11px] text-[#64748b]">
           {declarationAccepted ? (
-            <span>Declaration confirmed. Ready for full research brief.</span>
+            <span>Declaration confirmed. Access research brief or open project toolkit.</span>
           ) : (
-            <span>Confirm project declaration before accessing brief.</span>
+            <span>Confirm project declaration before accessing brief and tools.</span>
           )}
         </p>
 
         {declarationAccepted ? (
-          <button
-            type="button"
-            onClick={onOpenBrief}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-medium text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
-          >
-            <FileText className="w-4 h-4 text-[#d6b45a]" />
-            <span>Open Project Brief</span>
-            <ArrowUpRight className="w-4 h-4 text-[#d6b45a]" />
-          </button>
+          <div className="flex items-center gap-2.5 w-full sm:w-auto flex-col sm:flex-row">
+            {onOpenToolkit && (
+              <button
+                type="button"
+                onClick={onOpenToolkit}
+                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#021f18] hover:bg-[#04271e] text-[#f7faf8] hover:text-[#d6b45a] border border-[#0b8f6a]/40 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+              >
+                <Wrench className="w-4 h-4 text-[#d6b45a]" />
+                <span>Project Toolkit</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={onOpenBrief}
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            >
+              <FileText className="w-4 h-4 text-[#d6b45a]" />
+              <span>Project Brief</span>
+              <ArrowUpRight className="w-4 h-4 text-[#d6b45a]" />
+            </button>
+          </div>
         ) : (
           <button
             type="button"
