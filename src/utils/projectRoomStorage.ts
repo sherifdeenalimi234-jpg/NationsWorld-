@@ -23,6 +23,46 @@ export interface StoredAssignment {
   declaration?: ParticipantDeclaration;
 }
 
+export interface ProjectMaterialItem {
+  id: string;
+  title: string;
+  category: string;
+  source: string;
+  content: string;
+  savedAt: string;
+}
+
+export interface ProjectDataOutput {
+  id: string;
+  title: string;
+  type: string;
+  summary: string;
+  data: any;
+  savedAt: string;
+}
+
+export function getProjectMaterials(cycleId?: string, projectId?: string): ProjectMaterialItem[] {
+  try {
+    const key = `project_materials_${cycleId || PROJECT_CYCLE}_${projectId || 'general'}`;
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+export function getProjectDataOutputs(cycleId?: string, projectId?: string): ProjectDataOutput[] {
+  try {
+    const key = `project_data_outputs_${cycleId || PROJECT_CYCLE}_${projectId || 'general'}`;
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
 export function getStoredAssignment(): StoredAssignment | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -30,13 +70,11 @@ export function getStoredAssignment(): StoredAssignment | null {
 
     const data = JSON.parse(raw) as StoredAssignment;
 
-    // Validate object structure
     if (!data || typeof data !== 'object') {
       localStorage.removeItem(STORAGE_KEY);
       return null;
     }
 
-    // Check if the assignment belongs to the current active project cycle
     if (data.cycleId !== PROJECT_CYCLE) {
       console.info(`Project cycle changed from ${data.cycleId} to ${PROJECT_CYCLE}. Resetting assignment.`);
       localStorage.removeItem(STORAGE_KEY);
@@ -48,7 +86,6 @@ export function getStoredAssignment(): StoredAssignment | null {
       return null;
     }
 
-    // Ensure declaration text fallback if declaration exists
     if (data.declaration) {
       if (!data.declaration.declarationText) {
         data.declaration.declarationText = DEFAULT_DECLARATION_TEXT;

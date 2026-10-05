@@ -17,10 +17,10 @@ import {
 import { DocumentEditor } from './DocumentEditor';
 import { LocalDraftsManager } from './LocalDraftsManager';
 import { PdfResultScreen } from './PdfResultScreen';
+import { DocumentStudio } from './studio/DocumentStudio';
 import {
   PlusCircle,
   FolderKanban,
-  FileText,
   Upload,
   Mail,
   FileSpreadsheet,
@@ -28,11 +28,13 @@ import {
   Award,
   ArrowRight,
   ShieldAlert,
+  Sparkles,
+  FileUp,
 } from 'lucide-react';
 
 export const ProductionDashboard: React.FC = () => {
   const [hubState, setHubState] = useState<
-    'dashboard' | 'categories' | 'editor' | 'drafts' | 'result' | 'help'
+    'dashboard' | 'categories' | 'editor' | 'drafts' | 'result' | 'help' | 'studio'
   >('dashboard');
 
   const [activeDraft, setActiveDraft] = useState<DocumentDraft | null>(null);
@@ -96,6 +98,11 @@ export const ProductionDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-[#1E293B] pb-16">
+      {/* VIEW: NOVA DOCUMENT STUDIO */}
+      {hubState === 'studio' && (
+        <DocumentStudio onBackToHub={() => setHubState('dashboard')} />
+      )}
+
       {/* VIEW 1: EDITOR */}
       {hubState === 'editor' && activeDraft && (
         <DocumentEditor
@@ -291,7 +298,7 @@ export const ProductionDashboard: React.FC = () => {
       {/* VIEW 0: MAIN DASHBOARD HUB */}
       {hubState === 'dashboard' && (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-nw-dark via-[#0d2a1b] to-nw-dark text-white shadow-xl relative overflow-hidden border border-emerald-900/50 mb-12">
+          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-nw-dark via-[#0d2a1b] to-nw-dark text-white shadow-xl relative overflow-hidden border border-emerald-900/50 mb-8">
             <div className="max-w-2xl relative z-10">
               <span className="text-xs font-black uppercase tracking-widest text-emerald-400 block mb-2">
                 NATIONSWORLD DIGITAL SECRETARIAT
@@ -308,11 +315,67 @@ export const ProductionDashboard: React.FC = () => {
             </div>
           </div>
 
+          {/* Featured Banner: NOVA DOCUMENT STUDIO */}
+          <div
+            onClick={() => setHubState('studio')}
+            className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-[#063B2E] via-[#0d2a1b] to-[#063B2E] text-white border-2 border-[#12A875]/40 shadow-lg mb-12 hover:border-[#12A875] transition-all cursor-pointer group relative overflow-hidden"
+          >
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-[#8DE0BE] text-xs font-extrabold uppercase mb-3 border border-emerald-500/30">
+                  <Sparkles className="w-3.5 h-3.5 text-[#12A875]" />
+                  <span>NEW FEATURE: DOCUMENT TRANSFORMATION ENGINE</span>
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-black text-white mb-2 group-hover:text-[#8DE0BE] transition-colors">
+                  NOVA DOCUMENT STUDIO
+                </h2>
+                <p className="text-sm font-bold text-[#D6B56D] mb-3">
+                  “Upload. Structure. Brand. Produce.”
+                </p>
+                <p className="text-xs sm:text-sm text-gray-200 leading-relaxed max-w-2xl">
+                  Upload an existing PDF, DOCX, or text file and transform it into an official NationsWorld institutional letter, report, policy brief, certificate, or notice.
+                </p>
+              </div>
+
+              <div className="shrink-0">
+                <button
+                  type="button"
+                  className="px-6 py-3.5 rounded-2xl bg-[#12A875] hover:bg-[#0e8a60] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2 group-hover:scale-105"
+                >
+                  <FileUp className="w-4 h-4 text-white" />
+                  <span>Launch Document Studio →</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <button
               type="button"
+              onClick={() => setHubState('studio')}
+              className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-lg transition-all text-left flex flex-col justify-between group cursor-pointer"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-4 group-hover:bg-nw-green group-hover:text-white transition-colors">
+                  <FileUp className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-nw-dark mb-1">
+                  DOCUMENT STUDIO
+                </h3>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Upload & transform existing PDF or DOCX documents.
+                </p>
+              </div>
+              <span className="text-xs font-bold text-nw-green mt-6 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                Open Studio →
+              </span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setHubState('categories')}
-              className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-lg transition-all text-left flex flex-col justify-between group"
+              className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-lg transition-all text-left flex flex-col justify-between group cursor-pointer"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-4 group-hover:bg-nw-green group-hover:text-white transition-colors">
@@ -333,7 +396,7 @@ export const ProductionDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setHubState('drafts')}
-              className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-lg transition-all text-left flex flex-col justify-between group"
+              className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-lg transition-all text-left flex flex-col justify-between group cursor-pointer"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-4 group-hover:bg-nw-green group-hover:text-white transition-colors">
@@ -355,27 +418,6 @@ export const ProductionDashboard: React.FC = () => {
               </div>
               <span className="text-xs font-bold text-nw-green mt-6 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                 Open Drafts Archive →
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setHubState('categories')}
-              className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-nw-green hover:shadow-lg transition-all text-left flex flex-col justify-between group"
-            >
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-nw-soft text-nw-green flex items-center justify-center mb-4 group-hover:bg-nw-green group-hover:text-white transition-colors">
-                  <FileText className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-black text-nw-dark mb-1">
-                  TEMPLATES
-                </h3>
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  20 pre-formatted institutional document templates.
-                </p>
-              </div>
-              <span className="text-xs font-bold text-nw-green mt-6 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                Explore Library →
               </span>
             </button>
 
