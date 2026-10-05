@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { ShieldCheck, User, Mail, Calendar, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
+import { ShieldCheck, User, Mail, Calendar, CheckCircle2, AlertCircle, ArrowRight, Eye, Download, FileText } from 'lucide-react';
 import type { ProjectSlot } from '../../data/projectsData';
 import type { StoredAssignment } from '../../utils/projectRoomStorage';
-import { saveDeclaration } from '../../utils/projectRoomStorage';
+import { saveDeclaration, DEFAULT_DECLARATION_TEXT } from '../../utils/projectRoomStorage';
+import { downloadDeclarationPDF, formatProjectNumber } from '../../utils/declarationPdfGenerator';
+import { DeclarationPreviewModal } from './DeclarationPreviewModal';
 
 interface ProjectDeclarationProps {
   project: ProjectSlot;
@@ -20,7 +22,8 @@ export const ProjectDeclaration: React.FC<ProjectDeclarationProps> = ({
 
   const [errors, setErrors] = useState<{ fullName?: string; contact?: string; checkbox?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [confirmedAssignment, setConfirmedAssignment] = useState<StoredAssignment | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Auto populated date
   const currentDateFormatted = new Date().toLocaleDateString('en-US', {
@@ -56,31 +59,142 @@ export const ProjectDeclaration: React.FC<ProjectDeclarationProps> = ({
     setTimeout(() => {
       const updated = saveDeclaration(fullName.trim(), contact.trim());
       setIsSubmitting(false);
-      setIsSuccess(true);
-
-      setTimeout(() => {
-        if (updated) {
-          onComplete(updated);
-        }
-      }, 1000);
+      if (updated) {
+        setConfirmedAssignment(updated);
+      }
     }, 400);
   };
 
-  if (isSuccess) {
+  const handleDownloadPDF = () => {
+    if (!confirmedAssignment?.declaration) return;
+    downloadDeclarationPDF({
+      fullName: confirmedAssignment.declaration.fullName,
+      contact: confirmedAssignment.declaration.contact,
+      projectTitle: project.title,
+      projectNumber: project.number,
+      cycleId: confirmedAssignment.cycleId || '2026-OCTOBER',
+      acceptedAt: confirmedAssignment.declaration.acceptedAt,
+      declarationText: confirmedAssignment.declaration.declarationText || DEFAULT_DECLARATION_TEXT,
+    });
+  };
+
+  // If confirmed, show the Declaration Confirmed / Download section
+  if (confirmedAssignment && confirmedAssignment.declaration) {
+    const decl = confirmedAssignment.declaration;
+    const formattedProjNum = formatProjectNumber(project.number);
+    const acceptedDateFormatted = new Date(decl.acceptedAt).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6">
-        <div className="bg-[#063b2e]/60 border border-[#0b8f6a]/40 rounded-2xl p-8 sm:p-10 text-center backdrop-blur-md shadow-2xl animate-fade-in">
-          <div className="w-16 h-16 rounded-full bg-[#0b8f6a]/20 border border-[#0b8f6a]/50 text-[#0b8f6a] flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-8 h-8 text-[#d6b45a]" />
+      <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 font-sans">
+        <div className="bg-[#063b2e]/80 border border-[#0b8f6a]/40 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-md space-y-6 animate-fade-in relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#0b8f6a]/10 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Success Banner Header */}
+          <div className="flex items-center gap-4 border-b border-[#0b8f6a]/20 pb-6">
+            <div className="w-14 h-14 rounded-2xl bg-[#0b8f6a]/20 border border-[#0b8f6a]/50 text-[#0b8f6a] flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-8 h-8 text-[#d6b45a]" />
+            </div>
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#d6b45a] block">
+                PARTICIPANT COMMITMENT
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-serif text-[#f7faf8]">
+                Participant Declaration
+              </h2>
+              <p className="text-xs sm:text-sm text-[#64748b] mt-1">
+                Download a copy of the declaration you accepted before beginning your project.
+              </p>
+            </div>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-serif text-[#f7faf8] mb-3">
-            Declaration Confirmed
-          </h2>
-          <p className="text-[#64748b] text-base mb-6 max-w-md mx-auto">
-            Your project responsibility has been recorded on this device. Loading your project brief...
-          </p>
-          <div className="w-12 h-1 bg-[#d6b45a] rounded-full mx-auto animate-pulse"></div>
+
+          {/* Key Declaration Status Box */}
+          <div className="p-5 rounded-2xl bg-[#021f18] border border-[#0b8f6a]/30 space-y-4">
+            <div className="flex items-center justify-between border-b border-[#0b8f6a]/20 pb-3">
+              <span className="text-xs font-mono text-[#64748b] uppercase font-bold">Declaration Status</span>
+              <span className="px-3 py-1 rounded-full bg-[#0b8f6a]/20 border border-[#0b8f6a]/40 text-[#0b8f6a] text-xs font-bold font-mono flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#d6b45a]" />
+                ✓ Confirmed
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <span className="text-[#64748b] block font-mono">Participant:</span>
+                <span className="font-bold text-[#f7faf8] text-sm block mt-0.5">{decl.fullName}</span>
+              </div>
+              <div>
+                <span className="text-[#64748b] block font-mono">Contact:</span>
+                <span className="font-bold text-[#f7faf8] text-xs block mt-0.5 truncate">{decl.contact}</span>
+              </div>
+              <div>
+                <span className="text-[#64748b] block font-mono">Project:</span>
+                <span className="font-bold text-[#f7faf8] text-xs block mt-0.5">{project.title}</span>
+              </div>
+              <div>
+                <span className="text-[#64748b] block font-mono">Project Number & Cycle:</span>
+                <span className="font-bold text-[#d6b45a] text-xs font-mono block mt-0.5">
+                  {formattedProjNum} • {confirmedAssignment.cycleId || '2026-OCTOBER'}
+                </span>
+              </div>
+              <div className="sm:col-span-2">
+                <span className="text-[#64748b] block font-mono">Accepted Date:</span>
+                <span className="font-bold text-[#f7faf8] text-xs block mt-0.5">{acceptedDateFormatted}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsPreviewOpen(true)}
+              className="w-full sm:w-1/2 px-5 py-3.5 rounded-xl bg-[#021f18] hover:bg-[#04271e] text-[#f7faf8] hover:text-[#d6b45a] border border-[#0b8f6a]/40 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
+            >
+              <Eye className="w-4 h-4 text-[#d6b45a]" />
+              <span>Preview Declaration</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              className="w-full sm:w-1/2 px-5 py-3.5 rounded-xl bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Download className="w-4 h-4 text-[#d6b45a]" />
+              <span>Download Declaration PDF</span>
+            </button>
+          </div>
+
+          <div className="pt-4 border-t border-[#0b8f6a]/20 flex justify-end">
+            <button
+              type="button"
+              onClick={() => onComplete(confirmedAssignment)}
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#d6b45a] to-[#b3933b] hover:brightness-110 text-[#021f18] font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center justify-center gap-2 group cursor-pointer"
+            >
+              <FileText className="w-4 h-4 text-[#021f18]" />
+              <span>Continue to Project Brief</span>
+              <ArrowRight className="w-4 h-4 text-[#021f18] group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
         </div>
+
+        {/* Declaration Preview Modal */}
+        <DeclarationPreviewModal
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          declarationData={{
+            fullName: decl.fullName,
+            contact: decl.contact,
+            projectTitle: project.title,
+            projectNumber: project.number,
+            cycleId: confirmedAssignment.cycleId || '2026-OCTOBER',
+            acceptedAt: decl.acceptedAt,
+            declarationText: decl.declarationText || DEFAULT_DECLARATION_TEXT,
+          }}
+        />
       </div>
     );
   }
@@ -243,7 +357,7 @@ export const ProjectDeclaration: React.FC<ProjectDeclarationProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-medium text-sm rounded-xl shadow-lg hover:shadow-[#0b8f6a]/25 focus:outline-none focus:ring-2 focus:ring-[#0b8f6a] transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#0b8f6a] to-[#086a4e] hover:from-[#0d9d75] hover:to-[#0a7a5a] text-white font-medium text-sm rounded-xl shadow-lg hover:shadow-[#0b8f6a]/25 focus:outline-none focus:ring-2 focus:ring-[#0b8f6a] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 cursor-pointer"
             >
               <span>{isSubmitting ? 'Recording...' : 'Accept & Continue'}</span>
               <ArrowRight className="w-4 h-4 text-[#d6b45a] group-hover:translate-x-0.5 transition-transform" />

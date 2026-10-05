@@ -1,12 +1,16 @@
 import React from 'react';
 import type { ProjectSlot } from '../../data/projectsData';
 import { DEV_MODE } from '../../data/projectsData';
+import type { StoredAssignment } from '../../utils/projectRoomStorage';
+import { getStoredAssignment } from '../../utils/projectRoomStorage';
 import { AssignedProjectCard } from './AssignedProjectCard';
+import { ProjectDocumentsSection } from './ProjectDocumentsSection';
 import { Lock, FileText, PenTool, Wrench, FileCheck, CheckCircle2, RotateCcw, AlertCircle, ArrowRight } from 'lucide-react';
 
 interface ProjectRoomDashboardProps {
   assignedProject: ProjectSlot | null;
   declarationAccepted?: boolean;
+  assignment?: StoredAssignment | null;
   onOpenBrief: () => void;
   onOpenToolkit?: () => void;
   onOpenProductionStudio?: () => void;
@@ -19,6 +23,7 @@ interface ProjectRoomDashboardProps {
 export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
   assignedProject,
   declarationAccepted = false,
+  assignment,
   onOpenBrief,
   onOpenToolkit,
   onOpenProductionStudio,
@@ -27,6 +32,8 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
   onLockWorkspace,
   onDevReset,
 }) => {
+  const currentAssignment = assignment || getStoredAssignment();
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto font-sans">
       {/* Top Banner */}
@@ -117,7 +124,7 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
 
       {/* CURRENT PROJECT SECTION */}
       {assignedProject ? (
-        <div className="animate-fade-in">
+        <div className="animate-fade-in space-y-6">
           <AssignedProjectCard
             project={assignedProject}
             declarationAccepted={declarationAccepted}
@@ -126,6 +133,14 @@ export const ProjectRoomDashboard: React.FC<ProjectRoomDashboardProps> = ({
             onOpenProductionStudio={onOpenProductionStudio}
             onCompleteDeclaration={onCompleteDeclaration}
           />
+
+          {/* PROJECT DOCUMENTS SECTION */}
+          {declarationAccepted && (
+            <ProjectDocumentsSection
+              assignment={currentAssignment}
+              project={assignedProject}
+            />
+          )}
         </div>
       ) : (
         <div className="bg-[#063b2e]/60 border border-[#0b8f6a]/30 rounded-2xl p-6 sm:p-8 shadow-md hover:border-[#0b8f6a]/50 transition-colors">
