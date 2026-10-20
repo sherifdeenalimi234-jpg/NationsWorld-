@@ -4,6 +4,7 @@ import { Homepage } from './components/Homepage';
 import { ProductionDashboard } from './components/production/ProductionDashboard';
 import { GameCenterDashboard } from './components/GameCenterDashboard';
 import { ProjectRoomPage } from './components/project-room/ProjectRoomPage';
+import { NASDIPortal } from './components/nasdi/NASDIPortal';
 import { Hero } from './components/Hero';
 import { TeamsOverview } from './components/TeamsOverview';
 import { HowItWorks } from './components/HowItWorks';
@@ -75,6 +76,12 @@ export const App: React.FC = () => {
               }
             }}
           />
+        )}
+
+        {activeView === 'nasdi' && (
+          <div>
+            <NASDIPortal />
+          </div>
         )}
 
         {activeView === 'project-room' && (
