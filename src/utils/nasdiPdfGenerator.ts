@@ -253,7 +253,20 @@ export function generateNASDIAssessmentPDF(submission: AssessmentSubmission): js
   const departments = getDepartments();
   const settings = getPortalSettings();
 
-  const assignedPosition = positions.find((p) => p.id === submission.sectionA.positionId);
+  const primaryPos = positions.find((p) => p.id === submission.sectionA.positionId);
+
+  // Collect all assigned leadership positions for multi-office appointments
+  const allAssignedPositions = positions.filter((p) =>
+    p.officeholder && submission.sectionA.fullName &&
+    p.officeholder.toLowerCase().trim() === submission.sectionA.fullName.toLowerCase().trim()
+  );
+
+  const displayPositionTitle = allAssignedPositions.length > 0
+    ? allAssignedPositions.map((p) => p.title).join(' & ')
+    : primaryPos
+    ? primaryPos.title
+    : 'Unassigned Position';
+
   const assignedDept = departments.find((d) => d.id === submission.sectionA.departmentId);
 
   // PAGE 1: COVER PAGE
@@ -317,7 +330,7 @@ export function generateNASDIAssessmentPDF(submission: AssessmentSubmission): js
   };
 
   renderMetaRow('Participant Name:', submission.sectionA.fullName || 'N/A');
-  renderMetaRow('Official Position:', assignedPosition ? assignedPosition.title : 'Unassigned Position');
+  renderMetaRow('Official Position:', displayPositionTitle);
   renderMetaRow('Department:', assignedDept ? assignedDept.name : 'General Institutional');
   renderMetaRow('Reference Number:', submission.refNo);
   renderMetaRow('Assessment Date:', submission.submittedAt ? new Date(submission.submittedAt).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'));
@@ -354,7 +367,7 @@ export function generateNASDIAssessmentPDF(submission: AssessmentSubmission): js
   if (submission.sectionA.phone) {
     yPos = renderFieldRow(doc, 'Contact Phone Number', submission.sectionA.phone, yPos);
   }
-  yPos = renderFieldRow(doc, 'Assigned NASDI Position', assignedPosition ? `${assignedPosition.title} (${assignedPosition.officeholder})` : 'None', yPos);
+  yPos = renderFieldRow(doc, 'Assigned NASDI Position', displayPositionTitle, yPos);
   yPos = renderFieldRow(doc, 'Department', assignedDept ? assignedDept.name : 'General', yPos);
   yPos = renderFieldRow(doc, 'Educational Background', submission.sectionA.educationalBackground, yPos);
   yPos = renderFieldRow(doc, 'Relevant Professional Experience', submission.sectionA.professionalExperience, yPos);

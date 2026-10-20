@@ -31,22 +31,35 @@ const localStorageMock = (() => {
 
 vi.stubGlobal('localStorage', localStorageMock);
 
-describe('NASDI Storage & Authentication System', () => {
+describe('NASDI Storage & Multi-Office System', () => {
   beforeEach(async () => {
     localStorage.clear();
     await initializeNASDIStorage();
   });
 
-  it('should seed default leadership positions and departments', () => {
+  it('should seed default leadership positions and departments according to updated structure', () => {
     const positions = getLeadershipPositions();
     const departments = getDepartments();
 
     expect(positions.length).toBe(9);
     expect(positions[0].officeholder).toBe('Sherifdeen Titilope Alimi');
     expect(positions[1].officeholder).toBe('Bello Hajara');
-    expect(positions[3].isVacant).toBe(true);
+    expect(positions[3].officeholder).toBe('ONIYE MARY');
+    expect(positions[3].isVacant).toBe(false);
+    expect(positions[7].officeholder).toBe('KENNY OSEWA');
+    expect(positions[8].officeholder).toBe('ONIYE MARY');
 
     expect(departments.length).toBe(7);
+  });
+
+  it('should support multi-office user accounts like ONIYE MARY holding Chief of Staff and Spokesperson', async () => {
+    const users = getAllUserAccounts();
+    const oniyeUser = users.find((u) => u.email === 'oniyemary@nasdi.org');
+
+    expect(oniyeUser).toBeDefined();
+    expect(oniyeUser?.fullName).toBe('ONIYE MARY');
+    expect(oniyeUser?.positionIds).toContain('pos-4');
+    expect(oniyeUser?.positionIds).toContain('pos-9');
   });
 
   it('should authenticate initial Super Admin with temporary password Sherifdeen', async () => {
@@ -71,16 +84,16 @@ describe('NASDI Storage & Authentication System', () => {
 
   it('should handle draft saving and assessment submission', () => {
     const draft = saveDraftSubmission({
-      userId: 'usr-bello-1',
+      userId: 'usr-oniyemary-1',
       sectionA: {
-        fullName: 'Bello Hajara',
-        email: 'bello@nasdi.org',
-        positionId: 'pos-2',
-        educationalBackground: 'Master of Science in Educational Leadership',
-        professionalExperience: '10 years experience in SDG 4 policy',
-        areasOfInterest: 'Inclusive Pedagogy',
-        previousLeadership: 'Deputy Team Lead',
-        certifications: 'Certified Educational Manager',
+        fullName: 'ONIYE MARY',
+        email: 'oniyemary@nasdi.org',
+        positionId: 'pos-4',
+        educationalBackground: 'Master of Science in Educational Administration',
+        professionalExperience: '12 years in institutional management & advocacy',
+        areasOfInterest: 'Policy & Advocacy',
+        previousLeadership: 'Chief of Staff & Female SDG 4 Spokesperson',
+        certifications: 'Senior Educational Leader',
       },
     });
 
@@ -89,7 +102,7 @@ describe('NASDI Storage & Authentication System', () => {
 
     const submitted = submitAssessment({
       ...draft,
-      userId: 'usr-bello-1',
+      userId: 'usr-oniyemary-1',
     });
 
     expect(submitted.status).toBe('SUBMITTED');

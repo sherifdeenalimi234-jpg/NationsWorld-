@@ -3,6 +3,7 @@ import {
   BookOpen,
   LogOut,
   LayoutDashboard,
+  Sparkles,
 } from 'lucide-react';
 import {
   type UserAccount,
@@ -13,8 +14,10 @@ import {
 import { NASDILogin } from './NASDILogin';
 import { NASDIAssessmentForm } from './NASDIAssessmentForm';
 import { NASDIAdminDashboard } from './NASDIAdminDashboard';
+import { NASDISplashIntro } from './NASDISplashIntro';
 
 export const NASDIPortal: React.FC = () => {
+  const [showSplash, setShowSplash] = useState(true);
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => getCurrentSessionUser());
   const [activeTab, setActiveTab] = useState<'assessment' | 'admin'>('assessment');
   const [lastActivityTime, setLastActivityTime] = useState<number>(Date.now());
@@ -48,8 +51,25 @@ export const NASDIPortal: React.FC = () => {
   const userSubmission = currentUser ? getSubmissionByUserId(currentUser.id) : null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-36 sm:pt-40 pb-12 px-4 sm:px-6 lg:px-8 selection:bg-purple-500/30 selection:text-amber-300 font-sans">
-      {/* Top Institute Header Banner */}
+    <>
+      {showSplash && (
+        <NASDISplashIntro onComplete={() => setShowSplash(false)} />
+      )}
+
+      <div className="min-h-screen bg-slate-950 text-white pt-36 sm:pt-40 pb-12 px-4 sm:px-6 lg:px-8 selection:bg-purple-500/30 selection:text-amber-300 font-sans">
+        {/* Replay Intro Button in Header */}
+        <div className="max-w-7xl mx-auto mb-2 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowSplash(true)}
+            className="text-[10px] text-amber-300 hover:text-amber-200 font-mono font-bold flex items-center gap-1 bg-purple-950/60 px-3 py-1 rounded-lg border border-purple-500/30 hover:border-amber-400 transition"
+          >
+            <Sparkles className="w-3 h-3 text-amber-400" />
+            <span>Replay Full-Screen Intro</span>
+          </button>
+        </div>
+
+        {/* Top Institute Header Banner */}
       <div className="max-w-7xl mx-auto mb-6 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-purple-950 via-indigo-950 to-purple-950 border border-purple-500/30 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 border border-amber-400/40 flex items-center justify-center text-amber-300 shadow-xl shrink-0">
@@ -131,6 +151,7 @@ export const NASDIPortal: React.FC = () => {
       ) : (
         <NASDIAssessmentForm currentUser={currentUser} existingSubmission={userSubmission} />
       )}
-    </div>
+      </div>
+    </>
   );
 };
