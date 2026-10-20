@@ -437,73 +437,113 @@ export async function initializeNASDIStorage(): Promise<void> {
       createdAt: new Date().toISOString(),
     };
 
-    // Participant accounts for appointed team leaders
-    const p1Salt = generateSalt();
-    const p1Hash = await hashPassword('Participant2026!', p1Salt);
+    // Participant accounts for appointed team leaders with initial password "Sherifdeen"
+    const commonSalt = generateSalt();
+    const commonHash = await hashPassword('Sherifdeen', commonSalt);
+
     const participantBello: UserAccount = {
       id: 'usr-bello-1',
       fullName: 'Bello Hajara',
       email: 'bello@nasdi.org',
-      passwordHash: p1Hash,
-      salt: p1Salt,
+      passwordHash: commonHash,
+      salt: commonSalt,
       role: 'PARTICIPANT',
       positionId: 'pos-2',
       positionIds: ['pos-2'],
       departmentId: 'dept-1',
-      mustChangePassword: false,
+      mustChangePassword: true,
       status: 'ACTIVE',
       createdAt: new Date().toISOString(),
     };
 
-    const p2Salt = generateSalt();
-    const p2Hash = await hashPassword('Participant2026!', p2Salt);
     const participantAdebisi: UserAccount = {
       id: 'usr-adebisi-1',
       fullName: 'Samuel Adebisi',
       email: 'adebisi@nasdi.org',
-      passwordHash: p2Hash,
-      salt: p2Salt,
+      passwordHash: commonHash,
+      salt: commonSalt,
       role: 'PARTICIPANT',
       positionId: 'pos-3',
       positionIds: ['pos-3'],
       departmentId: 'dept-2',
-      mustChangePassword: false,
+      mustChangePassword: true,
       status: 'ACTIVE',
       createdAt: new Date().toISOString(),
     };
 
     // ONIYE MARY holds TWO separate offices under ONE individual user account
-    const p3Salt = generateSalt();
-    const p3Hash = await hashPassword('Participant2026!', p3Salt);
     const participantOniyeMary: UserAccount = {
       id: 'usr-oniyemary-1',
       fullName: 'ONIYE MARY',
       email: 'oniyemary@nasdi.org',
-      passwordHash: p3Hash,
-      salt: p3Salt,
+      passwordHash: commonHash,
+      salt: commonSalt,
       role: 'PARTICIPANT',
       positionId: 'pos-4',
       positionIds: ['pos-4', 'pos-9'], // Chief of Staff AND Female SDG 4 Spokesperson
       departmentId: 'dept-6',
-      mustChangePassword: false,
+      mustChangePassword: true,
       status: 'ACTIVE',
       createdAt: new Date().toISOString(),
     };
 
     // KENNY OSEWA - Male SDG 4 Spokesperson
-    const p4Salt = generateSalt();
-    const p4Hash = await hashPassword('Participant2026!', p4Salt);
     const participantKennyOsewa: UserAccount = {
       id: 'usr-kenny-1',
       fullName: 'KENNY OSEWA',
       email: 'kenny@nasdi.org',
-      passwordHash: p4Hash,
-      salt: p4Salt,
+      passwordHash: commonHash,
+      salt: commonSalt,
       role: 'PARTICIPANT',
       positionId: 'pos-8',
       positionIds: ['pos-8'],
       departmentId: 'dept-6',
-      mustChangePassword: false,
+      mustChangePassword: true,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+
+    const participantAfolashade: UserAccount = {
+      id: 'usr-afolashade-1',
+      fullName: 'Afolashade Islamia',
+      email: 'afolashade@nasdi.org',
+      passwordHash: commonHash,
+      salt: commonSalt,
+      role: 'PARTICIPANT',
+      positionId: 'pos-5',
+      positionIds: ['pos-5'],
+      departmentId: 'dept-1',
+      mustChangePassword: true,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+
+    const participantTijani: UserAccount = {
+      id: 'usr-tijani-1',
+      fullName: 'Tijani Eniola',
+      email: 'tijani@nasdi.org',
+      passwordHash: commonHash,
+      salt: commonSalt,
+      role: 'PARTICIPANT',
+      positionId: 'pos-6',
+      positionIds: ['pos-6'],
+      departmentId: 'dept-7',
+      mustChangePassword: true,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+
+    const participantGrace: UserAccount = {
+      id: 'usr-grace-1',
+      fullName: 'Grace',
+      email: 'grace@nasdi.org',
+      passwordHash: commonHash,
+      salt: commonSalt,
+      role: 'PARTICIPANT',
+      positionId: 'pos-7',
+      positionIds: ['pos-7'],
+      departmentId: 'dept-4',
+      mustChangePassword: true,
       status: 'ACTIVE',
       createdAt: new Date().toISOString(),
     };
@@ -515,6 +555,9 @@ export async function initializeNASDIStorage(): Promise<void> {
       participantAdebisi,
       participantOniyeMary,
       participantKennyOsewa,
+      participantAfolashade,
+      participantTijani,
+      participantGrace,
     ];
     setItem(STORAGE_KEYS.USERS, initialUsers);
 
@@ -568,7 +611,15 @@ function clearFailedLogin(email: string): void {
 
 export async function loginUser(email: string, password: string): Promise<AuthResult> {
   await initializeNASDIStorage();
-  const cleanEmail = email.trim().toLowerCase();
+  let rawInput = email.trim().toLowerCase();
+
+  // Flexible Username/Surname Resolver
+  // If user enters 'bello' -> 'bello@nasdi.org'
+  if (!rawInput.includes('@')) {
+    rawInput = `${rawInput}@nasdi.org`;
+  }
+
+  const cleanEmail = rawInput;
 
   // Rate Limiting Check
   const rateLimit = getLoginRateLimit(cleanEmail);
@@ -582,7 +633,18 @@ export async function loginUser(email: string, password: string): Promise<AuthRe
   }
 
   const users = getItem<UserAccount[]>(STORAGE_KEYS.USERS, []);
-  const user = users.find((u) => u.email.toLowerCase() === cleanEmail);
+
+  // Flexible account matching (by email prefix, surname, or full email)
+  const namePrefix = cleanEmail.split('@')[0];
+  let user = users.find((u) => u.email.toLowerCase() === cleanEmail);
+
+  if (!user) {
+    user = users.find((u) => {
+      const uEmailPrefix = u.email.toLowerCase().split('@')[0];
+      const nameParts = u.fullName.toLowerCase().split(' ');
+      return uEmailPrefix === namePrefix || nameParts.some((part) => part === namePrefix);
+    });
+  }
 
   if (!user) {
     recordFailedLogin(cleanEmail);

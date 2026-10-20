@@ -121,16 +121,16 @@ export const NASDILogin: React.FC<NASDILoginProps> = ({ onLoginSuccess }) => {
 
             <div>
               <label className="block text-xs font-bold text-purple-200 mb-1.5 uppercase tracking-wider">
-                Official Email Address
+                Official Email or Name/Surname
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-purple-400 absolute left-3.5 top-3" />
                 <input
-                  type="email"
+                  type="text"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="sherifdeen@nasdi.org"
+                  placeholder="bello@nasdi.org or bello"
                   className="w-full pl-10 pr-4 py-2.5 bg-purple-900/40 border border-purple-400/30 rounded-xl text-xs text-white placeholder-purple-300/40 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition"
                 />
               </div>
@@ -219,15 +219,29 @@ export const NASDILogin: React.FC<NASDILoginProps> = ({ onLoginSuccess }) => {
 
               <button
                 type="button"
-                onClick={() => handleQuickDemoFill('bello@nasdi.org', 'Participant2026!')}
+                onClick={() => handleQuickDemoFill('bello@nasdi.org', 'Sherifdeen')}
                 className="p-2.5 rounded-lg bg-purple-900/30 hover:bg-purple-900/60 border border-purple-400/20 text-left flex items-center justify-between group transition"
               >
                 <div>
-                  <span className="font-bold text-sky-300 block">Deputy Team Lead (Participant)</span>
+                  <span className="font-bold text-sky-300 block">Deputy Team Lead</span>
                   <span className="text-[10px] text-purple-200/70 font-mono">bello@nasdi.org</span>
                 </div>
                 <span className="text-[10px] bg-sky-400/20 text-sky-300 px-2 py-1 rounded font-mono font-bold">
-                  Autofill Participant
+                  Autofill Bello
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickDemoFill('oniyemary@nasdi.org', 'Sherifdeen')}
+                className="p-2.5 rounded-lg bg-purple-900/30 hover:bg-purple-900/60 border border-purple-400/20 text-left flex items-center justify-between group transition"
+              >
+                <div>
+                  <span className="font-bold text-amber-300 block">Chief of Staff & Spokesperson</span>
+                  <span className="text-[10px] text-purple-200/70 font-mono">oniyemary@nasdi.org</span>
+                </div>
+                <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-1 rounded font-mono font-bold">
+                  Autofill Oniye Mary
                 </span>
               </button>
             </div>

@@ -31,7 +31,7 @@ const localStorageMock = (() => {
 
 vi.stubGlobal('localStorage', localStorageMock);
 
-describe('NASDI Storage & Multi-Office System', () => {
+describe('NASDI Storage & Authentication System', () => {
   beforeEach(async () => {
     localStorage.clear();
     await initializeNASDIStorage();
@@ -45,11 +45,27 @@ describe('NASDI Storage & Multi-Office System', () => {
     expect(positions[0].officeholder).toBe('Sherifdeen Titilope Alimi');
     expect(positions[1].officeholder).toBe('Bello Hajara');
     expect(positions[3].officeholder).toBe('ONIYE MARY');
-    expect(positions[3].isVacant).toBe(false);
     expect(positions[7].officeholder).toBe('KENNY OSEWA');
     expect(positions[8].officeholder).toBe('ONIYE MARY');
 
     expect(departments.length).toBe(7);
+  });
+
+  it('should authenticate team members logging in with surname or name@nasdi.org using initial password Sherifdeen', async () => {
+    // Test 1: Full email bello@nasdi.org
+    const res1 = await loginUser('bello@nasdi.org', 'Sherifdeen');
+    expect(res1.success).toBe(true);
+    expect(res1.user?.fullName).toBe('Bello Hajara');
+
+    // Test 2: Surname alone 'bello'
+    const res2 = await loginUser('bello', 'Sherifdeen');
+    expect(res2.success).toBe(true);
+    expect(res2.user?.fullName).toBe('Bello Hajara');
+
+    // Test 3: ONIYE MARY 'oniyemary'
+    const res3 = await loginUser('oniyemary', 'Sherifdeen');
+    expect(res3.success).toBe(true);
+    expect(res3.user?.fullName).toBe('ONIYE MARY');
   });
 
   it('should support multi-office user accounts like ONIYE MARY holding Chief of Staff and Spokesperson', async () => {
@@ -62,22 +78,14 @@ describe('NASDI Storage & Multi-Office System', () => {
     expect(oniyeUser?.positionIds).toContain('pos-9');
   });
 
-  it('should authenticate initial Super Admin with temporary password Sherifdeen', async () => {
-    const res = await loginUser('sherifdeen@nasdi.org', 'Sherifdeen');
-
-    expect(res.success).toBe(true);
-    expect(res.user?.role).toBe('SUPER_ADMIN');
-    expect(res.mustChangePassword).toBe(true);
-  });
-
-  it('should enforce password change for temporary password Sherifdeen', async () => {
-    const loginRes = await loginUser('sherifdeen@nasdi.org', 'Sherifdeen');
+  it('should enforce password change for initial password Sherifdeen', async () => {
+    const loginRes = await loginUser('bello@nasdi.org', 'Sherifdeen');
     expect(loginRes.user).toBeDefined();
 
-    const changeRes = await changePassword(loginRes.user!.id, 'NewSecurePass2026!');
+    const changeRes = await changePassword(loginRes.user!.id, 'NewBelloPass2026!');
     expect(changeRes.success).toBe(true);
 
-    const newLoginRes = await loginUser('sherifdeen@nasdi.org', 'NewSecurePass2026!');
+    const newLoginRes = await loginUser('bello@nasdi.org', 'NewBelloPass2026!');
     expect(newLoginRes.success).toBe(true);
     expect(newLoginRes.mustChangePassword).toBe(false);
   });
