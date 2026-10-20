@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Globe, ChevronDown, ChevronRight, ArrowRight, Sparkles, Lock } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown, ChevronRight, ArrowRight, Sparkles, Lock, BookOpen } from 'lucide-react';
+import type { ViewType } from '../services/novaEngine';
 
 interface NavbarProps {
-  activeView: 'home' | 'portal' | 'production' | 'games' | 'project-room';
-  onNavigate: (view: 'home' | 'portal' | 'production' | 'games' | 'project-room', sectionId?: string) => void;
+  activeView: ViewType;
+  onNavigate: (view: ViewType, sectionId?: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
@@ -31,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
     };
   }, [isOpen]);
 
-  const handleNavClick = (view: 'home' | 'portal' | 'production' | 'games' | 'project-room', sectionId?: string) => {
+  const handleNavClick = (view: ViewType, sectionId?: string) => {
     setIsOpen(false);
     onNavigate(view, sectionId);
   };
@@ -67,6 +68,20 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
 
           {/* Right: Actions & Hamburger Trigger */}
           <div className="flex items-center gap-2.5">
+            {/* NASDI Portal Quick Link */}
+            <button
+              type="button"
+              onClick={() => handleNavClick('nasdi')}
+              className={`hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                activeView === 'nasdi'
+                  ? 'bg-purple-600 text-white border-amber-400 shadow-lg'
+                  : 'bg-purple-950/60 hover:bg-purple-900 text-amber-300 border-purple-500/40'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+              <span>NASDI Portal</span>
+            </button>
+
             {/* Desktop Quick Link to Project Room */}
             <button
               type="button"
@@ -150,6 +165,26 @@ export const Navbar: React.FC<NavbarProps> = ({ activeView, onNavigate }) => {
               >
                 <span>Home</span>
                 <span className="text-xs text-sage group-hover:text-gold font-mono">01</span>
+              </button>
+
+              {/* NASDI PORTAL ROUTE IN DRAWER */}
+              <button
+                type="button"
+                onClick={() => handleNavClick('nasdi')}
+                className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-extrabold transition flex items-center justify-between border ${
+                  activeView === 'nasdi'
+                    ? 'bg-purple-700 text-white border-amber-400 shadow-xl'
+                    : 'bg-purple-950/80 border-purple-500/40 text-amber-300 hover:bg-purple-900'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <BookOpen className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span>NASDI Assessment Portal</span>
+                  <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2 py-0.5 rounded font-mono font-bold">
+                    SDG 4
+                  </span>
+                </span>
+                <ArrowRight className="w-4 h-4 text-amber-300" />
               </button>
 
               {/* PROJECT ROOM ROUTE IN DRAWER */}

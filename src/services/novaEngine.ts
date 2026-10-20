@@ -1,4 +1,4 @@
-export type ViewType = 'home' | 'portal' | 'production' | 'games' | 'project-room';
+export type ViewType = 'home' | 'portal' | 'production' | 'games' | 'project-room' | 'nasdi';
 
 export interface NOVAContext {
   currentView: ViewType;
@@ -66,6 +66,22 @@ export function normalizeInput(input: string): string {
 }
 
 const INTENT_DEFINITIONS: IntentDefinition[] = [
+  {
+    id: 'nasdi_portal',
+    primaryConfirmation: 'Opening the NASDI Human Capital Development and Assessment Portal...',
+    destination: { view: 'nasdi' },
+    exactPhrases: [
+      'nasdi',
+      'nasdi portal',
+      'human capital assessment',
+      'nasdi assessment',
+      'assessment portal',
+      'sdg 4 portal',
+      'nasdi login',
+      'nasdi human capital'
+    ],
+    keywords: ['nasdi', 'capital', 'assessment', 'sdg4']
+  },
   {
     id: 'project_room',
     primaryConfirmation: 'Opening the NationsWorld Project Room...',
