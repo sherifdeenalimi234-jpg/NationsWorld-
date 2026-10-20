@@ -65,52 +65,77 @@ const RATING_OPTIONS: { value: ScaleRating; label: string; desc: string }[] = [
   { value: 'N/A', label: 'N/A', desc: 'Not Applicable to current role.' },
 ];
 
-function getRoleSpecificQuestions(positionTitle: string): { id: string; text: string }[] {
+function getQuestionsForSingleTitle(positionTitle: string): { id: string; text: string }[] {
   const title = (positionTitle || '').toLowerCase();
 
   if (title.includes('team lead') && !title.includes('deputy') && !title.includes('assistant')) {
     return [
-      { id: 'q1', text: '1. How do you formulate long-term strategic vision and ensure overall NASDI institutional accountability?' },
-      { id: 'q2', text: '2. Describe your approach to executive decision-making during high-stakes institutional deadlines.' },
-      { id: 'q3', text: '3. How do you coordinate cross-departmental operations and promote leadership growth among team members?' },
+      { id: 'tl_q1', text: 'How do you formulate long-term strategic vision and ensure overall NASDI institutional accountability?' },
+      { id: 'tl_q2', text: 'Describe your approach to executive decision-making during high-stakes institutional deadlines.' },
+      { id: 'tl_q3', text: 'How do you coordinate cross-departmental operations and promote leadership growth among team members?' },
     ];
   } else if (title.includes('deputy')) {
     return [
-      { id: 'q1', text: '1. How do you support executive leadership in delegating tasks and tracking departmental progress?' },
-      { id: 'q2', text: '2. Describe your strategy for supporting department heads and resolving operational bottlenecks.' },
-      { id: 'q3', text: '3. What measures do you take to monitor task implementation across NASDI initiatives?' },
+      { id: 'dtl_q1', text: 'How do you support executive leadership in delegating tasks and tracking departmental progress?' },
+      { id: 'dtl_q2', text: 'Describe your strategy for supporting department heads and resolving operational bottlenecks.' },
+      { id: 'dtl_q3', text: 'What measures do you take to monitor task implementation across NASDI initiatives?' },
     ];
   } else if (title.includes('chief of staff')) {
     return [
-      { id: 'q1', text: '1. How do you manage executive scheduling, meeting follow-ups, and action item tracking?' },
-      { id: 'q2', text: '2. Describe your system for coordinating leadership communication and priority monitoring.' },
+      { id: 'cos_q1', text: 'How do you manage executive scheduling, meeting follow-ups, and action item tracking?' },
+      { id: 'cos_q2', text: 'Describe your system for coordinating leadership communication and priority monitoring.' },
     ];
   } else if (title.includes('secretary') && !title.includes('financial')) {
     return [
-      { id: 'q1', text: '1. Outline your system for maintaining official correspondence, meeting minutes, and document archives.' },
-      { id: 'q2', text: '2. How do you ensure prompt dissemination of official notices and record integrity?' },
+      { id: 'sec_q1', text: 'Outline your system for maintaining official correspondence, meeting minutes, and document archives.' },
+      { id: 'sec_q2', text: 'How do you ensure prompt dissemination of official notices and record integrity?' },
     ];
   } else if (title.includes('financial secretary')) {
     return [
-      { id: 'q1', text: '1. How do you maintain transparent financial documentation, transaction logs, and budget tracking?' },
-      { id: 'q2', text: '2. Describe your controls for ensuring resource accountability and financial reporting accuracy.' },
+      { id: 'fin_q1', text: 'How do you maintain transparent financial documentation, transaction logs, and budget tracking?' },
+      { id: 'fin_q2', text: 'Describe your controls for ensuring resource accountability and financial reporting accuracy.' },
     ];
   } else if (title.includes('press release') || title.includes('publication')) {
     return [
-      { id: 'q1', text: '1. Detail your process for drafting, editing, and verifying accuracy in official press releases and publications.' },
-      { id: 'q2', text: '2. How do you manage media communications and maintain NASDI brand consistency in public releases?' },
+      { id: 'pr_q1', text: 'Detail your process for drafting, editing, and verifying accuracy in official press releases and publications.' },
+      { id: 'pr_q2', text: 'How do you manage media communications and maintain NASDI brand consistency in public releases?' },
     ];
   } else if (title.includes('spokesperson')) {
     return [
-      { id: 'q1', text: '1. How do you articulate SDG 4 objectives and advocate for quality education in public speaking engagements?' },
-      { id: 'q2', text: '2. Describe your approach to stakeholder engagement and representing NASDI values in external media.' },
+      { id: 'spk_q1', text: 'How do you articulate SDG 4 objectives and advocate for quality education in public speaking engagements?' },
+      { id: 'spk_q2', text: 'Describe your approach to stakeholder engagement and representing NASDI values in external media.' },
     ];
   }
 
   return [
-    { id: 'q1', text: '1. How do your specific professional competencies align with your assigned responsibilities at NASDI?' },
-    { id: 'q2', text: '2. What contributions do you plan to make to advance your department objectives this term?' },
+    { id: 'gen_q1', text: 'How do your specific professional competencies align with your assigned responsibilities at NASDI?' },
+    { id: 'gen_q2', text: 'What contributions do you plan to make to advance your department objectives this term?' },
   ];
+}
+
+function getCombinedRoleSpecificQuestions(positionTitles: string[]): { id: string; text: string }[] {
+  if (!positionTitles || positionTitles.length === 0) {
+    return getQuestionsForSingleTitle('');
+  }
+
+  const combined: { id: string; text: string }[] = [];
+  const seenTexts = new Set<string>();
+
+  positionTitles.forEach((pTitle) => {
+    const qList = getQuestionsForSingleTitle(pTitle);
+    qList.forEach((q) => {
+      const normalizedText = q.text.trim().toLowerCase();
+      if (!seenTexts.has(normalizedText)) {
+        seenTexts.add(normalizedText);
+        combined.push({
+          id: `${q.id}_${combined.length + 1}`,
+          text: `${combined.length + 1}. [${pTitle.toUpperCase()}] ${q.text}`,
+        });
+      }
+    });
+  });
+
+  return combined;
 }
 
 export const NASDIAssessmentForm: React.FC<NASDIAssessmentFormProps> = ({
@@ -243,9 +268,16 @@ export const NASDIAssessmentForm: React.FC<NASDIAssessmentFormProps> = ({
     }));
   };
 
-  // Dynamic Questions for Section J based on current user position
-  const currentPos = positions.find((p) => p.id === formData.sectionA?.positionId);
-  const roleQuestions = getRoleSpecificQuestions(currentPos ? currentPos.title : '');
+  // Dynamic Questions for Section J based on assigned position(s)
+  const assignedPositionIds = currentUser.positionIds && currentUser.positionIds.length > 0
+    ? currentUser.positionIds
+    : formData.sectionA?.positionId
+    ? [formData.sectionA.positionId]
+    : [];
+
+  const assignedPositionObjects = positions.filter((p) => assignedPositionIds.includes(p.id));
+  const assignedTitles = assignedPositionObjects.map((p) => p.title);
+  const roleQuestions = getCombinedRoleSpecificQuestions(assignedTitles);
 
   return (
     <div className="max-w-5xl mx-auto my-6 p-4 sm:p-6 bg-slate-900 border border-purple-500/20 rounded-2xl shadow-2xl text-white">
@@ -267,7 +299,7 @@ export const NASDIAssessmentForm: React.FC<NASDIAssessmentFormProps> = ({
             Human Capital Capability Assessment
           </h2>
           <p className="text-xs text-purple-200/70">
-            {currentUser.fullName} ({currentPos ? currentPos.title : 'Participant'})
+            {currentUser.fullName} ({assignedTitles.length > 0 ? assignedTitles.join(' & ') : 'Participant'})
           </p>
         </div>
 
@@ -995,7 +1027,7 @@ export const NASDIAssessmentForm: React.FC<NASDIAssessmentFormProps> = ({
         {activeSection === 9 && (
           <div className="space-y-4 animate-fadeIn">
             <h3 className="text-sm font-bold text-amber-300 uppercase tracking-wider border-b border-purple-500/20 pb-2">
-              Section J: Role-Specific Competencies ({currentPos ? currentPos.title : 'General'})
+              Section J: Role-Specific Competencies ({assignedTitles.length > 0 ? assignedTitles.join(' & ') : 'General'})
             </h3>
 
             {roleQuestions.map((q) => {

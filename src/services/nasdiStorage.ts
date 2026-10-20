@@ -8,6 +8,7 @@ export interface UserAccount {
   salt: string;
   role: UserRole;
   positionId?: string;
+  positionIds?: string[]; // Supports single user holding multiple assigned leadership offices (e.g. ONIYE MARY holding Chief of Staff & Spokesperson)
   departmentId?: string;
   mustChangePassword?: boolean;
   status: 'ACTIVE' | 'SUSPENDED' | 'INACTIVE';
@@ -229,8 +230,8 @@ export const DEFAULT_LEADERSHIP_POSITIONS: LeadershipPosition[] = [
   {
     id: 'pos-4',
     title: 'Chief of Staff',
-    officeholder: 'Vacant',
-    isVacant: true,
+    officeholder: 'ONIYE MARY',
+    isVacant: false,
     description: 'Leadership coordination, meeting follow-up, task tracking, scheduling, and implementation support.',
   },
   {
@@ -257,15 +258,15 @@ export const DEFAULT_LEADERSHIP_POSITIONS: LeadershipPosition[] = [
   {
     id: 'pos-8',
     title: 'Male SDG 4 Spokesperson',
-    officeholder: 'Vacant',
-    isVacant: true,
+    officeholder: 'KENNY OSEWA',
+    isVacant: false,
     description: 'Public speaking, educational advocacy, stakeholder engagement, and representing NASDI educational objectives.',
   },
   {
     id: 'pos-9',
     title: 'Female SDG 4 Spokesperson',
-    officeholder: 'Vacant',
-    isVacant: true,
+    officeholder: 'ONIYE MARY',
+    isVacant: false,
     description: 'Public speaking, educational advocacy, stakeholder engagement, and representing NASDI educational objectives.',
   },
 ];
@@ -446,7 +447,8 @@ export async function initializeNASDIStorage(): Promise<void> {
       passwordHash: p1Hash,
       salt: p1Salt,
       role: 'PARTICIPANT',
-      positionId: 'pos-2', // Deputy Team Lead
+      positionId: 'pos-2',
+      positionIds: ['pos-2'],
       departmentId: 'dept-1',
       mustChangePassword: false,
       status: 'ACTIVE',
@@ -462,14 +464,58 @@ export async function initializeNASDIStorage(): Promise<void> {
       passwordHash: p2Hash,
       salt: p2Salt,
       role: 'PARTICIPANT',
-      positionId: 'pos-3', // Second Deputy Team Lead
+      positionId: 'pos-3',
+      positionIds: ['pos-3'],
       departmentId: 'dept-2',
       mustChangePassword: false,
       status: 'ACTIVE',
       createdAt: new Date().toISOString(),
     };
 
-    const initialUsers = [initialAdmin, initialReviewer, participantBello, participantAdebisi];
+    // ONIYE MARY holds TWO separate offices under ONE individual user account
+    const p3Salt = generateSalt();
+    const p3Hash = await hashPassword('Participant2026!', p3Salt);
+    const participantOniyeMary: UserAccount = {
+      id: 'usr-oniyemary-1',
+      fullName: 'ONIYE MARY',
+      email: 'oniyemary@nasdi.org',
+      passwordHash: p3Hash,
+      salt: p3Salt,
+      role: 'PARTICIPANT',
+      positionId: 'pos-4',
+      positionIds: ['pos-4', 'pos-9'], // Chief of Staff AND Female SDG 4 Spokesperson
+      departmentId: 'dept-6',
+      mustChangePassword: false,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+
+    // KENNY OSEWA - Male SDG 4 Spokesperson
+    const p4Salt = generateSalt();
+    const p4Hash = await hashPassword('Participant2026!', p4Salt);
+    const participantKennyOsewa: UserAccount = {
+      id: 'usr-kenny-1',
+      fullName: 'KENNY OSEWA',
+      email: 'kenny@nasdi.org',
+      passwordHash: p4Hash,
+      salt: p4Salt,
+      role: 'PARTICIPANT',
+      positionId: 'pos-8',
+      positionIds: ['pos-8'],
+      departmentId: 'dept-6',
+      mustChangePassword: false,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+
+    const initialUsers = [
+      initialAdmin,
+      initialReviewer,
+      participantBello,
+      participantAdebisi,
+      participantOniyeMary,
+      participantKennyOsewa,
+    ];
     setItem(STORAGE_KEYS.USERS, initialUsers);
 
     addAuditLog('SYSTEM_INIT', 'system', 'System', 'SUPER_ADMIN', 'Initialized default NASDI portal storage, positions, departments, and initial accounts');
